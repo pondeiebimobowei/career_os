@@ -15,7 +15,9 @@
     "backlog:doctor": "pnpm --filter @repo/backlog-cli start doctor",
     "backlog:graph": "pnpm --filter @repo/backlog-cli start graph",
     "backlog:export": "pnpm --filter @repo/backlog-cli start export",
-    "backlog:generate": "pnpm --filter @repo/backlog-cli start generate"
+    "backlog:generate": "pnpm --filter @repo/backlog-cli start generate",
+    "backlog:docs": "pnpm --filter @repo/backlog-cli start docs",
+    "backlog:next": "pnpm --filter @repo/backlog-cli start next"
   },
   "devDependencies": {
     "prettier": "^3.6.0",

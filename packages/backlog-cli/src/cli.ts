@@ -10,13 +10,14 @@ import { releaseCommand } from './commands/release.js';
 import { doctorCommand } from './commands/doctor.js';
 import { graphCommand } from './commands/graph.js';
 import { exportCommand } from './commands/export.js';
+import { docsCommand } from './commands/docs.js';
 
 const program = new Command();
 
 program
   .name('backlog')
-  .description('CareerOS Development Platform CLI - Product operating system compiler')
-  .version('0.2.0');
+  .description('CareerOS Development Platform CLI - v1.0 Product operating system compiler')
+  .version('1.0.0');
 
 program
   .command('validate')
@@ -54,16 +55,18 @@ program
 
 program
   .command('next')
-  .description('Recommend next unblocked P0 task to work on')
-  .action(async () => {
-    await nextCommand();
+  .description('Recommend next unblocked P0 task using planning scoring algorithm')
+  .option('--json', 'Output recommendation as structured JSON for AI context injection', false)
+  .action(async (options) => {
+    await nextCommand({ json: options.json });
   });
 
 program
   .command('start <issueId>')
-  .description('Start work on an issue (calculates branch name and git command)')
-  .action(async (issueId) => {
-    await startCommand(issueId);
+  .description('Start work on an issue (calculates branch name and executes git checkout)')
+  .option('--no-checkout', 'Do not execute git checkout automatically')
+  .action(async (issueId, options) => {
+    await startCommand(issueId, { checkout: options.checkout });
   });
 
 program
@@ -78,6 +81,14 @@ program
   .description('Generate release notes for a milestone')
   .action(async (milestone) => {
     await releaseCommand(milestone || 'beta');
+  });
+
+program
+  .command('docs')
+  .description('Generate synchronized Markdown documentation report from backlog')
+  .option('-o, --output <path>', 'Output markdown file path')
+  .action(async (options) => {
+    await docsCommand({ output: options.output });
   });
 
 program
