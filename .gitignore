@@ -3,6 +3,9 @@ node_modules
 .turbo
 *.log
 .next
+.wxt
+.output
+build
 dist
 dist-ssr
 *.local
@@ -10,3 +13,4 @@ dist-ssr
 .cache
 server/dist
 public/dist
+
