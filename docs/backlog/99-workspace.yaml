@@ -16,18 +16,17 @@ current:
 enabled_domains:
   product:
     - foundation
-    - authentication
     - user-profile
     - dashboard
     - companies
     - jobs
     - applications
     - application-pipeline
-  engineering:
-    - security
-    - testing
-  release:
-    - documentation
+    - tasks
+    - notes
+    - resume-library
+  engineering: []
+  release: []
 
 github:
   sync:
