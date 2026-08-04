@@ -1,0 +1,388 @@
+schema:
+  version: "CBS-1.0"
+
+epic:
+  id: TASKS
+  title: Tasks
+  domain: product
+  description: >
+    Enable users to create, organize, and complete actionable tasks
+    throughout their job search. Tasks help users stay on top of
+    follow-ups, interview preparation, networking, resume updates,
+    and other career-related activities without relying on external
+    to-do applications.
+
+objective: >
+  Make CareerOS the operational command center for a user's job search
+  by ensuring every opportunity has clear next actions that are visible,
+  prioritized, and easy to complete.
+
+success_metrics:
+  - id: TASK_CREATION_RATE
+    metric: users_creating_first_task
+    target: ">= 80%"
+
+  - id: TASK_COMPLETION_RATE
+    metric: completed_tasks_per_week
+    target: ">= 70%"
+
+  - id: ACTIVE_TASK_USERS
+    metric: weekly_users_completing_tasks
+    target: ">= 60%"
+
+milestone: PRODUCTIVITY
+
+priority: P0
+
+status: NOT_STARTED
+
+dependencies:
+  epics:
+    - APPLICATIONS
+    - APPLICATION_PIPELINE
+
+labels:
+  - tasks
+  - productivity
+  - reminders
+  - mvp
+
+features:
+
+  - id: TASK_CREATE
+    title: Create Task
+    priority: P0
+
+    description: >
+      Allow users to quickly create standalone tasks or tasks linked
+      to applications, jobs, or companies.
+
+    issues:
+
+      - id: TASK-001
+        title: Create task database model
+        type: TASK
+        priority: P0
+        estimate: M
+
+        labels:
+          - backend
+          - database
+
+        acceptance_criteria:
+          - Task model created
+          - Ownership enforced
+          - Status stored
+          - Due date supported
+          - Priority supported
+
+      - id: TASK-002
+        title: Create task API
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - TASK-001
+
+        labels:
+          - backend
+          - api
+
+        acceptance_criteria:
+          - Create endpoint exists
+          - Validation implemented
+          - Linked entities supported
+
+      - id: TASK-003
+        title: Build create task dialog
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - TASK-002
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - User can create task
+          - Optional due date
+          - Optional priority
+          - Optional entity association
+          - Validation displayed
+
+  - id: TASK_LIST
+    title: Task List
+    priority: P0
+
+    description: >
+      Display all pending and completed tasks in a clear,
+      sortable list.
+
+    issues:
+
+      - id: TASK-004
+        title: Build task listing endpoint
+        type: TASK
+        priority: P0
+        estimate: S
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Returns paginated tasks
+          - Supports sorting
+          - Supports filtering
+
+      - id: TASK-005
+        title: Build task list UI
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - TASK-004
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Pending tasks displayed
+          - Completed tasks displayed
+          - Empty state available
+          - Due dates visible
+
+  - id: TASK_COMPLETE
+    title: Complete Task
+    priority: P0
+
+    description: >
+      Allow users to mark tasks as completed while preserving
+      historical completion information.
+
+    issues:
+
+      - id: TASK-006
+        title: Complete task endpoint
+        type: TASK
+        priority: P0
+        estimate: XS
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Completion endpoint exists
+          - Completion timestamp stored
+
+      - id: TASK-007
+        title: Complete task interaction
+        type: TASK
+        priority: P0
+        estimate: XS
+
+        dependencies:
+          - TASK-006
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - One-click completion
+          - Optimistic update
+          - Completed styling applied
+
+  - id: TASK_EDIT
+    title: Edit Task
+    priority: P0
+
+    description: >
+      Allow users to update task details without recreating them.
+
+    issues:
+
+      - id: TASK-008
+        title: Update task API
+        type: TASK
+        priority: P0
+        estimate: S
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Update endpoint exists
+          - Validation enforced
+
+      - id: TASK-009
+        title: Build edit task UI
+        type: TASK
+        priority: P0
+        estimate: S
+
+        dependencies:
+          - TASK-008
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Existing values prefilled
+          - Save successful
+          - Validation errors displayed
+
+  - id: TASK_DELETE
+    title: Delete Task
+    priority: P1
+
+    description: >
+      Allow users to remove obsolete tasks.
+
+    issues:
+
+      - id: TASK-010
+        title: Delete task endpoint
+        type: TASK
+        priority: P1
+        estimate: XS
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Delete endpoint exists
+          - Ownership enforced
+
+      - id: TASK-011
+        title: Delete confirmation dialog
+        type: TASK
+        priority: P1
+        estimate: XS
+
+        dependencies:
+          - TASK-010
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Confirmation required
+          - Successful deletion reflected immediately
+
+  - id: TASK_ASSOCIATIONS
+    title: Linked Tasks
+    priority: P0
+
+    description: >
+      Associate tasks with applications, jobs, or companies
+      to provide context and improve workflow.
+
+    issues:
+
+      - id: TASK-012
+        title: Implement entity associations
+        type: TASK
+        priority: P0
+        estimate: M
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Tasks link to applications
+          - Tasks link to jobs
+          - Tasks link to companies
+          - Associations retrievable
+
+  - id: TASK_PRIORITY
+    title: Task Priority
+    priority: P1
+
+    description: >
+      Allow users to prioritize important work.
+
+    issues:
+
+      - id: TASK-013
+        title: Implement priority system
+        type: TASK
+        priority: P1
+        estimate: XS
+
+        labels:
+          - backend
+          - frontend
+
+        acceptance_criteria:
+          - Low priority supported
+          - Medium priority supported
+          - High priority supported
+          - Sorting by priority available
+
+  - id: TASK_DUE_DATES
+    title: Due Dates
+    priority: P0
+
+    description: >
+      Allow users to assign deadlines to tasks.
+
+    issues:
+
+      - id: TASK-014
+        title: Support task due dates
+        type: TASK
+        priority: P0
+        estimate: XS
+
+        labels:
+          - backend
+          - frontend
+
+        acceptance_criteria:
+          - Due date stored
+          - Due date displayed
+          - Overdue indicator shown
+
+acceptance_tests:
+
+  - User creates a task in under 20 seconds.
+
+  - Tasks can be linked to an application.
+
+  - Completing a task updates the UI immediately.
+
+  - Due dates are displayed correctly.
+
+  - Completed tasks remain visible in history.
+
+  - Unauthorized users cannot access another user's tasks.
+
+future_scope:
+
+  - Recurring tasks
+
+  - Smart follow-up templates
+
+  - Automatic task creation from pipeline events
+
+  - Calendar synchronization
+
+  - Email reminders
+
+  - AI-generated next actions
+
+  - Snooze functionality
+
+  - Bulk task management
+
+  - Collaboration and shared tasks
+
+notes:
+  - Notifications are intentionally excluded and belong to
+    13-notifications.yaml.
+  - Calendar integrations are deferred until post-MVP.
+  - AI-generated tasks depend on sufficient user history and are
+    intentionally postponed.

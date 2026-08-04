@@ -1,0 +1,80 @@
+version: 1
+project:
+  name: CareerOS
+  backlog_schema: CBS-v1.0
+
+catalog:
+  product:
+    - id: FOUNDATION
+      file: product/00-foundation.yaml
+    - id: AUTH
+      file: product/01-authentication.yaml
+    - id: PROFILE
+      file: product/02-user-profile.yaml
+    - id: DASHBOARD
+      file: product/03-dashboard.yaml
+    - id: COMPANIES
+      file: product/04-companies.yaml
+    - id: JOBS
+      file: product/05-jobs.yaml
+    - id: APPLICATIONS
+      file: product/06-applications.yaml
+    - id: PIPELINE
+      file: product/07-application-pipeline.yaml
+    - id: TASKS
+      file: product/08-tasks.yaml
+    - id: NOTES
+      file: product/09-notes.yaml
+    - id: RESUMES
+      file: product/10-resume-library.yaml
+    - id: EXTENSION
+      file: product/11-browser-extension/README.yaml
+    - id: SEARCH
+      file: product/12-search-filtering.yaml
+    - id: NOTIFICATIONS
+      file: product/13-notifications.yaml
+    - id: ANALYTICS
+      file: product/14-analytics.yaml
+    - id: SETTINGS
+      file: product/15-settings.yaml
+    - id: ACTIVITY
+      file: product/16-activity-history.yaml
+    - id: BILLING
+      file: product/17-billing.yaml
+    - id: ADMIN
+      file: product/18-admin.yaml
+
+  engineering:
+    - id: SECURITY
+      file: engineering/security.yaml
+    - id: TESTING
+      file: engineering/testing.yaml
+    - id: PERFORMANCE
+      file: engineering/performance.yaml
+    - id: ACCESSIBILITY
+      file: engineering/accessibility.yaml
+    - id: OBSERVABILITY
+      file: engineering/observability.yaml
+
+  release:
+    - id: DOCUMENTATION
+      file: release/documentation.yaml
+    - id: BETA_RELEASE
+      file: release/beta-release.yaml
+
+entrypoints:
+  workspace: 99-workspace.yaml
+  schema: CBS-v1.0.md
+
+automation:
+  discovery_order:
+    - README.yaml
+    - 99-workspace.yaml
+    - product
+    - engineering
+    - release
+
+commands:
+  validate: npm run backlog:validate
+  sync: npm run backlog:sync
+  status: npm run backlog:status

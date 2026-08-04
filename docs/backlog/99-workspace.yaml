@@ -1,0 +1,65 @@
+version: 1
+workspace:
+  name: CareerOS
+  schema: CBS-v1.0
+
+project:
+  github:
+    owner: YOUR_GITHUB_USERNAME
+    repository: careeros
+
+current:
+  milestone: FOUNDATION
+  sprint: SPRINT-01
+  release: MVP
+
+enabled_domains:
+  product:
+    - foundation
+    - authentication
+    - user-profile
+    - dashboard
+    - companies
+    - jobs
+    - applications
+    - application-pipeline
+  engineering:
+    - security
+    - testing
+  release:
+    - documentation
+
+github:
+  sync:
+    enabled: true
+    create_issues: true
+    update_issues: true
+    close_missing: false
+  labels:
+    create_missing: true
+  milestones:
+    create_missing: true
+
+automation:
+  issue_prefix: CAR
+  default_priority: P1
+  default_estimate: 2
+  validate_before_sync: true
+  dependency_validation: true
+  strict_schema: true
+
+rules:
+  allow_cross_domain_dependencies: true
+  allow_future_scope_sync: false
+  sync_only_enabled_domains: true
+  require_acceptance_criteria: true
+
+paths:
+  backlog_root: docs/backlog
+  product: docs/backlog/product
+  engineering: docs/backlog/engineering
+  release: docs/backlog/release
+
+generated:
+  created_by: CareerOS Backlog System
+  schema_version: CBS-v1.0

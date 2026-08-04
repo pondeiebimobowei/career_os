@@ -1,0 +1,353 @@
+schema:
+  version: "CBS-1.0"
+
+epic:
+  id: APPLICATION_PIPELINE
+  title: Application Pipeline
+  domain: product
+  description: >
+    Enable users to manage the lifecycle of every job application from
+    discovery through final outcome. The pipeline provides visual
+    progress tracking, structured status transitions, timeline history,
+    and a Kanban workflow that helps users understand where every
+    opportunity stands.
+
+objective: >
+  Replace spreadsheet status columns with a structured workflow that
+  encourages users to actively manage opportunities, identify stalled
+  applications, and maintain momentum throughout their job search.
+
+success_metrics:
+  - id: PIPELINE_USAGE
+    metric: applications_with_pipeline_status
+    target: ">= 95%"
+
+  - id: STATUS_UPDATES
+    metric: weekly_status_updates_per_active_user
+    target: ">= 5"
+
+  - id: ACTIVE_PIPELINE_USERS
+    metric: weekly_users_updating_pipeline
+    target: ">= 70%"
+
+milestone: CORE_TRACKER
+
+priority: P0
+
+status: NOT_STARTED
+
+dependencies:
+  epics:
+    - APPLICATIONS
+
+labels:
+  - pipeline
+  - kanban
+  - workflow
+  - product
+  - mvp
+
+features:
+
+  - id: PIPELINE_STATUS
+    title: Application Status Workflow
+    priority: P0
+
+    description: >
+      Every application progresses through a predefined workflow.
+      Status changes become the foundation for analytics,
+      reminders, timelines, and future automation.
+
+    workflow:
+
+      - SAVED
+      - APPLIED
+      - SCREENING
+      - INTERVIEW
+      - OFFER
+      - ACCEPTED
+      - REJECTED
+      - WITHDRAWN
+
+    issues:
+
+      - id: PIPE-001
+        title: Implement pipeline status model
+        type: TASK
+        priority: P0
+        estimate: S
+
+        labels:
+          - backend
+          - database
+
+        acceptance_criteria:
+          - Status enum created
+          - Default status is SAVED
+          - Status stored on application
+          - Enum validation enforced
+
+      - id: PIPE-002
+        title: Create status transition API
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - PIPE-001
+
+        labels:
+          - backend
+          - api
+
+        acceptance_criteria:
+          - Update status endpoint exists
+          - Invalid transitions rejected
+          - Transition timestamp recorded
+          - Audit event created
+
+      - id: PIPE-003
+        title: Build status selector UI
+        type: TASK
+        priority: P0
+        estimate: S
+
+        dependencies:
+          - PIPE-002
+
+        labels:
+          - frontend
+          - ui
+
+        acceptance_criteria:
+          - User can update status
+          - Current status highlighted
+          - Loading state shown
+          - Errors handled gracefully
+
+  - id: PIPELINE_BOARD
+    title: Kanban Pipeline Board
+    priority: P0
+
+    description: >
+      Visualize all applications grouped by workflow stage using
+      a drag-and-drop Kanban board.
+
+    issues:
+
+      - id: PIPE-004
+        title: Build pipeline board API
+        type: TASK
+        priority: P0
+        estimate: M
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Applications grouped by status
+          - Optimized response payload
+          - Pagination supported
+
+      - id: PIPE-005
+        title: Build Kanban board
+        type: TASK
+        priority: P0
+        estimate: L
+
+        dependencies:
+          - PIPE-004
+
+        labels:
+          - frontend
+          - ui
+
+        acceptance_criteria:
+          - Columns rendered
+          - Cards displayed
+          - Empty columns supported
+          - Responsive layout
+
+      - id: PIPE-006
+        title: Implement drag and drop
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - PIPE-005
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Card draggable
+          - Status updates automatically
+          - Failed updates rollback UI
+          - Optimistic updates supported
+
+  - id: PIPELINE_TIMELINE
+    title: Application Timeline
+    priority: P0
+
+    description: >
+      Record significant events in chronological order to give users
+      a complete history of every application.
+
+    issues:
+
+      - id: PIPE-007
+        title: Create activity event model
+        type: TASK
+        priority: P0
+        estimate: M
+
+        labels:
+          - backend
+          - database
+
+        acceptance_criteria:
+          - Event table created
+          - Event type stored
+          - Timestamp stored
+          - Linked to application
+
+      - id: PIPE-008
+        title: Record pipeline events
+        type: TASK
+        priority: P0
+        estimate: S
+
+        dependencies:
+          - PIPE-007
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Status changes logged
+          - Creation logged
+          - Update events logged
+
+      - id: PIPE-009
+        title: Build timeline component
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - PIPE-008
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Events displayed chronologically
+          - Icons shown
+          - Relative timestamps shown
+
+  - id: PIPELINE_HISTORY
+    title: Status History
+    priority: P0
+
+    description: >
+      Preserve historical workflow transitions for analytics,
+      reporting, and user context.
+
+    issues:
+
+      - id: PIPE-010
+        title: Store status history
+        type: TASK
+        priority: P0
+        estimate: S
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Previous status stored
+          - New status stored
+          - Transition timestamp stored
+
+      - id: PIPE-011
+        title: Display status history
+        type: TASK
+        priority: P0
+        estimate: XS
+
+        dependencies:
+          - PIPE-010
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - User can view transition history
+          - History ordered correctly
+
+  - id: PIPELINE_GUARDS
+    title: Transition Rules
+    priority: P1
+
+    description: >
+      Prevent accidental or invalid workflow changes while allowing
+      flexibility for manual corrections.
+
+    issues:
+
+      - id: PIPE-012
+        title: Implement transition validation
+        type: TASK
+        priority: P1
+        estimate: S
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Invalid transitions rejected
+          - Admin override supported
+          - Helpful error messages returned
+
+acceptance_tests:
+
+  - User can move an application through every workflow stage.
+
+  - Dragging a card updates its status.
+
+  - Timeline records every transition.
+
+  - Status history remains accurate.
+
+  - Applications always appear in the correct column.
+
+  - Invalid transitions are prevented.
+
+future_scope:
+
+  - Custom pipeline stages
+
+  - Interview scheduling integration
+
+  - Automatic follow-up reminders
+
+  - SLA tracking
+
+  - Stalled application detection
+
+  - AI recommendations for next actions
+
+  - Calendar integration
+
+  - Gmail synchronization
+
+  - Recruiter response tracking
+
+  - Multi-pipeline support
+
+notes:
+  - Pipeline intentionally focuses only on workflow state.
+  - Interviews, tasks, reminders, analytics, and notifications
+    consume pipeline events but are implemented in separate domains.
+  - Activity history is generated automatically from pipeline events.

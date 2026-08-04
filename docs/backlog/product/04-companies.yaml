@@ -1,0 +1,268 @@
+schema: CBS-v1.0
+
+epic:
+  id: COMPANIES
+  title: Company Management
+  domain: product
+  description: >
+    Enable users to build and maintain a structured database of companies
+    they are interested in or have engaged with during their job search.
+    Companies serve as a first-class entity that groups jobs, applications,
+    contacts, notes, and future intelligence.
+
+objective: >
+  Give users a central place to organize every company they interact with,
+  reducing duplicate work and creating the foundation for relationship
+  management and long-term career intelligence.
+
+milestone: CORE_TRACKER
+
+priority: P0
+
+status: backlog
+
+owners: []
+
+dependencies:
+  - AUTH
+  - PROFILE
+
+success_metrics:
+
+  - id: COMPANY_CREATION_TIME
+    metric: average_company_creation_time
+    target: "< 20 seconds"
+
+  - id: COMPANY_REUSE
+    metric: applications_linked_to_existing_company
+    target: ">= 90%"
+
+  - id: ACTIVE_USERS
+    metric: users_with_5_or_more_companies
+    target: ">= 80%"
+
+features:
+
+  - id: COMPANY-MANAGEMENT
+    title: Company CRUD
+    priority: P0
+
+    issues:
+
+      - id: COMPANY-001
+        title: Create company API
+        type: task
+        priority: P0
+        estimate: 3
+
+        labels:
+          - backend
+          - api
+          - companies
+
+        acceptance_criteria:
+          - User can create a company
+          - Company belongs to authenticated user
+          - Duplicate validation implemented
+          - API returns created company
+
+      - id: COMPANY-002
+        title: Build create company modal
+        type: task
+        priority: P0
+        estimate: 2
+
+        dependencies:
+          - COMPANY-001
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Company name required
+          - Website optional
+          - Industry optional
+          - Notes optional
+          - Validation messages displayed
+
+      - id: COMPANY-003
+        title: Edit company
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - frontend
+          - backend
+
+        acceptance_criteria:
+          - Company information editable
+          - Changes persisted
+          - Optimistic UI supported
+
+      - id: COMPANY-004
+        title: Delete company
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - frontend
+          - backend
+
+        acceptance_criteria:
+          - Confirmation dialog shown
+          - Soft delete implemented
+          - Related data protected
+
+  - id: COMPANY-LIST
+    title: Company Directory
+    priority: P0
+
+    issues:
+
+      - id: COMPANY-005
+        title: Company listing page
+        type: task
+        priority: P0
+        estimate: 3
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Paginated list
+          - Search supported
+          - Sorting supported
+          - Empty state provided
+
+      - id: COMPANY-006
+        title: Company detail page
+        type: task
+        priority: P0
+        estimate: 3
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Company information displayed
+          - Related jobs displayed
+          - Related applications displayed
+          - Notes preview displayed
+
+  - id: COMPANY-METADATA
+    title: Company Metadata
+    priority: P0
+
+    issues:
+
+      - id: COMPANY-007
+        title: Store company metadata
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Website stored
+          - Industry stored
+          - Location stored
+          - Company size optional
+          - Remote friendliness optional
+
+  - id: COMPANY-RELATIONSHIPS
+    title: Company Relationships
+    priority: P0
+
+    issues:
+
+      - id: COMPANY-008
+        title: Link jobs to companies
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - One company has many jobs
+          - Referential integrity enforced
+          - Cascade rules defined
+
+      - id: COMPANY-009
+        title: Link applications to companies
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Applications reference company
+          - Dashboard aggregates correctly
+
+  - id: COMPANY-NOTES
+    title: Company Notes
+    priority: P1
+
+    issues:
+
+      - id: COMPANY-010
+        title: Company notes section
+        type: task
+        priority: P1
+        estimate: 2
+
+        labels:
+          - frontend
+          - backend
+
+        acceptance_criteria:
+          - Notes displayed
+          - Notes editable
+          - Latest notes first
+
+acceptance_tests:
+
+  - User creates a company in under 20 seconds.
+  - Duplicate companies are prevented.
+  - Jobs correctly reference companies.
+  - Applications correctly reference companies.
+  - Company details display related jobs and applications.
+  - Deleting a company does not corrupt related records.
+
+future_scope:
+
+  - Company watchlists
+  - Company health score
+  - Recruiter relationships
+  - Contact management
+  - Automatic company enrichment
+  - Company hiring trends
+  - Salary insights
+  - Interview experiences
+  - AI-generated company research
+  - Company timeline
+  - Browser extension auto-company detection
+
+github:
+
+  milestone: "Milestone 2 - Core Tracker"
+
+  labels:
+    - epic
+    - product
+    - companies
+
+documentation:
+
+  references:
+    - docs/product-requirements.md
+    - docs/database-backend-schema.md
+    - docs/api-specification.md
+    - docs/user-flows-and-feature-scope.md

@@ -1,0 +1,372 @@
+schema:
+  version: "CBS-1.0"
+
+epic:
+  id: NOTES
+  title: Notes
+  domain: product
+  description: >
+    Enable users to capture structured notes throughout their job search.
+    Notes provide contextual information for applications, companies,
+    jobs, interviews, recruiters, and general career planning without
+    requiring users to switch between external note-taking tools.
+
+objective: >
+  Make every opportunity in CareerOS self-contained by allowing users
+  to record research, interview feedback, recruiter conversations,
+  networking information, and personal thoughts exactly where they
+  belong.
+
+success_metrics:
+  - id: NOTES_CREATION_RATE
+    metric: users_creating_first_note
+    target: ">= 75%"
+
+  - id: NOTES_PER_APPLICATION
+    metric: average_notes_per_application
+    target: ">= 2"
+
+  - id: NOTE_USAGE
+    metric: weekly_users_viewing_notes
+    target: ">= 60%"
+
+milestone: PRODUCTIVITY
+
+priority: P0
+
+status: NOT_STARTED
+
+dependencies:
+  epics:
+    - COMPANIES
+    - JOBS
+    - APPLICATIONS
+
+labels:
+  - notes
+  - productivity
+  - mvp
+
+features:
+
+  - id: NOTE_CREATE
+    title: Create Note
+    priority: P0
+
+    description: >
+      Allow users to create rich-text notes and optionally associate
+      them with an application, company, or job.
+
+    issues:
+
+      - id: NOTE-001
+        title: Create note database model
+        type: TASK
+        priority: P0
+        estimate: M
+
+        labels:
+          - backend
+          - database
+
+        acceptance_criteria:
+          - Note model exists
+          - Ownership enforced
+          - Rich text supported
+          - Created timestamp stored
+          - Updated timestamp stored
+
+      - id: NOTE-002
+        title: Create note API
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - NOTE-001
+
+        labels:
+          - backend
+          - api
+
+        acceptance_criteria:
+          - Create endpoint exists
+          - Validation implemented
+          - Entity association supported
+
+      - id: NOTE-003
+        title: Build note editor
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - NOTE-002
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - User can enter note
+          - Rich text formatting available
+          - Save succeeds
+          - Validation errors displayed
+
+  - id: NOTE_LIST
+    title: View Notes
+    priority: P0
+
+    description: >
+      Display notes attached to an entity and provide a consolidated
+      notes view.
+
+    issues:
+
+      - id: NOTE-004
+        title: Build notes listing endpoint
+        type: TASK
+        priority: P0
+        estimate: S
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Returns paginated notes
+          - Supports entity filtering
+          - Sorted newest first
+
+      - id: NOTE-005
+        title: Build notes UI
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - NOTE-004
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Notes displayed
+          - Entity badge visible
+          - Empty state available
+          - Timestamps shown
+
+  - id: NOTE_DETAILS
+    title: View Note
+    priority: P0
+
+    description: >
+      Allow users to read a complete note and navigate to the
+      associated entity.
+
+    issues:
+
+      - id: NOTE-006
+        title: Create note details endpoint
+        type: TASK
+        priority: P0
+        estimate: XS
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Returns full note
+          - Includes linked entity
+
+      - id: NOTE-007
+        title: Build note details UI
+        type: TASK
+        priority: P0
+        estimate: XS
+
+        dependencies:
+          - NOTE-006
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Full note displayed
+          - Linked entity accessible
+          - Metadata visible
+
+  - id: NOTE_UPDATE
+    title: Edit Note
+    priority: P0
+
+    description: >
+      Allow users to update existing notes.
+
+    issues:
+
+      - id: NOTE-008
+        title: Update note API
+        type: TASK
+        priority: P0
+        estimate: S
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Update endpoint exists
+          - Validation enforced
+          - Updated timestamp changes
+
+      - id: NOTE-009
+        title: Build edit note UI
+        type: TASK
+        priority: P0
+        estimate: S
+
+        dependencies:
+          - NOTE-008
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Existing content loaded
+          - Save succeeds
+          - Validation errors displayed
+
+  - id: NOTE_DELETE
+    title: Delete Note
+    priority: P1
+
+    description: >
+      Allow users to remove obsolete notes.
+
+    issues:
+
+      - id: NOTE-010
+        title: Delete note API
+        type: TASK
+        priority: P1
+        estimate: XS
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Delete endpoint exists
+          - Ownership enforced
+
+      - id: NOTE-011
+        title: Delete confirmation dialog
+        type: TASK
+        priority: P1
+        estimate: XS
+
+        dependencies:
+          - NOTE-010
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Confirmation shown
+          - Note removed immediately
+
+  - id: NOTE_ASSOCIATIONS
+    title: Entity Associations
+    priority: P0
+
+    description: >
+      Associate notes with CareerOS entities to preserve context.
+
+    supported_entities:
+      - Application
+      - Company
+      - Job
+
+    issues:
+
+      - id: NOTE-012
+        title: Implement entity associations
+        type: TASK
+        priority: P0
+        estimate: M
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Notes link to applications
+          - Notes link to companies
+          - Notes link to jobs
+          - Association validated
+
+  - id: NOTE_SEARCH
+    title: Search Notes
+    priority: P1
+
+    description: >
+      Allow users to search across note content.
+
+    issues:
+
+      - id: NOTE-013
+        title: Implement note search
+        type: TASK
+        priority: P1
+        estimate: S
+
+        labels:
+          - backend
+          - frontend
+
+        acceptance_criteria:
+          - Keyword search supported
+          - Partial matches supported
+          - Results ranked by relevance
+
+acceptance_tests:
+
+  - User creates a note in under 30 seconds.
+
+  - Notes remain linked to the correct entity.
+
+  - Rich text formatting persists.
+
+  - Editing updates the note correctly.
+
+  - Deleted notes no longer appear.
+
+  - Users cannot access notes owned by another account.
+
+future_scope:
+
+  - Markdown support
+
+  - File attachments
+
+  - Image uploads
+
+  - Voice notes
+
+  - AI note summaries
+
+  - AI meeting transcription
+
+  - Mention users (team plans)
+
+  - Version history
+
+  - Pinned notes
+
+  - Templates
+
+  - Interview-specific notes
+
+  - Recruiter conversation history
+
+notes:
+  - Notes intentionally remain lightweight and contextual.
+  - This is not intended to become a full knowledge management system.
+  - Attachments and collaboration are deferred until post-MVP.
+  - AI summarization depends on user adoption and sufficient note volume.

@@ -1,0 +1,293 @@
+schema: CBS-v1.0
+
+epic:
+  id: JOBS
+  title: Job Management
+  domain: product
+  description: >
+    Enable users to create, organize, and manage job opportunities.
+    Jobs represent opportunities offered by companies and serve as the
+    parent entity for applications, resumes, notes, and future automation.
+
+objective: >
+  Make CareerOS the single source of truth for every opportunity a user
+  is considering, regardless of where it was discovered.
+
+milestone: CORE_TRACKER
+
+priority: P0
+
+status: backlog
+
+owners: []
+
+dependencies:
+  - AUTH
+  - PROFILE
+  - COMPANIES
+
+success_metrics:
+
+  - id: JOB_CREATION_TIME
+    metric: average_job_creation_time
+    target: "< 30 seconds"
+
+  - id: JOB_CAPTURE
+    metric: users_with_10_or_more_jobs
+    target: ">= 80%"
+
+  - id: JOB_TO_APPLICATION
+    metric: jobs_converted_to_applications
+    target: ">= 60%"
+
+features:
+
+  - id: JOB-MANAGEMENT
+    title: Job CRUD
+    priority: P0
+
+    issues:
+
+      - id: JOB-001
+        title: Create Job API
+        type: task
+        priority: P0
+        estimate: 3
+
+        labels:
+          - backend
+          - api
+          - jobs
+
+        acceptance_criteria:
+          - User can create a job
+          - Job belongs to authenticated user
+          - Job references a company
+          - Validation implemented
+
+      - id: JOB-002
+        title: Build Create Job UI
+        type: task
+        priority: P0
+        estimate: 3
+
+        dependencies:
+          - JOB-001
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - User enters job title
+          - User selects company
+          - User enters job URL
+          - User submits successfully
+          - Validation errors displayed
+
+      - id: JOB-003
+        title: Edit Job
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - frontend
+          - backend
+
+        acceptance_criteria:
+          - Existing values editable
+          - Changes persisted
+          - Success feedback shown
+
+      - id: JOB-004
+        title: Delete Job
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - frontend
+          - backend
+
+        acceptance_criteria:
+          - Confirmation dialog
+          - Soft delete supported
+          - Related applications protected
+
+  - id: JOB-DIRECTORY
+    title: Job Directory
+    priority: P0
+
+    issues:
+
+      - id: JOB-005
+        title: Job Listing Page
+        type: task
+        priority: P0
+        estimate: 3
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Paginated list
+          - Sort by newest
+          - Search available
+          - Empty state supported
+
+      - id: JOB-006
+        title: Job Details Page
+        type: task
+        priority: P0
+        estimate: 3
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Displays job details
+          - Displays linked company
+          - Displays linked applications
+          - Displays notes
+          - External URL available
+
+  - id: JOB-METADATA
+    title: Job Metadata
+    priority: P0
+
+    issues:
+
+      - id: JOB-007
+        title: Store Job Metadata
+        type: task
+        priority: P0
+        estimate: 3
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Employment type stored
+          - Workplace type stored
+          - Salary range optional
+          - Job location stored
+          - Job source stored
+          - Posted date optional
+          - Closing date optional
+
+  - id: JOB-RELATIONSHIPS
+    title: Job Relationships
+    priority: P0
+
+    issues:
+
+      - id: JOB-008
+        title: Link Jobs to Companies
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Job references company
+          - Referential integrity enforced
+          - Cascade rules defined
+
+      - id: JOB-009
+        title: Link Applications to Jobs
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Applications reference job
+          - Dashboard aggregates correctly
+
+  - id: JOB-SOURCE
+    title: Opportunity Source
+    priority: P0
+
+    issues:
+
+      - id: JOB-010
+        title: Track Job Source
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Source platform stored
+          - Original URL stored
+          - Manual source supported
+          - Source displayed in UI
+
+  - id: JOB-TAGS
+    title: Tags & Organization
+    priority: P1
+
+    issues:
+
+      - id: JOB-011
+        title: Job Tags
+        type: task
+        priority: P1
+        estimate: 2
+
+        labels:
+          - frontend
+          - backend
+
+        acceptance_criteria:
+          - Multiple tags supported
+          - Tags searchable
+          - Tags editable
+
+acceptance_tests:
+
+  - User creates a job in under 30 seconds.
+  - Every job references a company.
+  - Job list supports searching and sorting.
+  - Job details display associated applications.
+  - External job URL opens correctly.
+  - Soft deleting a job preserves historical integrity.
+
+future_scope:
+
+  - Browser extension auto-import
+  - AI job parsing
+  - Duplicate detection
+  - Salary normalization
+  - Skills extraction
+  - Resume-job matching
+  - Job bookmarking
+  - Company hiring insights
+  - Automatic job status detection
+  - Job expiration tracking
+  - Company watchlists
+  - Opportunity scoring
+
+github:
+
+  milestone: "Milestone 2 - Core Tracker"
+
+  labels:
+    - epic
+    - product
+    - jobs
+
+documentation:
+
+  references:
+    - docs/product-requirements.md
+    - docs/database-backend-schema.md
+    - docs/api-specification.md
+    - docs/browser-extension-architecture.md
+    - docs/user-flows-and-feature-scope.md

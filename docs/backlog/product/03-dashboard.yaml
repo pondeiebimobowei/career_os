@@ -1,0 +1,260 @@
+schema: CBS-v1.0
+
+epic:
+  id: DASHBOARD
+  title: Dashboard
+  domain: product
+  description: >
+    Provide users with a single command center that summarizes
+    their job search, highlights priorities, surfaces upcoming work,
+    and enables quick navigation into the CareerOS workflow.
+
+objective: >
+  Make the dashboard the place users return to every day by
+  showing what needs attention instead of forcing users to
+  manually inspect every application.
+
+milestone: CORE_TRACKER
+
+priority: P0
+
+status: backlog
+
+owners: []
+
+dependencies:
+  - AUTH
+  - PROFILE
+  - COMPANIES
+  - JOBS
+  - APPLICATIONS
+  - TASKS
+
+success_metrics:
+
+  - id: DASHBOARD_LOAD
+    metric: dashboard_load_time
+    target: "< 2 seconds"
+
+  - id: DAILY_USAGE
+    metric: daily_dashboard_visits
+    target: ">= 80% of weekly active users"
+
+  - id: TIME_TO_ACTION
+    metric: first_dashboard_action
+    target: "< 30 seconds"
+
+features:
+
+  - id: DASHBOARD-LAYOUT
+    title: Dashboard Layout
+    priority: P0
+
+    issues:
+
+      - id: DASH-001
+        title: Build dashboard page shell
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - frontend
+          - dashboard
+
+        acceptance_criteria:
+          - Responsive dashboard layout
+          - Sidebar navigation
+          - Header navigation
+          - Loading skeletons
+          - Error boundary
+
+      - id: DASH-002
+        title: Dashboard API
+        type: task
+        priority: P0
+        estimate: 3
+
+        labels:
+          - backend
+          - api
+
+        acceptance_criteria:
+          - Returns dashboard summary
+          - Aggregates statistics
+          - Returns upcoming tasks
+          - Returns recent activity
+
+  - id: DASHBOARD-OVERVIEW
+    title: Overview Cards
+    priority: P0
+
+    issues:
+
+      - id: DASH-003
+        title: Build summary statistics cards
+        type: task
+        priority: P0
+        estimate: 2
+
+        dependencies:
+          - DASH-002
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Total companies
+          - Total jobs
+          - Total applications
+          - Active interviews
+          - Pending follow-ups
+
+  - id: DASHBOARD-TASKS
+    title: Upcoming Tasks
+    priority: P0
+
+    issues:
+
+      - id: DASH-004
+        title: Display upcoming tasks widget
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Shows due tasks
+          - Displays overdue tasks
+          - Quick action links
+          - Empty state
+
+  - id: DASHBOARD-APPLICATIONS
+    title: Recent Applications
+    priority: P0
+
+    issues:
+
+      - id: DASH-005
+        title: Display recent applications
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Latest applications shown
+          - Application status badge
+          - Company displayed
+          - Job title displayed
+          - Link to details
+
+  - id: DASHBOARD-ACTIVITY
+    title: Recent Activity
+    priority: P1
+
+    issues:
+
+      - id: DASH-006
+        title: Build activity feed
+        type: task
+        priority: P1
+        estimate: 3
+
+        labels:
+          - frontend
+          - backend
+
+        acceptance_criteria:
+          - Displays recent actions
+          - Chronological order
+          - Empty state
+          - Pagination supported
+
+  - id: DASHBOARD-EMPTY-STATES
+    title: Empty State Experience
+    priority: P0
+
+    issues:
+
+      - id: DASH-007
+        title: Design dashboard empty states
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - frontend
+          - ux
+
+        acceptance_criteria:
+          - New users guided clearly
+          - CTA to create first company
+          - CTA to add first job
+          - Helpful illustrations/messages
+
+  - id: DASHBOARD-QUICK-ACTIONS
+    title: Quick Actions
+    priority: P0
+
+    issues:
+
+      - id: DASH-008
+        title: Implement quick action shortcuts
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Add Company
+          - Add Job
+          - Add Application
+          - Add Task
+          - Keyboard accessible
+
+acceptance_tests:
+
+  - Dashboard loads in under two seconds.
+  - User immediately understands current job search progress.
+  - User can navigate to core workflows within one click.
+  - Empty dashboard provides meaningful onboarding guidance.
+  - Dashboard updates after creating new data.
+
+future_scope:
+
+  - Personalized productivity insights
+  - AI-generated daily brief
+  - Weekly progress reports
+  - Interview readiness score
+  - Response rate analytics
+  - Career goals widget
+  - Company watchlist
+  - Saved searches
+  - Job recommendation feed
+  - Calendar integration
+  - Gmail integration
+  - Customizable widgets
+
+github:
+
+  milestone: "Milestone 2 - Core Tracker"
+
+  labels:
+    - epic
+    - product
+    - dashboard
+
+documentation:
+
+  references:
+    - docs/product-requirements.md
+    - docs/frontend-architecture.md
+    - docs/user-flows-and-feature-scope.md
+    - docs/analytics-events-specification.md

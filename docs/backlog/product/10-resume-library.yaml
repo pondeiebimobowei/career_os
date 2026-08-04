@@ -1,0 +1,377 @@
+schema:
+  version: "CBS-1.0"
+
+epic:
+  id: RESUME_LIBRARY
+  title: Resume Library
+  domain: product
+  description: >
+    Provide a centralized document library where users can securely
+    manage resumes and future career documents. The Resume Library
+    allows users to upload, organize, preview, version, and attach
+    resumes to job applications while laying the foundation for future
+    AI-powered resume optimization.
+
+objective: >
+  Eliminate the scattered folders and confusing file naming conventions
+  users rely on today by giving every resume a structured home inside
+  CareerOS.
+
+success_metrics:
+  - id: FIRST_RESUME_UPLOAD
+    metric: users_uploading_first_resume
+    target: ">= 85%"
+
+  - id: RESUME_ATTACHMENT_RATE
+    metric: applications_with_attached_resume
+    target: ">= 80%"
+
+  - id: ACTIVE_DOCUMENT_USERS
+    metric: weekly_users_viewing_resume_library
+    target: ">= 60%"
+
+milestone: PRODUCTIVITY
+
+priority: P0
+
+status: NOT_STARTED
+
+dependencies:
+  epics:
+    - APPLICATIONS
+
+labels:
+  - resumes
+  - documents
+  - uploads
+  - mvp
+
+features:
+
+  - id: RESUME_UPLOAD
+    title: Upload Resume
+    priority: P0
+
+    description: >
+      Allow users to upload PDF resumes into their personal Resume
+      Library.
+
+    issues:
+
+      - id: RESUME-001
+        title: Create resume database model
+        type: TASK
+        priority: P0
+        estimate: M
+
+        labels:
+          - backend
+          - database
+
+        acceptance_criteria:
+          - Resume model exists
+          - Ownership enforced
+          - Metadata stored
+          - Storage reference persisted
+
+      - id: RESUME-002
+        title: Configure secure file storage
+        type: TASK
+        priority: P0
+        estimate: M
+
+        labels:
+          - backend
+          - storage
+
+        acceptance_criteria:
+          - PDF upload supported
+          - Private storage configured
+          - Signed URLs generated
+          - File validation implemented
+
+      - id: RESUME-003
+        title: Build upload interface
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - RESUME-002
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Drag-and-drop supported
+          - File picker supported
+          - Upload progress displayed
+          - Validation errors shown
+
+  - id: RESUME_LIBRARY_VIEW
+    title: Resume Library
+    priority: P0
+
+    description: >
+      Display uploaded resumes in a structured library with metadata.
+
+    issues:
+
+      - id: RESUME-004
+        title: Create resume listing endpoint
+        type: TASK
+        priority: P0
+        estimate: S
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Returns uploaded resumes
+          - Sorted by newest first
+          - Metadata included
+
+      - id: RESUME-005
+        title: Build resume library UI
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - RESUME-004
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Resume cards displayed
+          - Upload date shown
+          - File size shown
+          - Empty state available
+
+  - id: RESUME_PREVIEW
+    title: Preview Resume
+    priority: P0
+
+    description: >
+      Allow users to preview uploaded resumes without downloading them.
+
+    issues:
+
+      - id: RESUME-006
+        title: Resume preview endpoint
+        type: TASK
+        priority: P0
+        estimate: XS
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Secure preview URL generated
+          - Authorization enforced
+
+      - id: RESUME-007
+        title: Build resume preview UI
+        type: TASK
+        priority: P0
+        estimate: S
+
+        dependencies:
+          - RESUME-006
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - PDF displayed
+          - Loading state shown
+          - Errors handled gracefully
+
+  - id: RESUME_ATTACH
+    title: Attach Resume to Application
+    priority: P0
+
+    description: >
+      Associate a resume with a specific job application.
+
+    issues:
+
+      - id: RESUME-008
+        title: Resume application association
+        type: TASK
+        priority: P0
+        estimate: S
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Application references resume
+          - Existing association replaceable
+          - Validation enforced
+
+      - id: RESUME-009
+        title: Resume selector component
+        type: TASK
+        priority: P0
+        estimate: S
+
+        dependencies:
+          - RESUME-008
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - User selects uploaded resume
+          - Current attachment displayed
+          - Changes saved immediately
+
+  - id: RESUME_DOWNLOAD
+    title: Download Resume
+    priority: P1
+
+    description: >
+      Allow users to download previously uploaded resumes.
+
+    issues:
+
+      - id: RESUME-010
+        title: Resume download endpoint
+        type: TASK
+        priority: P1
+        estimate: XS
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Secure download supported
+          - Authorization enforced
+
+      - id: RESUME-011
+        title: Download action
+        type: TASK
+        priority: P1
+        estimate: XS
+
+        dependencies:
+          - RESUME-010
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Download begins successfully
+          - Errors displayed appropriately
+
+  - id: RESUME_DELETE
+    title: Delete Resume
+    priority: P1
+
+    description: >
+      Allow users to permanently remove resumes from their library.
+
+    issues:
+
+      - id: RESUME-012
+        title: Delete resume API
+        type: TASK
+        priority: P1
+        estimate: XS
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Resume deleted
+          - Storage cleaned up
+          - Application references validated
+
+      - id: RESUME-013
+        title: Delete confirmation dialog
+        type: TASK
+        priority: P1
+        estimate: XS
+
+        dependencies:
+          - RESUME-012
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Confirmation required
+          - Successful deletion reflected immediately
+
+  - id: RESUME_METADATA
+    title: Resume Metadata
+    priority: P0
+
+    description: >
+      Store useful metadata describing uploaded resumes.
+
+    issues:
+
+      - id: RESUME-014
+        title: Support resume metadata
+        type: TASK
+        priority: P0
+        estimate: S
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Display name stored
+          - Original filename stored
+          - File size stored
+          - Upload timestamp stored
+          - MIME type stored
+
+acceptance_tests:
+
+  - User uploads a PDF successfully.
+
+  - Uploaded resume appears immediately in the library.
+
+  - Resume preview loads successfully.
+
+  - Resume attaches to an application.
+
+  - Users cannot access another user's resumes.
+
+  - Deleted resumes are removed from storage.
+
+future_scope:
+
+  - Resume versioning
+
+  - Cover letter library
+
+  - Resume templates
+
+  - Resume tagging
+
+  - AI resume analysis
+
+  - Resume-job matching score
+
+  - Resume optimization recommendations
+
+  - Automatic resume parsing
+
+  - Portfolio document support
+
+  - Bulk document import
+
+  - Multiple resume attachments
+
+notes:
+  - MVP intentionally supports PDF resumes only.
+  - Cover letters become a separate document type in a future milestone.
+  - Resume versioning is intentionally deferred to avoid unnecessary
+    complexity.
+  - AI analysis depends on mature document workflows and is not required
+    for MVP validation.

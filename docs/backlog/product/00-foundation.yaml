@@ -1,0 +1,88 @@
+epic:
+  id: FOUNDATION
+  title: Foundation
+  type: product
+  milestone: FOUNDATION
+
+objective: >
+  Establish the technical, architectural and operational foundation
+  required for all CareerOS MVP features.
+
+success_metrics:
+  - id: BUILD_GREEN
+    metric: ci_build_success
+    target: "100%"
+  - id: DEV_SETUP
+    metric: developer_setup_time
+    target: "< 15 minutes"
+
+dependencies: []
+
+features:
+  - id: FOUNDATION-REPO
+    title: Repository & Monorepo Setup
+    priority: P0
+    issues:
+      - id: FND-001
+        title: Initialize monorepo
+        type: task
+        estimate: 2
+        labels: [foundation,devops]
+        acceptance_criteria:
+          - Repository initialized
+          - Apps and packages created
+          - Workspace tooling configured
+
+      - id: FND-002
+        title: Configure CI
+        type: task
+        estimate: 2
+        dependencies: [FND-001]
+        labels: [ci]
+        acceptance_criteria:
+          - Lint runs
+          - Tests run
+          - Build runs
+
+  - id: FOUNDATION-INFRA
+    title: Core Infrastructure
+    priority: P0
+    issues:
+      - id: FND-003
+        title: Configure PostgreSQL and Prisma
+        type: task
+        estimate: 2
+        acceptance_criteria:
+          - Database connects
+          - Initial migration created
+
+      - id: FND-004
+        title: Environment configuration
+        type: task
+        estimate: 1
+        acceptance_criteria:
+          - .env.example exists
+          - Secrets documented
+
+  - id: FOUNDATION-DESIGN
+    title: Shared UI Foundation
+    priority: P0
+    issues:
+      - id: FND-005
+        title: Install design system dependencies
+        type: task
+        estimate: 2
+        acceptance_criteria:
+          - Tailwind configured
+          - Component library installed
+          - Theme tokens defined
+
+acceptance_tests:
+  - Fresh clone can be running locally in under 15 minutes.
+  - CI passes on main branch.
+  - Database migrations execute successfully.
+
+future_scope:
+  - Preview environments
+  - Monorepo package versioning
+  - Automated release pipeline

@@ -1,0 +1,348 @@
+schema:
+  version: "CBS-1.0"
+
+epic:
+  id: APPLICATIONS
+  title: Applications
+  domain: product
+  description: >
+    Enable users to create, organize, edit, and manage individual job
+    applications. Applications connect companies, jobs, resumes,
+    contacts, notes, and future interview workflows into a single
+    canonical record representing a user's application history.
+
+objective: >
+  Provide a fast, structured workflow for recording and managing
+  job applications without forcing users into spreadsheets or
+  fragmented note-taking systems.
+
+success_metrics:
+  - id: APPLICATION_CREATE_TIME
+    metric: median_application_creation_time
+    target: "< 30 seconds"
+
+  - id: APPLICATION_COMPLETION
+    metric: users_creating_first_application
+    target: ">= 90%"
+
+  - id: ACTIVE_APPLICATIONS
+    metric: users_with_5_or_more_applications
+    target: ">= 75%"
+
+milestone: CORE_TRACKER
+
+priority: P0
+
+status: NOT_STARTED
+
+dependencies:
+  epics:
+    - COMPANIES
+    - JOBS
+
+labels:
+  - applications
+  - product
+  - mvp
+
+features:
+
+  - id: APPLICATION_CREATE
+    title: Create Application
+    priority: P0
+
+    description: >
+      Allow users to manually create an application by selecting
+      an existing company and job.
+
+    issues:
+
+      - id: APP-001
+        title: Create application database model
+        type: TASK
+        priority: P0
+        estimate: M
+
+        labels:
+          - backend
+          - database
+
+        acceptance_criteria:
+          - Application model exists
+          - Company relationship exists
+          - Job relationship exists
+          - Created timestamps stored
+          - Updated timestamps stored
+
+      - id: APP-002
+        title: Create application API
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - APP-001
+
+        labels:
+          - backend
+          - api
+
+        acceptance_criteria:
+          - POST endpoint exists
+          - Input validation implemented
+          - Returns created application
+          - Invalid payload returns validation error
+
+      - id: APP-003
+        title: Build create application dialog
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - APP-002
+
+        labels:
+          - frontend
+          - ui
+
+        acceptance_criteria:
+          - User can select company
+          - User can select job
+          - User can choose application date
+          - User can submit successfully
+          - Validation errors displayed
+
+  - id: APPLICATION_LIST
+    title: View Applications
+    priority: P0
+
+    description: >
+      Display applications in a searchable list with key information.
+
+    issues:
+
+      - id: APP-004
+        title: Create applications list endpoint
+        type: TASK
+        priority: P0
+        estimate: S
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Returns paginated applications
+          - Supports authenticated users
+          - Sorted by newest first
+
+      - id: APP-005
+        title: Build applications list UI
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - APP-004
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Applications displayed in table
+          - Company shown
+          - Job title shown
+          - Current status shown
+          - Application date shown
+          - Empty state provided
+
+  - id: APPLICATION_DETAILS
+    title: Application Details
+    priority: P0
+
+    description: >
+      Provide a dedicated page where users can view all information
+      associated with an application.
+
+    issues:
+
+      - id: APP-006
+        title: Create application details endpoint
+        type: TASK
+        priority: P0
+        estimate: S
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Returns complete application
+          - Includes company
+          - Includes job
+          - Handles missing records
+
+      - id: APP-007
+        title: Build application details page
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - APP-006
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Application information displayed
+          - Company visible
+          - Job visible
+          - Resume association displayed
+          - Notes placeholder shown
+
+  - id: APPLICATION_UPDATE
+    title: Edit Application
+    priority: P0
+
+    description: >
+      Allow users to update application metadata after creation.
+
+    issues:
+
+      - id: APP-008
+        title: Update application endpoint
+        type: TASK
+        priority: P0
+        estimate: S
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - PATCH endpoint exists
+          - Validation implemented
+          - Updated timestamp changes
+
+      - id: APP-009
+        title: Build edit application form
+        type: TASK
+        priority: P0
+        estimate: M
+
+        dependencies:
+          - APP-008
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Existing values prefilled
+          - Changes saved
+          - Validation displayed
+          - Success notification shown
+
+  - id: APPLICATION_DELETE
+    title: Delete Application
+    priority: P1
+
+    description: >
+      Allow users to remove applications from their account.
+
+    issues:
+
+      - id: APP-010
+        title: Delete application API
+        type: TASK
+        priority: P1
+        estimate: S
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Deletes owned application
+          - Unauthorized deletion prevented
+
+      - id: APP-011
+        title: Delete confirmation dialog
+        type: TASK
+        priority: P1
+        estimate: XS
+
+        dependencies:
+          - APP-010
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - Confirmation required
+          - Success notification displayed
+
+  - id: APPLICATION_METADATA
+    title: Application Metadata
+    priority: P0
+
+    description: >
+      Store additional structured metadata describing an application.
+
+    issues:
+
+      - id: APP-012
+        title: Support metadata fields
+        type: TASK
+        priority: P0
+        estimate: M
+
+        labels:
+          - backend
+          - frontend
+
+        acceptance_criteria:
+          - Application date stored
+          - Source URL stored
+          - Source platform stored
+          - Salary stored
+          - Employment type stored
+          - Work location stored
+
+acceptance_tests:
+
+  - User creates an application in under 30 seconds.
+
+  - Application correctly references both a company and a job.
+
+  - Application appears immediately in the applications list.
+
+  - Application details page loads successfully.
+
+  - User can edit application information.
+
+  - Validation prevents invalid submissions.
+
+  - Unauthorized users cannot modify another user's applications.
+
+future_scope:
+
+  - Automatic application creation from browser extension
+
+  - Gmail application detection
+
+  - AI application summaries
+
+  - Duplicate application detection
+
+  - Resume recommendation
+
+  - Interview timeline integration
+
+  - Activity history
+
+  - Automatic follow-up reminders
+
+  - Multi-resume attachment support
+
+notes:
+  - Pipeline movement is intentionally excluded.
+  - Kanban workflow belongs to 07-application-pipeline.yaml.
+  - Contacts and interviews are separate domains linked to applications.

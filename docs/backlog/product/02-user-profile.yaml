@@ -1,0 +1,229 @@
+schema: CBS-v1.0
+
+epic:
+  id: PROFILE
+  title: User Profile
+  domain: product
+  description: >
+    Enable users to create and maintain their CareerOS profile,
+    including personal information, career preferences, profile
+    completeness, and onboarding state.
+
+objective: >
+  Provide a single source of truth for each user's professional identity
+  and preferences so the platform can personalize workflows,
+  recommendations, and future automation.
+
+milestone: CORE_TRACKER
+
+priority: P0
+
+status: backlog
+
+owners: []
+
+dependencies:
+  - AUTH
+
+success_metrics:
+  - id: PROFILE_COMPLETION
+    metric: completed_profiles
+    target: ">= 90% of new users complete onboarding"
+
+  - id: PROFILE_UPDATE_TIME
+    metric: average_profile_update_time
+    target: "< 2 minutes"
+
+features:
+
+  - id: PROFILE-SETUP
+    title: Initial Profile Setup
+    description: >
+      Collect the minimum information required to personalize the
+      CareerOS experience.
+
+    priority: P0
+
+    issues:
+
+      - id: PROFILE-001
+        title: Design onboarding profile flow
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - frontend
+          - design
+          - onboarding
+
+        acceptance_criteria:
+          - Multi-step onboarding flow exists
+          - Progress indicator is visible
+          - Validation is implemented
+          - Mobile responsive
+
+      - id: PROFILE-002
+        title: Create user profile API
+        type: task
+        priority: P0
+        estimate: 3
+
+        labels:
+          - backend
+          - api
+
+        acceptance_criteria:
+          - Create profile endpoint exists
+          - Updates authenticated user's profile
+          - Input validation implemented
+          - Returns updated profile
+
+      - id: PROFILE-003
+        title: Build profile onboarding UI
+        type: task
+        priority: P0
+        estimate: 3
+
+        dependencies:
+          - PROFILE-002
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - User can enter full name
+          - User can select target role
+          - User can select preferred location
+          - User can define employment type
+          - User can continue through onboarding
+
+  - id: PROFILE-MANAGEMENT
+    title: Profile Management
+
+    priority: P0
+
+    issues:
+
+      - id: PROFILE-004
+        title: View profile
+        type: task
+        priority: P0
+        estimate: 2
+
+        labels:
+          - frontend
+
+        acceptance_criteria:
+          - User can view profile information
+          - Data loads from API
+          - Empty states handled
+
+      - id: PROFILE-005
+        title: Edit profile
+        type: task
+        priority: P0
+        estimate: 3
+
+        labels:
+          - frontend
+          - backend
+
+        acceptance_criteria:
+          - Editable profile form
+          - Changes saved successfully
+          - Validation messages displayed
+          - Success notification shown
+
+      - id: PROFILE-006
+        title: Upload profile avatar
+        type: task
+        priority: P1
+        estimate: 2
+
+        labels:
+          - frontend
+          - backend
+          - storage
+
+        acceptance_criteria:
+          - User can upload avatar
+          - Image validation implemented
+          - Preview displayed
+          - Avatar stored securely
+
+  - id: CAREER-PREFERENCES
+    title: Career Preferences
+
+    priority: P0
+
+    issues:
+
+      - id: PROFILE-007
+        title: Manage career preferences
+        type: task
+        priority: P0
+        estimate: 3
+
+        labels:
+          - frontend
+          - backend
+
+        acceptance_criteria:
+          - User selects desired roles
+          - User selects preferred locations
+          - User selects work arrangement
+          - User selects salary preference
+          - Preferences persist
+
+      - id: PROFILE-008
+        title: Store onboarding completion state
+        type: task
+        priority: P0
+        estimate: 1
+
+        labels:
+          - backend
+
+        acceptance_criteria:
+          - Onboarding completion tracked
+          - User skips completed onboarding
+          - Dashboard shown after completion
+
+acceptance_tests:
+
+  - New user completes onboarding successfully.
+  - Existing user edits profile without losing data.
+  - Career preferences persist after logout/login.
+  - Invalid input is rejected gracefully.
+  - Onboarding completion redirects user to dashboard.
+
+future_scope:
+
+  - Resume-derived profile generation
+  - LinkedIn profile import
+  - GitHub profile import
+  - Skills management
+  - Experience management
+  - Education management
+  - Certifications
+  - Portfolio links
+  - Public profile
+  - AI-assisted career profile optimization
+
+github:
+
+  milestone: "Milestone 2 - Core Tracker"
+
+  labels:
+    - epic
+    - product
+    - profile
+
+documentation:
+
+  references:
+    - docs/product-requirements.md
+    - docs/frontend-architecture.md
+    - docs/api-specification.md
+    - docs/database-backend-schema.md
