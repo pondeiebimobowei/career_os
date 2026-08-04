@@ -1,68 +1,52 @@
 import { Octokit } from '@octokit/rest';
-import { BacklogModel } from '../parser/types.js';
-import { KNOWN_MILESTONES } from '../validator/milestones.js';
-
-export interface MilestoneSyncResult {
-  milestonesCreated: number;
-  milestoneMap: Map<string, number>; // title -> number
-}
+import { Backlog } from '../types/backlog.js';
+import { StandardMilestones } from '../schema/enums.js';
 
 export async function syncMilestones(
   octokit: Octokit | null,
   owner: string,
   repo: string,
-  model: BacklogModel,
+  backlog: Backlog,
   dryRun: boolean
-): Promise<MilestoneSyncResult> {
-  const milestoneTitles = new Set<string>(KNOWN_MILESTONES);
-  for (const epic of model.epics) {
-    if (epic.milestone) milestoneTitles.add(epic.milestone);
+): Promise<{ milestonesCreated: number; milestoneMap: Map<string, number> }> {
+  const desired = new Set<string>(Object.values(StandardMilestones));
+
+  for (const epic of backlog.epics) {
+    if (epic.milestone) desired.add(epic.milestone);
   }
-  for (const issue of model.issues) {
-    if (issue.milestone) milestoneTitles.add(issue.milestone);
+  for (const issue of backlog.issues) {
+    if (issue.milestone) desired.add(issue.milestone);
   }
 
   const milestoneMap = new Map<string, number>();
 
   if (!octokit || dryRun) {
-    let dummyNum = 1;
-    for (const title of milestoneTitles) {
-      milestoneMap.set(title, dummyNum++);
-    }
-    return {
-      milestonesCreated: milestoneTitles.size,
-      milestoneMap,
-    };
+    let dummy = 1;
+    for (const m of desired) milestoneMap.set(m, dummy++);
+    return { milestonesCreated: desired.size, milestoneMap };
   }
 
   let createdCount = 0;
   try {
-    const { data } = await octokit.issues.listMilestones({ owner, repo, state: 'all' });
-    for (const ms of data) {
+    const res = await octokit.issues.listMilestones({ owner, repo, state: 'all' });
+    for (const ms of res.data) {
       milestoneMap.set(ms.title, ms.number);
     }
   } catch {
-    // Ignore error
+    // API error
   }
 
-  for (const title of milestoneTitles) {
+  for (const title of desired) {
     if (!milestoneMap.has(title)) {
       try {
-        const { data } = await octokit.issues.createMilestone({
-          owner,
-          repo,
-          title,
-        });
-        milestoneMap.set(title, data.number);
+        const res = await octokit.issues.createMilestone({ owner, repo, title });
+        milestoneMap.set(title, res.data.number);
         createdCount++;
       } catch {
-        // Ignore error
+        // milestone already exists
       }
     }
   }
 
-  return {
-    milestonesCreated: createdCount,
-    milestoneMap,
-  };
+  return { milestonesCreated: createdCount, milestoneMap };
 }

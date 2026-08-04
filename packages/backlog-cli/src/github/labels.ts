@@ -1,69 +1,52 @@
 import { Octokit } from '@octokit/rest';
-import { BacklogModel } from '../parser/types.js';
-
-export interface LabelSyncResult {
-  labelsCreated: number;
-  existingLabels: string[];
-}
+import { Backlog } from '../types/backlog.js';
+import { STANDARD_LABELS } from '../schema/enums.js';
 
 export async function syncLabels(
   octokit: Octokit | null,
   owner: string,
   repo: string,
-  model: BacklogModel,
+  backlog: Backlog,
   dryRun: boolean
-): Promise<LabelSyncResult> {
-  const labelSet = new Set<string>();
+): Promise<{ labelsCreated: number }> {
+  const desired = new Set<string>(STANDARD_LABELS);
 
-  // Extract all labels from issues
-  for (const issue of model.issues) {
-    if (issue.labels) {
-      issue.labels.forEach((l) => labelSet.add(l));
-    }
-    if (issue.priority) {
-      labelSet.add(issue.priority.toLowerCase());
-    }
-    if (issue.type) {
-      labelSet.add(issue.type.toLowerCase());
-    }
+  for (const issue of backlog.issues) {
+    if (issue.labels) issue.labels.forEach((l) => desired.add(l));
+    if (issue.priority) desired.add(`priority:${issue.priority}`);
+    if (issue.type) desired.add(issue.type);
   }
 
-  const desiredLabels = Array.from(labelSet);
+  const labelList = Array.from(desired);
 
   if (!octokit || dryRun) {
-    return {
-      labelsCreated: desiredLabels.length,
-      existingLabels: desiredLabels,
-    };
+    return { labelsCreated: labelList.length };
   }
 
-  let existingLabels: string[] = [];
+  let existing: string[] = [];
   try {
-    const { data } = await octokit.issues.listLabelsForRepo({ owner, repo, per_page: 100 });
-    existingLabels = data.map((l) => l.name);
+    const res = await octokit.issues.listLabelsForRepo({ owner, repo, per_page: 100 });
+    existing = res.data.map((l) => l.name);
   } catch {
-    existingLabels = [];
+    existing = [];
   }
 
   let createdCount = 0;
-  for (const labelName of desiredLabels) {
-    if (!existingLabels.includes(labelName)) {
+  for (const name of labelList) {
+    if (!existing.includes(name)) {
       try {
         await octokit.issues.createLabel({
           owner,
           repo,
-          name: labelName,
+          name,
           color: '0366d6',
         });
         createdCount++;
       } catch {
-        // label might already exist or API error
+        // label already exists or error
       }
     }
   }
 
-  return {
-    labelsCreated: createdCount,
-    existingLabels: Array.from(new Set([...existingLabels, ...desiredLabels])),
-  };
+  return { labelsCreated: createdCount };
 }
