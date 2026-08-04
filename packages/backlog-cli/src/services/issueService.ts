@@ -8,11 +8,11 @@ export class IssueService {
     parts.push(`**Estimate**\n${issue.estimate || '2'}\n`);
 
     if (issue.acceptance_criteria && issue.acceptance_criteria.length > 0) {
-      parts.push(`---\n\n**Acceptance Criteria**\n\n` + issue.acceptance_criteria.map((ac) => `- [ ] ${ac}`).join('\n') + '\n');
+      parts.push(`---\n\n**Acceptance Criteria**\n\n` + issue.acceptance_criteria.map((ac: string) => `- [ ] ${ac}`).join('\n') + '\n');
     }
 
     if (issue.dependencies && issue.dependencies.length > 0) {
-      parts.push(`---\n\n**Dependencies**\n\n` + issue.dependencies.map((d) => `- ${d}`).join('\n') + '\n');
+      parts.push(`---\n\n**Dependencies**\n\n` + issue.dependencies.map((d: string) => `- ${d}`).join('\n') + '\n');
     }
 
     if (issue.filePath) {

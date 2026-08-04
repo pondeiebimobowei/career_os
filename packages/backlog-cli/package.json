@@ -1,6 +1,6 @@
 {
   "name": "@repo/backlog-cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "private": true,
   "bin": {
@@ -10,7 +10,8 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "build": "tsc --noEmit",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@octokit/rest": "^21.1.1",
@@ -25,6 +26,7 @@
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.15.3",
     "tsx": "^4.19.3",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "^3.0.5"
   }
 }

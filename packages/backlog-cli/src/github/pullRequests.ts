@@ -12,7 +12,7 @@ export class GitHubPRAutomation {
     parts.push(`## Related Issue\n\n- Closes #${issue.id}\n`);
 
     if (issue.acceptance_criteria && issue.acceptance_criteria.length > 0) {
-      parts.push(`## Acceptance Criteria Checklist\n\n` + issue.acceptance_criteria.map((ac) => `- [ ] ${ac}`).join('\n') + '\n');
+      parts.push(`## Acceptance Criteria Checklist\n\n` + issue.acceptance_criteria.map((ac: string) => `- [ ] ${ac}`).join('\n') + '\n');
     }
 
     parts.push(`## Testing\n\n- [ ] Automated tests pass\n- [ ] Verified manually\n`);

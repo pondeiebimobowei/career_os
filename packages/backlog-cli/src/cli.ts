@@ -3,6 +3,10 @@ import { validateCommand } from './commands/validate.js';
 import { syncCommand } from './commands/sync.js';
 import { statusCommand } from './commands/status.js';
 import { generateCommand } from './commands/generate.js';
+import { nextCommand } from './commands/next.js';
+import { startCommand } from './commands/start.js';
+import { prCommand } from './commands/pr.js';
+import { releaseCommand } from './commands/release.js';
 import { doctorCommand } from './commands/doctor.js';
 import { graphCommand } from './commands/graph.js';
 import { exportCommand } from './commands/export.js';
@@ -11,7 +15,7 @@ const program = new Command();
 
 program
   .name('backlog')
-  .description('CareerOS Development Platform CLI - Planning as Code product operating system')
+  .description('CareerOS Development Platform CLI - Product operating system compiler')
   .version('0.2.0');
 
 program
@@ -46,6 +50,34 @@ program
   .option('-o, --output <path>', 'Destination file path')
   .action(async (type, options) => {
     await generateCommand(type || 'feature', options);
+  });
+
+program
+  .command('next')
+  .description('Recommend next unblocked P0 task to work on')
+  .action(async () => {
+    await nextCommand();
+  });
+
+program
+  .command('start <issueId>')
+  .description('Start work on an issue (calculates branch name and git command)')
+  .action(async (issueId) => {
+    await startCommand(issueId);
+  });
+
+program
+  .command('pr <issueId>')
+  .description('Generate Pull Request title and body template for an issue')
+  .action(async (issueId) => {
+    await prCommand(issueId);
+  });
+
+program
+  .command('release [milestone]')
+  .description('Generate release notes for a milestone')
+  .action(async (milestone) => {
+    await releaseCommand(milestone || 'beta');
   });
 
 program
