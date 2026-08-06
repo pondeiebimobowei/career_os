@@ -6,6 +6,20 @@ This specification defines the multi-step onboarding profile architecture for Ca
 
 ---
 
+## 0. Fundamental Architecture Principles
+
+### Backend Architecture (NestJS)
+- **Feature Modules**: Backend modules are organized by business capability inside `apps/api/src/modules/` (e.g. `modules/profile/`, `modules/jobs/`, `modules/companies/`). Shared utilities reside in `apps/api/src/shared/`.
+- **Pragmatic Layering**: Simple CRUD endpoints use standard NestJS Controller/Service/Repository patterns. As complexity grows, modules adopt internal layers (`presentation/`, `application/`, `domain/`, `infrastructure/`).
+- **No Premature Abstractions**: Simple 50-line CRUD endpoints do not require 17 layers of abstraction; structure scales with domain complexity.
+
+### Frontend Architecture (React / Next.js)
+- **Feature Boundaries**: Web UI is organized into business features inside `apps/web/src/features/` (e.g., `features/profile/`, `features/dashboard/`).
+- **Feature Structure**: Each feature encapsulates its own `components/`, `hooks/`, `api/`, and `types.ts`.
+- **UI Focus**: React component architecture emphasizes clean composition, reactivity, and performance rather than backend domain layers.
+
+---
+
 ## 1. Multi-Step Onboarding User Flow & State Machine
 
 ```text
@@ -119,7 +133,7 @@ Submits completed onboarding form data and marks profile setup as completed.
 
 ## 4. UI Architecture & Step Component Specifications
 
-Next.js page component structure in `apps/web/src/app/onboarding/page.tsx`:
+Next.js page component structure in `apps/web/src/features/profile/`:
 
 - `<OnboardingContainer />`: Root wizard layout managing step state (`currentStep: 1..4`).
 - `<ProgressHeader currentStep={step} totalSteps={4} />`: Animated progress bar & step title indicator.
@@ -130,7 +144,7 @@ Next.js page component structure in `apps/web/src/app/onboarding/page.tsx`:
 
 ---
 
-##  acceptance criteria Verification
+## Acceptance Criteria Verification
 
 - [x] Multi-step onboarding flow designed and documented
 - [x] Visible progress indicator specified (`ProgressHeader`)
