@@ -1,182 +1,335 @@
-# agents.md
+# AGENTS.md
 
-# CareerOS AI Engineering Guide
+# CareerOS AI Engineering Contract
 
-## Purpose
+This document defines the operating contract for all AI coding assistants (Antigravity, Codex, Claude Code, Cursor, GitHub Copilot) and human contributors.
 
-This document defines the engineering rules for AI coding assistants (Codex, Cursor, Claude Code, GitHub Copilot) and human contributors.
-
-The objective is consistent, maintainable, production-quality code while optimizing for rapid MVP delivery.
+The objective is to ship product features quickly while preserving the architecture, engineering standards, and development workflow of CareerOS.
 
 ---
 
-# Core Principles
+# Mission
 
-1. Build the smallest solution that solves the problem.
-2. Prefer clarity over cleverness.
-3. Strong typing everywhere.
-4. Keep business logic out of UI components.
-5. One source of truth per concern.
-6. Every feature must support the MVP strategy.
-7. Refactor only after duplication is proven.
+You are an engineering contributor on CareerOS.
 
----
+Your responsibility is to execute the canonical backlog—not invent new work.
 
-# Tech Stack
+Optimize for:
 
-Frontend
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- TanStack Query
-- React Hook Form
-- Zod
-
-Backend
-- NestJS
-- Prisma
-- PostgreSQL
-
-Extension
-- Chrome Manifest V3
-- React
-- TypeScript
+- Shipping working product
+- Small incremental changes
+- Maintainability
+- Predictability
+- Documentation fidelity
 
 ---
 
-# Folder Structure
+# Source of Truth
 
-apps/
-  web/
-  extension/
-  api/
+When information conflicts, use this precedence:
 
+1. `docs/backlog/**`
+   - Canonical product backlog
+   - Acceptance criteria
+   - Dependencies
+   - Milestones
+   - Issue status
+
+2. `docs/adr/**`
+   - Architecture Decision Records
+
+3. `docs/design/**`
+   - Feature architecture
+   - UX flows
+   - API contracts
+   - Technical specifications
+
+4. Existing implementation
+
+5. User prompt
+
+Never silently resolve conflicting documentation.
+
+Stop and explain the conflict.
+
+---
+
+# Engineering Workflow
+
+## Selecting Work
+
+Never choose work manually.
+
+Unless an issue ID is explicitly provided, begin with:
+
+```bash
+pnpm backlog:work
+```
+
+To understand a task:
+
+```bash
+pnpm backlog:explain <ISSUE_ID>
+```
+
+---
+
+## Starting Work
+
+Always begin work with:
+
+```bash
+pnpm backlog:start <ISSUE_ID>
+```
+
+Never create feature branches manually.
+
+---
+
+## Before Writing Code
+
+Read and understand:
+
+- backlog issue
+- acceptance criteria
+- dependencies
+- linked ADRs
+- relevant design documents
+- surrounding implementation
+
+If requirements are ambiguous,
+
+STOP.
+
+Explain the ambiguity instead of making assumptions.
+
+---
+
+## During Implementation
+
+Implement only the requested feature.
+
+Avoid unrelated refactoring.
+
+Avoid speculative improvements.
+
+Do not implement future backlog items.
+
+Reuse existing code whenever appropriate.
+
+Working code is not a refactoring candidate solely because a "better" architecture exists.
+
+---
+
+## Completing Work
+
+Before considering work complete run:
+
+```bash
+pnpm gate
+```
+
+All checks must pass.
+
+Then:
+
+```bash
+pnpm backlog:finish <ISSUE_ID>
+```
+
+Generate the PR:
+
+```bash
+pnpm backlog:pr <ISSUE_ID>
+```
+
+Never manually modify backlog status.
+
+---
+
+# Architecture Principles
+
+CareerOS uses a capability-first architecture.
+
+Backend:
+
+```
+apps/api/src/modules/
+```
+
+Frontend:
+
+```
+apps/web/src/features/
+```
+
+Chrome Extension:
+
+```
+apps/extension/
+```
+
+Shared packages:
+
+```
 packages/
-  ui/
-  types/
-  utils/
-  config/
-
-docs/
+```
 
 ---
 
-# Architecture Rules
+# Architecture Evolution
 
-- Modular monolith
-- Feature-based modules
-- REST API
-- Shared types package
-- No circular dependencies
-- Dependency injection on backend
+Always choose the simplest architecture that satisfies current requirements.
+
+Progression:
+
+Level 1
+
+Controller → Service → Repository
+
+↓
+
+Level 2
+
+Feature Module
+
+↓
+
+Level 3
+
+Presentation
+Application
+Domain
+Infrastructure
+
+↓
+
+Level 4
+
+Domain Events
+Sagas
+Workflows
+
+↓
+
+Level 5
+
+Shared Monorepo Packages
+
+Do not skip levels.
+
+Only introduce additional abstraction when documented evolution triggers are met.
 
 ---
 
 # Frontend Rules
 
 - Functional components only
-- Hooks over classes
+- Feature-first organization
 - Keep pages thin
-- Move reusable logic into hooks
+- Business logic belongs in hooks/services
 - Validate forms with Zod
 - Server state via TanStack Query
-- Local UI state only with React state
+- Local UI state with React state
 
 Never:
-- Fetch directly inside components without hooks
+
+- Fetch directly inside components
 - Duplicate API logic
 - Store derived state
+- Promote components to shared libraries until reuse is proven
 
 ---
 
 # Backend Rules
 
-Each module contains:
+Modules may contain:
+
 - controller
 - service
 - dto
-- entity/model
-- repository (if needed)
+- repository
 - tests
 
-Controllers:
+Simple CRUD should remain simple.
+
+Introduce layered architecture only when domain complexity requires it.
+
+Controllers
+
 - HTTP only
 
-Services:
-- Business logic only
+Services
 
-Prisma:
-- Data access only
+- Business logic
+
+Repositories / Prisma
+
+- Persistence only
 
 ---
 
-# API Conventions
+# API Standards
 
 - RESTful resources
-- Consistent error responses
 - Validation before persistence
+- Consistent error responses
 - UUID identifiers
-- Pagination for lists
+- Pagination for collections
+
+Never invent undocumented endpoints.
 
 ---
 
-# Naming
+# Coding Principles
 
-Files:
-kebab-case
+Always:
 
-Components:
-PascalCase
+- Build the smallest solution
+- Prefer clarity over cleverness
+- Strong typing everywhere
+- Reuse existing utilities
+- Preserve architecture
+- Keep changes focused
+- Follow naming conventions
 
-Variables:
-camelCase
+Never:
 
-Enums:
-PascalCase
-
-Constants:
-UPPER_SNAKE_CASE
-
----
-
-# UI Rules
-
-- One primary CTA per screen
-- Reuse components
-- No hardcoded colors
-- Use design tokens
-- Empty states required
-- Loading and error states required
+- Introduce unnecessary abstractions
+- Duplicate logic
+- Change unrelated code
+- Ignore lint or type errors
+- Introduce libraries without justification
 
 ---
 
 # Testing
 
-Minimum:
-- Unit tests for business logic
-- Integration tests for APIs
-- Manual QA checklist before merge
+Minimum expectations:
 
-Avoid excessive testing early.
+- Unit tests for business logic
+- Integration tests where appropriate
+
+Behavioral regression tests are preferred over implementation-specific tests.
+
+When fixing bugs, add a regression test whenever practical.
 
 ---
 
 # Git Workflow
 
-main
-develop
-feature/*
+Feature branches are managed by the Backlog CLI.
 
-Commit format:
-feat:
-fix:
-refactor:
-docs:
-test:
-chore:
+Commit prefixes:
 
-Small focused PRs only.
+- feat:
+- fix:
+- docs:
+- test:
+- refactor:
+- chore:
+
+Keep commits small and focused.
 
 ---
 
@@ -190,66 +343,158 @@ Small focused PRs only.
 
 # Security
 
-- Never trust client input
-- Validate with DTO + Zod
-- Parameterized queries (Prisma)
-- Secrets via environment variables
-- HTTPS only
+Never trust client input.
+
+Always:
+
+- Validate DTOs
+- Validate forms with Zod
+- Use Prisma parameterization
+- Keep secrets in environment variables
 
 ---
 
 # Documentation
 
-Every feature requires:
-- Updated PRD if behavior changes
-- Inline comments only when necessary
-- README updates for setup changes
+Update documentation whenever behavior changes.
+
+Feature implementations should remain aligned with:
+
+- backlog
+- ADRs
+- design documents
+
+Do not silently diverge from documentation.
 
 ---
 
-# AI Assistant Rules
+# Tool Usage
 
-Always:
-- Read surrounding code before editing
-- Preserve architecture
-- Reuse existing utilities
-- Prefer incremental changes
-- Explain trade-offs in PRs
+Always prefer Backlog CLI over manual operations.
+
+Use:
+
+```bash
+pnpm backlog:work
+```
+
+to select work.
+
+Use:
+
+```bash
+pnpm backlog:status
+```
+
+to inspect progress.
+
+Use:
+
+```bash
+pnpm backlog:explain
+```
+
+instead of manually searching backlog YAML.
+
+Use:
+
+```bash
+pnpm gate
+```
+
+before completion.
+
+---
+
+# Stop and Ask for Clarification If
+
+- Acceptance criteria conflict
+- ADRs conflict
+- Design documents conflict
+- Requirements are ambiguous
+- Required dependency is missing
+- User request contradicts backlog
+- Architecture documentation is insufficient
+
+Do not guess.
+
+---
+
+# Things You Must Never Do
 
 Never:
-- Introduce new libraries without justification
-- Duplicate logic
-- Change unrelated code
-- Break naming conventions
-- Silence lint/type errors
+
+- Modify unrelated files
+- Rewrite working code because another architecture is "cleaner"
+- Implement future backlog items
+- Change backlog schema
+- Modify CLI behavior unless required by the task
+- Modify ADRs unless explicitly instructed
+- Bypass `pnpm gate`
+- Ignore failing tests
+- Skip acceptance criteria
+- Invent product requirements
 
 ---
 
 # Definition of Done
 
 A task is complete only if:
-- Requirements implemented
+
+- Acceptance criteria satisfied
 - Types pass
 - Lint passes
+- Tests pass
 - Build passes
-- Tests pass (where applicable)
-- UI handles loading/error/empty states
-- Documentation updated
+- `pnpm gate` passes
+- Documentation updated where necessary
+- Backlog task completed through Backlog CLI
+- PR generated
 
 ---
 
-# MVP Guardrails
+# Required Completion Report
 
-Reject features that:
-- Add Gmail integration
-- Add Calendar sync
-- Add AI coaching
-- Add job discovery
-- Add mobile app
-unless explicitly approved after MVP validation.
+When finishing a task, provide:
 
-Always optimize for:
-1. Faster capture
-2. Better workflow
-3. Lower cognitive load
-4. Faster learning from users
+## Summary
+
+What was implemented.
+
+## Acceptance Criteria
+
+Map each acceptance criterion to its implementation.
+
+## Files Changed
+
+List major files modified.
+
+## Tests
+
+Describe tests added or updated.
+
+## Verification
+
+List commands executed and their results.
+
+Example:
+
+```text
+✓ pnpm check-types
+✓ pnpm lint
+✓ pnpm test
+✓ pnpm build
+✓ pnpm gate
+```
+
+## Risks
+
+Any remaining limitations or follow-up work.
+
+---
+
+# Guiding Principle
+
+The goal is not to write the most sophisticated code.
+
+The goal is to ship backlog items that satisfy documented requirements while preserving the architecture and engineering contracts of CareerOS.

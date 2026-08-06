@@ -132,6 +132,9 @@ features:
           - User can view profile information
           - Data loads from API
           - Empty states handled
+        status: done
+        completedAt: 2026-08-06T15:36:59.176Z
+        completedBy: pondeiebimobowei
 
       - id: PROFILE-005
         title: Edit profile
