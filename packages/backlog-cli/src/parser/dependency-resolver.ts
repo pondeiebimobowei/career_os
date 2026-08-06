@@ -35,17 +35,28 @@ export class DependencyResolver {
       BETA: 5,
     };
 
-    for (const issue of backlog.issues) {
+    // Filter out completed issues
+    const openIssues = backlog.issues.filter((i) => i.status !== 'done');
+
+    for (const issue of openIssues) {
       let score = 0;
       let unblocked = true;
       const reasons: string[] = [];
 
       // Check dependencies
       if (issue.dependencies && issue.dependencies.length > 0) {
-        // Simple check: if dependencies exist, verify if they are satisfied
-        unblocked = true; // In current backlog, all internal P0 deps exist
-        score += 100;
-        reasons.push('Dependencies satisfied');
+        const unsatisfiedDeps = issue.dependencies.filter((depId) => {
+          const depIssue = backlog.issuesById.get(depId);
+          return !depIssue || depIssue.status !== 'done';
+        });
+
+        if (unsatisfiedDeps.length > 0) {
+          unblocked = false;
+          reasons.push(`Blocked by: ${unsatisfiedDeps.join(', ')}`);
+        } else {
+          score += 100;
+          reasons.push('Dependencies satisfied');
+        }
       } else {
         score += 150;
         reasons.push('Zero blockers');

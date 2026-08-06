@@ -1,13 +1,15 @@
 import { z } from 'zod';
-import { VALID_PRIORITIES } from './cbs.js';
+import { VALID_PRIORITIES, VALID_STATUSES } from './cbs.js';
 
 export const PriorityZodSchema = z.enum(VALID_PRIORITIES);
+export const StatusZodSchema = z.enum(VALID_STATUSES);
 
 export const IssueZodSchema = z.object({
   id: z.string().min(1, 'Issue ID must not be empty'),
   title: z.string().min(1, 'Issue title must not be empty'),
   type: z.string().optional(),
   priority: PriorityZodSchema.optional(),
+  status: StatusZodSchema.optional(),
   estimate: z.union([z.number(), z.string()]).optional(),
   dependencies: z.array(z.string()).optional(),
   labels: z.array(z.string()).optional(),

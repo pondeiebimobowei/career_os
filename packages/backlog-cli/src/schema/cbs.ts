@@ -10,5 +10,6 @@ export const VALID_MILESTONES = [
   'MVP_POLISH',
   'BETA',
   'POST_MVP',
-  'V2',
 ] as const;
+export const VALID_STATUSES = ['todo', 'in_progress', 'done', 'blocked'] as const;
+
