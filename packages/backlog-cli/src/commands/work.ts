@@ -39,7 +39,20 @@ export class WorkCommand extends CommandExecutor<void> {
     // Step 2: Planning & Recommendation Engine
     const gitStatusRes = GitAdapter.getStatus(this.startDir);
     const branchName = gitStatusRes.success ? gitStatusRes.data.branch : '';
-    const activeIssueId = ResumeDetectionService.parseBranchName(branchName);
+    let activeIssueId = ResumeDetectionService.parseBranchName(branchName);
+
+    if (!activeIssueId) {
+      const completedIssues = backlog.issues.filter(
+        (i) => (i.status || '').toLowerCase() === 'done' || (i.lifecycle?.phase || '').toLowerCase() === 'done'
+      );
+      if (completedIssues.length > 0) {
+        const lastCompleted = completedIssues[completedIssues.length - 1];
+        if (lastCompleted) {
+          activeIssueId = lastCompleted.id;
+        }
+      }
+    }
+
     const activeCapability = activeIssueId ? DependencyResolver.extractCapability(activeIssueId) : undefined;
 
     const planRes = PlanningService.plan(backlog, {
