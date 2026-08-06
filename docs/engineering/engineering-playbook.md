@@ -410,17 +410,15 @@ Use Zod for runtime validation.
 
 Prefer:
 
-Server Components
+Vite SPA Client Components (React 19 Single Page Application)
 
-Small components
+Feature-oriented component architecture (`apps/web/src/features/*`)
 
-Reusable hooks
+Small, focused components
 
-Composition
+Reusable hooks (`useOnboarding`, `useApplications`, etc.)
 
-React Hook Form
-
-TanStack Query
+Component composition
 
 Zod validation
 
