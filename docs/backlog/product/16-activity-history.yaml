@@ -1,0 +1,73 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: ACTIVITY_HISTORY
+  title: Activity History
+  domain: product
+
+objective: >
+  Provide a chronological audit trail of user actions across companies,
+  jobs, applications and tasks to improve visibility and context.
+
+milestone: MVP_POLISH
+
+dependencies:
+  - APPLICATIONS
+  - APPLICATION_PIPELINE
+  - TASKS
+  - NOTES
+
+success_metrics:
+  - id: HISTORY_USAGE
+    metric: users_viewing_activity_history
+    target: ">=50%"
+
+features:
+  - id: ACTIVITY_TIMELINE
+    title: Unified Activity Timeline
+    priority: P1
+    issues:
+      - id: HISTORY-001
+        title: Activity event model
+        type: task
+        priority: P1
+        estimate: 2
+        acceptance_criteria:
+          - Events stored chronologically
+          - Event type recorded
+          - Related entity referenced
+      - id: HISTORY-002
+        title: Timeline UI
+        type: task
+        priority: P1
+        estimate: 3
+        dependencies:
+          - HISTORY-001
+        acceptance_criteria:
+          - Infinite scrolling
+          - Entity icons
+          - Relative timestamps
+
+  - id: ENTITY_HISTORY
+    title: Entity-specific History
+    priority: P1
+    issues:
+      - id: HISTORY-003
+        title: Company, Job and Application history
+        type: task
+        priority: P1
+        estimate: 2
+        acceptance_criteria:
+          - View history from entity detail pages
+          - Display status changes and edits
+
+acceptance_tests:
+  - Every application status change creates an event.
+  - Timeline is ordered newest first.
+  - Users can navigate from an event to its source entity.
+
+future_scope:
+  - AI-generated weekly summaries
+  - Advanced filtering
+  - Export activity log
+  - Team audit history

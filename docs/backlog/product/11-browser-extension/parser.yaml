@@ -1,0 +1,454 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: EXT-PARSERS
+  title: Parser Framework
+  domain: BROWSER_EXTENSION
+  type: product
+  version: 1.0.0
+
+objective: >
+  Build a reusable parser framework that enables CareerOS to extract,
+  normalize, validate, and score job postings from supported job platforms
+  without coupling business logic to individual websites.
+
+status: planned
+
+priority: P0
+
+milestone: CAPTURE
+
+owner: Engineering
+
+dependencies:
+  - EXT-ARCH
+
+success_metrics:
+  - id: PARSER-001
+    metric: extraction_success_rate
+    target: ">=95%"
+
+  - id: PARSER-002
+    metric: parser_execution_time
+    target: "<500ms"
+
+  - id: PARSER-003
+    metric: parser_accuracy
+    target: ">=98%"
+
+  - id: PARSER-004
+    metric: unsupported_page_detection
+    target: "100%"
+
+overview: >
+  The Parser Framework provides the common infrastructure for every
+  website-specific parser. Individual parsers should only understand
+  how to extract data from a website. Everything else—normalization,
+  validation, confidence scoring, duplicate detection, telemetry,
+  and synchronization—belongs to the shared framework.
+
+architecture:
+
+  design_pattern: Strategy Pattern
+
+  components:
+
+    - Parser Registry
+    - Base Parser Interface
+    - Platform Matchers
+    - DOM Extraction Helpers
+    - Normalization Pipeline
+    - Validation Engine
+    - Confidence Scoring
+    - Duplicate Detection
+    - Error Reporting
+    - Telemetry
+    - Parser Versioning
+
+parser_registry:
+
+  responsibility:
+    - Register parsers
+    - Match current page
+    - Execute parser
+    - Handle parser failures
+
+  strategy: >
+    Each parser declares matching rules.
+    The registry selects the first compatible parser.
+
+base_parser_interface:
+
+  methods:
+
+    - matches(url)
+    - extract(document)
+    - normalize(rawData)
+    - validate(job)
+    - calculateConfidence(job)
+
+  returns:
+    NormalizedJob
+
+platform_matching:
+
+  priority:
+
+    - Exact hostname
+    - Path pattern
+    - Metadata
+    - DOM signature
+
+  examples:
+
+    - linkedin.com/jobs/*
+    - boards.greenhouse.io/*
+    - jobs.lever.co/*
+    - myworkdayjobs.com/*
+
+parser_pipeline:
+
+  steps:
+
+    - Detect Platform
+    - Load Parser
+    - Extract Raw DOM
+    - Normalize Fields
+    - Validate Fields
+    - Score Confidence
+    - Detect Duplicate
+    - Return Structured Job
+
+normalized_job:
+
+  company:
+
+    required:
+      - name
+
+    optional:
+      - website
+      - linkedin
+      - industry
+      - size
+
+  job:
+
+    required:
+      - title
+      - url
+
+    optional:
+      - location
+      - description
+      - employmentType
+      - workplaceType
+      - salary
+      - benefits
+      - experience
+      - department
+
+  metadata:
+
+    required:
+      - source
+      - parser
+      - parserVersion
+      - extractedAt
+
+validation:
+
+  required_fields:
+
+    - company.name
+    - job.title
+    - job.url
+
+  optional_fields:
+
+    - salary
+    - benefits
+    - employmentType
+
+validation_rules:
+
+  company_name:
+    min_length: 2
+
+  title:
+    min_length: 3
+
+  url:
+    must_be_valid: true
+
+  description:
+    strip_html: true
+
+confidence_scoring:
+
+  weighting:
+
+    required_fields: 60
+    optional_fields: 20
+    parser_quality: 10
+    extraction_consistency: 10
+
+  levels:
+
+    excellent:
+      score: "95-100"
+
+    good:
+      score: "80-94"
+
+    review_required:
+      score: "60-79"
+
+    manual_required:
+      score: "<60"
+
+duplicate_detection:
+
+  primary:
+
+    - source
+    - externalId
+
+  secondary:
+
+    - company
+    - title
+    - url
+
+  fallback:
+
+    - fuzzy_company_match
+    - fuzzy_title_match
+
+error_handling:
+
+  parser_not_found:
+
+    action:
+      Unsupported page message
+
+  extraction_failed:
+
+    action:
+      Log telemetry
+      Show manual entry option
+
+  invalid_data:
+
+    action:
+      Open review screen
+
+  partial_success:
+
+    action:
+      Continue with editable fields
+
+telemetry:
+
+  collect:
+
+    - parser_used
+    - parser_version
+    - execution_time
+    - confidence_score
+    - extraction_success
+    - extraction_failure_reason
+
+  never_collect:
+
+    - authentication_tokens
+    - personal_messages
+    - cookies
+    - passwords
+
+parser_versioning:
+
+  strategy:
+
+    semantic_versioning
+
+  format:
+
+    major.minor.patch
+
+example:
+
+  parser: LinkedInParser
+  version: 1.2.0
+
+engineering_principles:
+
+  - Single responsibility
+  - Open/Closed Principle
+  - No duplicated selectors
+  - Shared utilities only
+  - Strong typing
+  - Test-first parser development
+  - Fail gracefully
+  - Deterministic extraction
+  - Pure functions where possible
+
+future_scope:
+
+  - AI-assisted extraction repair
+  - Automatic selector recovery
+  - DOM change detection
+  - Parser health dashboard
+  - Visual parser debugger
+  - Remote parser updates
+
+features:
+
+  - id: PARSER-FRAMEWORK
+    title: Parser Framework
+
+    priority: P0
+
+    estimate: L
+
+    issues:
+
+      - id: PARSER-001
+        title: Create BaseParser interface
+
+        type: task
+
+        priority: P0
+
+        estimate: S
+
+        labels:
+          - extension
+          - parser
+
+        acceptance_criteria:
+          - Base interface defined
+          - Shared parser contract enforced
+          - Type-safe implementation
+
+      - id: PARSER-002
+        title: Build parser registry
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - PARSER-001
+
+        acceptance_criteria:
+          - Parsers self-register
+          - Registry resolves parser automatically
+          - Unsupported pages handled
+
+      - id: PARSER-003
+        title: Implement normalization pipeline
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - PARSER-002
+
+        acceptance_criteria:
+          - Raw data normalized
+          - Common schema returned
+          - Missing fields handled
+
+      - id: PARSER-004
+        title: Implement validation engine
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - PARSER-003
+
+        acceptance_criteria:
+          - Required fields validated
+          - Invalid jobs rejected
+          - Validation errors returned
+
+      - id: PARSER-005
+        title: Implement confidence scoring
+
+        type: task
+
+        priority: P0
+
+        estimate: S
+
+        dependencies:
+          - PARSER-004
+
+        acceptance_criteria:
+          - Confidence score generated
+          - Review threshold supported
+          - Manual confirmation threshold supported
+
+      - id: PARSER-006
+        title: Implement duplicate detection
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - PARSER-004
+
+        acceptance_criteria:
+          - Duplicate jobs detected
+          - Existing records identified
+          - Merge workflow supported
+
+      - id: PARSER-007
+        title: Add parser telemetry
+
+        type: task
+
+        priority: P1
+
+        estimate: S
+
+        dependencies:
+          - PARSER-005
+
+        acceptance_criteria:
+          - Execution metrics collected
+          - Failures logged
+          - Parser versions tracked
+
+acceptance_tests:
+
+  - Parser registry selects the correct parser.
+  - Unsupported pages return no parser.
+  - Normalized jobs match the shared schema.
+  - Validation rejects malformed jobs.
+  - Confidence scores are calculated correctly.
+  - Duplicate detection identifies existing jobs.
+  - Parser failures never crash the extension.
+  - Telemetry records parser execution.
+  - New parsers can be added without modifying existing ones.
+  - All parser unit tests pass.
+
+notes: >
+  The Parser Framework is the foundation for every supported job board.
+  Website-specific parsers (LinkedIn, Greenhouse, Lever, Workday, etc.)
+  should remain extremely small, focusing only on extraction logic while
+  relying on this shared framework for everything else. This keeps the
+  extension maintainable as additional platforms are added.

@@ -1,0 +1,354 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: EXT-LEVER
+  title: Lever Job Parser
+  domain: BROWSER_EXTENSION
+  type: product
+  version: 1.0.0
+
+objective: >
+  Enable CareerOS users to capture job postings hosted on Lever-powered
+  career sites with a single click. The parser should extract structured
+  job and company information while remaining resilient to customer-specific
+  branding, layout variations, and future UI changes.
+
+status: planned
+
+priority: P0
+
+milestone: CAPTURE
+
+owner: Engineering
+
+dependencies:
+  - EXT-ARCH
+  - EXT-PARSERS
+  - JOBS
+  - COMPANIES
+  - APPLICATIONS
+
+success_metrics:
+  - id: LEVER-001
+    metric: extraction_success_rate
+    target: ">=97%"
+
+  - id: LEVER-002
+    metric: parser_execution_time
+    target: "<400ms"
+
+  - id: LEVER-003
+    metric: parser_failure_rate
+    target: "<2%"
+
+  - id: LEVER-004
+    metric: manual_edit_rate
+    target: "<8%"
+
+overview: >
+  Lever is one of the most widely used Applicant Tracking Systems (ATS) by
+  startups and technology companies. While Lever-hosted pages share common
+  structures, organizations frequently customize branding and page layouts.
+  The parser must prioritize structured data and semantic extraction over
+  brittle CSS selectors.
+
+supported_pages:
+
+  - https://jobs.lever.co/*
+  - Custom Lever-hosted career pages
+
+page_detection:
+
+  hostnames:
+    - jobs.lever.co
+
+  fallback_detection:
+    - Lever metadata
+    - JSON-LD
+    - Application form structure
+
+parser:
+
+  implementation: LeverParser
+
+  extends: BaseParser
+
+responsibilities:
+
+  - Detect Lever job pages
+  - Extract company information
+  - Extract job information
+  - Extract structured metadata
+  - Return raw extraction model
+
+must_not:
+
+  - Normalize data
+  - Perform duplicate detection
+  - Call CareerOS APIs
+  - Authenticate users
+  - Save application records
+  - Execute business logic
+
+fields:
+
+  company:
+
+    required:
+      - name
+
+    optional:
+      - website
+      - logo
+      - careersUrl
+
+  job:
+
+    required:
+      - title
+      - url
+
+    optional:
+      - location
+      - department
+      - team
+      - commitment
+      - workplaceType
+      - description
+      - postedDate
+      - requisitionId
+
+  metadata:
+
+    required:
+      - source
+      - parser
+      - parserVersion
+      - extractedAt
+
+extraction_strategy:
+
+  priority:
+
+    - JSON-LD
+    - Embedded metadata
+    - Semantic HTML
+    - DOM selectors
+    - Visible text fallback
+
+common_patterns:
+
+  - Department section
+  - Team section
+  - Commitment section
+  - Office location
+  - Description blocks
+  - Lever application metadata
+
+normalization:
+
+  handled_by: Parser Framework
+
+validation:
+
+  handled_by: Parser Framework
+
+duplicate_detection:
+
+  handled_by: Sync Engine
+
+confidence_scoring:
+
+  handled_by: Parser Framework
+
+unsupported_states:
+
+  - Job removed
+  - Archived position
+  - External application redirect
+  - Invalid posting
+
+failure_handling:
+
+  missing_optional_fields:
+
+    action:
+      Continue extraction
+
+  missing_required_fields:
+
+    action:
+      Return validation warning
+
+  parser_exception:
+
+    action:
+      Log telemetry
+      Offer manual capture
+
+telemetry:
+
+  collect:
+
+    - parserVersion
+    - extractionDuration
+    - extractionSuccess
+    - confidenceScore
+
+  never_collect:
+
+    - Applicant information
+    - Resume uploads
+    - Cover letters
+    - Authentication cookies
+    - Personal profile data
+
+engineering_principles:
+
+  - Pure extraction
+  - No business logic
+  - Strong typing
+  - Shared selector utilities
+  - Deterministic behavior
+  - Small parser surface
+  - Graceful failure
+  - Easily testable
+
+future_scope:
+
+  - Salary extraction
+  - Hiring manager extraction
+  - Benefits extraction
+  - Visa sponsorship detection
+  - Equity information
+  - Remote policy extraction
+  - Multi-language support
+
+features:
+
+  - id: LEVER-PARSER
+    title: Lever Parser
+
+    priority: P0
+
+    estimate: L
+
+    issues:
+
+      - id: LVR-001
+        title: Detect Lever job pages
+
+        type: task
+
+        priority: P0
+
+        estimate: S
+
+        labels:
+          - extension
+          - lever
+
+        acceptance_criteria:
+          - Lever URLs detected
+          - Custom Lever domains supported
+          - Unsupported pages ignored
+
+      - id: LVR-002
+        title: Extract job information
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - LVR-001
+
+        acceptance_criteria:
+          - Job title extracted
+          - Description extracted
+          - URL extracted
+          - Department extracted
+          - Team extracted
+          - Location extracted
+
+      - id: LVR-003
+        title: Extract company information
+
+        type: task
+
+        priority: P0
+
+        estimate: S
+
+        dependencies:
+          - LVR-002
+
+        acceptance_criteria:
+          - Company name extracted
+          - Careers URL extracted
+          - Company metadata extracted
+
+      - id: LVR-004
+        title: Extract job metadata
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - LVR-003
+
+        acceptance_criteria:
+          - Commitment extracted
+          - Workplace type extracted
+          - Posted date extracted
+          - Requisition ID extracted
+
+      - id: LVR-005
+        title: Add parser telemetry
+
+        type: task
+
+        priority: P1
+
+        estimate: S
+
+        dependencies:
+          - LVR-004
+
+        acceptance_criteria:
+          - Parser metrics recorded
+          - Failures logged
+          - Version tracked
+
+acceptance_tests:
+
+  - Lever job pages detected correctly.
+  - Company extracted successfully.
+  - Job title extracted correctly.
+  - Description extracted correctly.
+  - Department extracted.
+  - Team extracted.
+  - Commitment extracted.
+  - Metadata extracted.
+  - Unsupported pages ignored.
+  - Parser integrates with the shared Parser Framework.
+
+known_limitations:
+
+  - Customer branding may modify DOM structure.
+  - Some legacy Lever pages expose limited metadata.
+  - Salary data is often unavailable.
+  - Not all postings expose requisition identifiers.
+
+notes: >
+  Lever maintains a relatively consistent underlying structure across
+  customer career sites, making it well suited for deterministic parsing.
+  The parser should always prioritize structured metadata and semantic
+  extraction before relying on CSS selectors. Business logic,
+  normalization, validation, duplicate detection, and synchronization
+  must remain inside the shared Parser Framework and Sync Engine.

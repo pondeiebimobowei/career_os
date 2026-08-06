@@ -1,0 +1,86 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: ADMIN
+  title: Administration
+  domain: product
+
+objective: >
+  Provide internal tooling to manage users, monitor platform health,
+  investigate support issues, and administer the CareerOS platform.
+
+milestone: POST_MVP
+
+dependencies:
+  - AUTHENTICATION
+  - OBSERVABILITY
+  - ANALYTICS
+
+success_metrics:
+  - id: SUPPORT_RESOLUTION
+    metric: median_support_resolution_time
+    target: "<24h"
+
+features:
+  - id: ADMIN_AUTH
+    title: Admin Authentication & Authorization
+    priority: P2
+    issues:
+      - id: ADMIN-001
+        title: Implement admin roles
+        type: task
+        priority: P2
+        estimate: 3
+        acceptance_criteria:
+          - Only admins can access admin routes
+          - Unauthorized access is blocked
+
+  - id: USER_MANAGEMENT
+    title: User Management
+    priority: P2
+    issues:
+      - id: ADMIN-002
+        title: User search and profile view
+        type: task
+        priority: P2
+        estimate: 3
+        acceptance_criteria:
+          - Search users
+          - View account details
+          - View subscription status
+
+      - id: ADMIN-003
+        title: Account moderation
+        type: task
+        priority: P2
+        estimate: 2
+        acceptance_criteria:
+          - Suspend account
+          - Restore account
+          - Record moderation reason
+
+  - id: PLATFORM_OVERVIEW
+    title: Platform Dashboard
+    priority: P2
+    issues:
+      - id: ADMIN-004
+        title: Admin dashboard
+        type: task
+        priority: P2
+        estimate: 3
+        acceptance_criteria:
+          - Active users
+          - Error summary
+          - Subscription overview
+
+acceptance_tests:
+  - Non-admin users cannot access admin pages.
+  - Admin actions are audit logged.
+  - User moderation updates account state immediately.
+
+future_scope:
+  - Support ticket console
+  - Feature flag management
+  - Broadcast announcements
+  - Internal impersonation
+  - System configuration

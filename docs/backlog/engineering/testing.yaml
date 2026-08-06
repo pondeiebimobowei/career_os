@@ -1,0 +1,90 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: TESTING
+  title: Testing Strategy
+  domain: engineering
+
+objective: >
+  Build confidence in CareerOS through automated testing that protects
+  core user workflows while maintaining fast development velocity.
+
+milestone: MVP_POLISH
+
+dependencies:
+  - FOUNDATION
+  - SECURITY
+
+success_metrics:
+  - id: CI_PASS_RATE
+    metric: ci_success_rate
+    target: ">=95%"
+  - id: CORE_FLOW_COVERAGE
+    metric: critical_workflow_coverage
+    target: "100%"
+
+features:
+  - id: UNIT_TESTING
+    title: Unit Testing
+    priority: P0
+    issues:
+      - id: TEST-001
+        title: Configure Vitest/Jest
+        type: task
+        priority: P0
+        estimate: 2
+        acceptance_criteria:
+          - Unit test runner configured
+          - Coverage reporting enabled
+
+  - id: INTEGRATION_TESTING
+    title: Integration Testing
+    priority: P0
+    issues:
+      - id: TEST-002
+        title: API integration tests
+        type: task
+        priority: P0
+        estimate: 3
+        acceptance_criteria:
+          - Auth endpoints covered
+          - CRUD endpoints covered
+
+  - id: E2E_TESTING
+    title: End-to-End Testing
+    priority: P1
+    issues:
+      - id: TEST-003
+        title: Playwright critical journeys
+        type: task
+        priority: P1
+        estimate: 4
+        acceptance_criteria:
+          - Sign in
+          - Create application
+          - Move pipeline stage
+          - Create task
+
+  - id: EXTENSION_TESTING
+    title: Browser Extension Tests
+    priority: P1
+    issues:
+      - id: TEST-004
+        title: Parser regression tests
+        type: task
+        priority: P1
+        estimate: 3
+        acceptance_criteria:
+          - Supported job sites validated
+          - Snapshot fixtures maintained
+
+acceptance_tests:
+  - All P0 tests pass before merge.
+  - CI blocks failing pull requests.
+  - Critical user journeys execute successfully.
+
+future_scope:
+  - Visual regression testing
+  - Load testing
+  - Chaos testing
+  - Cross-browser automation

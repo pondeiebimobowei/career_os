@@ -1,40 +1,84 @@
-# Turborepo kitchen sink starter
+# CareerOS
 
-This Turborepo starter is maintained by the Turborepo core team.
+**CareerOS** is an AI-native Job Application Operating System designed to streamline job searching, application tracking, resume management, and automated job capture via a browser extension.
 
-This example also shows how to use [Workspace Configurations](https://turborepo.dev/docs/core-concepts/monorepos/configuring-workspaces).
+---
 
-## Using this example
+## 🏗️ Workspace Architecture
 
-Run the following command:
+CareerOS is structured as a **pnpm + Turborepo** monorepo containing the following applications and packages:
+
+### Applications (`apps/`)
+
+- **`apps/api`**: [NestJS](https://nestjs.com/) backend API service managing jobs, applications, resumes, and user accounts with PostgreSQL & Prisma.
+- **`apps/web`**: [React (Vite)](https://vitejs.dev/) modern single-page application dashboard styled with TailwindCSS.
+- **`apps/extension`**: Manifest V3 Chrome Browser Extension for one-click job capture from LinkedIn, Greenhouse, Lever, and Workday.
+
+### Shared Packages (`packages/`)
+
+- **`@repo/backlog-cli`** (`packages/backlog-cli`): CLI tool for managing and validating the single source-of-truth YAML backlog (`pnpm backlog:...`).
+- **`@repo/ui`** (`packages/ui`): Shared React UI component library.
+- **`@repo/logger`** (`packages/logger`): Isomorphic logging utility.
+- **`@repo/eslint-config`** (`packages/config-eslint`): Shared ESLint configuration rules.
+- **`@repo/typescript-config`** (`packages/config-typescript`): Base TypeScript `tsconfig.json` configurations.
+- **`@repo/jest-presets`** (`packages/jest-presets`): Shared testing presets.
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **Node.js**: `>= 18.0.0`
+- **pnpm**: `8.15.6` (enforced via `packageManager`)
+
+### Installation & Development
 
 ```sh
-npx create-turbo@latest -e kitchen-sink
+# Install dependencies
+pnpm install
+
+# Run all apps in development mode
+pnpm dev
+
+# Run type checks across all packages
+pnpm check-types
+
+# Run tests
+pnpm test
+
+# Format code with Prettier
+pnpm format
 ```
 
-## What's inside?
+---
 
-This Turborepo includes the following packages and apps:
+## 📋 Backlog & Development Workflow
 
-### Apps and Packages
+CareerOS utilizes a schema-validated YAML backlog as the single source of truth (`docs/backlog/`):
 
-- `api`: an [Express](https://expressjs.com/) server
-- `storefront`: a [Next.js](https://nextjs.org/) app
-- `admin`: a [Vite](https://vitejs.dev/) single page app
-- `blog`: a [Remix](https://remix.run/) blog
-- `@repo/eslint-config`: ESLint configurations used throughout the monorepo
-- `@repo/jest-presets`: Jest configurations
-- `@repo/logger`: isomorphic logger (a small wrapper around console.log)
-- `@repo/ui`: a dummy React UI library (which contains `<CounterButton>` and `<Link>` components)
-- `@repo/typescript-config`: tsconfig.json's used throughout the monorepo
+```sh
+# Validate backlog integrity & schema
+pnpm backlog:validate
 
-Each package and app is 100% [TypeScript](https://www.typescriptlang.org/).
+# Run diagnostic health check
+pnpm backlog:doctor
 
-### Utilities
+# Sync backlog items with GitHub Issues
+pnpm backlog:sync
+```
 
-This Turborepo has some additional tools already setup for you:
+---
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Jest](https://jestjs.io) test runner for all things JavaScript
-- [Prettier](https://prettier.io) for code formatting
+## 📚 Documentation
+
+Detailed documentation and Architecture Decision Records (ADRs) are located in the [`docs/`](docs/) directory:
+
+- [Product Brief](docs/1_Product_Brief.md) & [PRD](docs/2_PRD.md)
+- [Technical Requirements Document (TRD)](docs/5_Technical_Requirements_Document.md)
+- [Database & Backend Schema](docs/6_Database_and_Backend_Schema.md)
+- [Browser Extension Architecture](docs/7_Browser_Extension_Architecture.md)
+- [Frontend Architecture](docs/8_Frontend_Architecture.md)
+- [Architecture Decision Records (ADRs)](docs/adr/)
+- [Engineering Playbook](docs/engineering/engineering-playbook.md)
+

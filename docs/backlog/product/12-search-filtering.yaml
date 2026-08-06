@@ -1,0 +1,68 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: SEARCH_FILTERING
+  title: Search & Filtering
+  domain: product
+
+objective: >
+  Enable users to quickly locate applications, jobs, companies, tasks and notes using global search and filters.
+
+milestone: MVP_POLISH
+
+dependencies:
+  - DASHBOARD
+  - COMPANIES
+  - JOBS
+  - APPLICATIONS
+  - TASKS
+
+success_metrics:
+  - id: SEARCH_SUCCESS_RATE
+    metric: successful_search_rate
+    target: ">=95%"
+
+features:
+  - id: GLOBAL_SEARCH
+    title: Global Search
+    priority: P1
+    issues:
+      - id: SEARCH-001
+        title: Implement search API
+        type: task
+        priority: P1
+        estimate: 3
+        acceptance_criteria:
+          - Search across supported entities
+          - Ranked results returned
+      - id: SEARCH-002
+        title: Build search UI
+        type: task
+        priority: P1
+        estimate: 3
+        dependencies:
+          - SEARCH-001
+        acceptance_criteria:
+          - Keyboard accessible
+          - Empty, loading and error states
+  - id: FILTERING
+    title: Advanced Filtering
+    priority: P1
+    issues:
+      - id: SEARCH-003
+        title: Implement filters
+        type: task
+        priority: P1
+        estimate: 2
+        acceptance_criteria:
+          - Filter by status
+          - Filter by company
+          - Filter by location
+          - Filter by date
+
+acceptance_tests:
+  - User finds any application in under 10 seconds.
+
+future_scope:
+  - Saved searches
+  - AI semantic search

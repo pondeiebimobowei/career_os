@@ -1,0 +1,579 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: EXT-ARCH
+  title: Browser Extension Architecture
+  domain: BROWSER_EXTENSION
+  type: product
+  version: 1.0.0
+
+objective: >
+  Build a secure, modular, and maintainable browser extension
+  architecture that enables one-click job capture from supported
+  job platforms while isolating platform-specific parsing logic
+  from the core extension infrastructure.
+
+status: planned
+
+priority: P0
+
+milestone: CAPTURE
+
+owner: Engineering
+
+dependencies:
+  - AUTHENTICATION
+  - JOBS
+  - COMPANIES
+  - APPLICATIONS
+
+success_metrics:
+  - id: EXT-ARCH-001
+    metric: extension_startup_time
+    target: "<300ms"
+
+  - id: EXT-ARCH-002
+    metric: capture_pipeline_success_rate
+    target: ">=95%"
+
+  - id: EXT-ARCH-003
+    metric: average_sync_time
+    target: "<2s"
+
+  - id: EXT-ARCH-004
+    metric: extension_crash_rate
+    target: "<0.1%"
+
+overview: >
+  The Browser Extension consists of loosely coupled modules
+  responsible for authentication, job extraction,
+  normalization, validation, synchronization,
+  offline support, and user interaction.
+
+  Platform-specific parsers must never contain shared business
+  logic. Shared behavior belongs inside the extraction pipeline.
+
+architecture:
+
+  extension_type: Chrome Extension (Manifest V3)
+
+  layers:
+
+    - UI Layer
+    - Background Service Worker
+    - Content Scripts
+    - Parser Engine
+    - Extraction Pipeline
+    - Sync Engine
+    - API Client
+    - Local Storage
+    - Authentication Layer
+
+components:
+
+  - id: EXT-COMP-001
+    name: Popup UI
+
+    responsibility:
+      - Display capture status
+      - Review extracted job
+      - Edit extracted fields
+      - Authenticate user
+      - Display synchronization state
+
+    technology:
+      - React
+      - TypeScript
+      - Tailwind CSS
+
+  - id: EXT-COMP-002
+    name: Content Script
+
+    responsibility:
+      - Detect supported pages
+      - Read DOM
+      - Inject capture button when required
+      - Communicate with parser engine
+
+    notes:
+      - Never perform API requests directly
+      - Never contain business logic
+
+  - id: EXT-COMP-003
+    name: Background Service Worker
+
+    responsibility:
+      - Authentication
+      - API communication
+      - Sync queue
+      - Retry failed requests
+      - Storage access
+      - Message routing
+
+  - id: EXT-COMP-004
+    name: Parser Engine
+
+    responsibility:
+      - Select parser
+      - Execute extraction
+      - Confidence scoring
+      - Normalize output
+      - Validate required fields
+
+  - id: EXT-COMP-005
+    name: Sync Engine
+
+    responsibility:
+      - Queue requests
+      - Retry failures
+      - Duplicate detection
+      - Idempotent synchronization
+
+  - id: EXT-COMP-006
+    name: API Client
+
+    responsibility:
+      - Send authenticated requests
+      - Handle retries
+      - Handle rate limiting
+      - Refresh authentication
+
+  - id: EXT-COMP-007
+    name: Storage Manager
+
+    responsibility:
+      - Authentication token
+      - Pending queue
+      - Cached preferences
+      - Capture drafts
+
+supported_message_flow:
+
+  - Detect supported page
+
+  - Load parser
+
+  - Extract raw data
+
+  - Normalize data
+
+  - Validate required fields
+
+  - Calculate extraction confidence
+
+  - Display review UI
+
+  - User edits data if necessary
+
+  - Queue synchronization
+
+  - Send to backend
+
+  - Receive normalized entities
+
+  - Update local cache
+
+data_pipeline:
+
+  steps:
+
+    - Detect Platform
+
+    - Select Parser
+
+    - Extract DOM
+
+    - Normalize Fields
+
+    - Validate Fields
+
+    - Confidence Score
+
+    - Duplicate Detection
+
+    - User Review
+
+    - API Synchronization
+
+    - Persist Response
+
+parser_selection:
+
+  strategy: registry
+
+  implementation: >
+    Parsers register themselves through a parser registry.
+    The registry selects the first parser whose matching rule
+    successfully identifies the current page.
+
+  example:
+
+    linkedin.com/jobs/*
+
+      ↓
+
+    LinkedInParser
+
+      ↓
+
+    Extract()
+
+      ↓
+
+    NormalizedJob
+
+normalized_job_schema:
+
+  company:
+    - name
+    - website
+    - linkedin
+
+  job:
+    - title
+    - location
+    - employmentType
+    - workplaceType
+    - salary
+    - description
+    - requirements
+    - benefits
+    - url
+    - externalId
+
+  metadata:
+    - source
+    - extractedAt
+    - confidence
+    - parserVersion
+
+confidence_scoring:
+
+  required_fields:
+
+    - company
+    - title
+    - url
+
+  optional_fields:
+
+    - salary
+    - benefits
+    - employmentType
+
+  scoring:
+
+    95-100:
+      Excellent extraction
+
+    80-94:
+      Good extraction
+
+    60-79:
+      Needs review
+
+    below_60:
+      Manual confirmation required
+
+duplicate_detection:
+
+  primary_key:
+
+    - source
+    - externalId
+
+  fallback:
+
+    - company
+    - title
+    - url
+
+authentication:
+
+  strategy: Firebase Authentication
+
+  flow:
+
+    User Login
+
+      ↓
+
+    Firebase ID Token
+
+      ↓
+
+    Background Worker
+
+      ↓
+
+    Backend Verification
+
+      ↓
+
+    Session Established
+
+token_storage:
+
+  location:
+    chrome.storage.local
+
+  never_store:
+    - password
+    - refresh token
+    - sensitive profile information
+
+offline_strategy:
+
+  enabled: true
+
+  behavior:
+
+    - Queue requests
+
+    - Retry automatically
+
+    - Preserve drafts
+
+    - Prevent duplicate sync
+
+error_handling:
+
+  parser_failure:
+
+    action:
+      Show review screen with editable fields
+
+  authentication_failure:
+
+    action:
+      Prompt reauthentication
+
+  network_failure:
+
+    action:
+      Queue request
+
+  duplicate_detected:
+
+    action:
+      Offer merge/open existing record
+
+security_rules:
+
+  - Least privilege permissions
+  - No remote code execution
+  - Strict CSP
+  - HTTPS only
+  - Input sanitization
+  - Validate every API response
+  - Token never exposed to content scripts
+  - Sensitive logic only in background worker
+
+permissions:
+
+  required:
+
+    - storage
+    - activeTab
+    - scripting
+
+  optional_future:
+
+    - notifications
+
+browser_support:
+
+  mvp:
+
+    - Chrome
+    - Microsoft Edge
+
+  future:
+
+    - Brave
+    - Arc
+    - Firefox
+
+engineering_principles:
+
+  - SOLID
+  - DRY
+  - Composition over inheritance
+  - Feature isolation
+  - Deterministic parsing
+  - Strong typing
+  - Dependency inversion
+  - Testability
+  - Single responsibility
+
+future_scope:
+
+  - Cross-browser abstraction layer
+  - AI-assisted extraction repair
+  - Automatic application detection
+  - Browser notifications
+  - Multi-tab synchronization
+  - Resume recommendation
+  - Company enrichment
+  - Job monitoring
+  - Auto-fill support
+
+features:
+
+  - id: EXT-ARCH-001
+    title: Extension Project Initialization
+
+    priority: P0
+
+    estimate: S
+
+    issues:
+
+      - id: EXT-001
+        title: Initialize Manifest V3 extension
+
+        type: task
+
+        priority: P0
+
+        estimate: S
+
+        labels:
+          - extension
+          - architecture
+
+        acceptance_criteria:
+          - Manifest V3 configured
+          - Build pipeline works
+          - Development mode supported
+
+      - id: EXT-002
+        title: Configure React extension shell
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - EXT-001
+
+        acceptance_criteria:
+          - Popup UI renders
+          - TypeScript configured
+          - Shared configuration established
+
+  - id: EXT-ARCH-002
+    title: Background Service Worker
+
+    priority: P0
+
+    estimate: M
+
+    issues:
+
+      - id: EXT-003
+        title: Implement service worker
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        acceptance_criteria:
+          - Message routing works
+          - Authentication available
+          - API communication established
+
+  - id: EXT-ARCH-003
+    title: Parser Registry
+
+    priority: P0
+
+    estimate: M
+
+    issues:
+
+      - id: EXT-004
+        title: Build parser registry
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        acceptance_criteria:
+          - Parsers self-register
+          - Matching strategy implemented
+          - Platform selection automated
+
+  - id: EXT-ARCH-004
+    title: Extraction Pipeline
+
+    priority: P0
+
+    estimate: L
+
+    issues:
+
+      - id: EXT-005
+        title: Implement extraction pipeline
+
+        type: task
+
+        priority: P0
+
+        estimate: L
+
+        acceptance_criteria:
+          - Normalization implemented
+          - Validation implemented
+          - Confidence scoring implemented
+
+  - id: EXT-ARCH-005
+    title: Synchronization Engine
+
+    priority: P0
+
+    estimate: M
+
+    issues:
+
+      - id: EXT-006
+        title: Implement sync queue
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        acceptance_criteria:
+          - Queue persists offline
+          - Retry logic implemented
+          - Duplicate sync prevented
+
+acceptance_tests:
+
+  - Extension loads successfully.
+  - Supported platforms are detected correctly.
+  - Parser registry selects the correct parser.
+  - Extracted data conforms to the normalized schema.
+  - User can review extracted information.
+  - Offline synchronization works.
+  - Duplicate jobs are detected.
+  - Authentication succeeds without exposing credentials.
+  - Service worker survives browser lifecycle events.
+  - Failed captures do not lose user data.
+
+future_scope:
+
+  - Plugin-based parser loading
+  - Remote parser updates
+  - Automatic parser health monitoring
+  - Telemetry-driven parser quality scoring
+  - AI-assisted parser repair
+  - Browser-independent extension SDK

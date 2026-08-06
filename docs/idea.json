@@ -1,0 +1,472 @@
+{
+  "product": {
+    "name": "CareerOS",
+    "category": "Job Search Operating System",
+    "oneLinePitch": "The fastest way to capture, organize, and execute a professional job search from discovery to offer.",
+    "vision": {
+      "shortTerm": "Replace spreadsheets and fragmented workflows with a single command center for managing job opportunities.",
+      "longTerm": "Become the operating system for career management, helping professionals manage opportunities, relationships, interviews, career growth, and future transitions throughout their careers."
+    },
+    "mission": "Help ambitious professionals execute better job searches with less manual work, lower cognitive load, and better outcomes.",
+    "northStarOutcome": "Increase successful job-search execution by reducing friction and ensuring users consistently take the highest-impact next action."
+  },
+  "problem": {
+    "core": "Managing an active job search is mentally exhausting because information, decisions, and actions are scattered across multiple tools.",
+    "userPain": [
+      "Repeated manual data entry",
+      "Losing track of applications",
+      "Missing follow-ups",
+      "Decision fatigue",
+      "Fragmented workflow",
+      "Too many browser tabs and documents",
+      "No clear daily priorities"
+    ],
+    "existingWorkflow": [
+      "LinkedIn",
+      "Company career pages",
+      "Greenhouse",
+      "Lever",
+      "Ashby",
+      "Spreadsheets",
+      "Notion",
+      "Google Docs",
+      "ChatGPT",
+      "Email",
+      "Calendar",
+      "Browser bookmarks",
+      "Memory"
+    ],
+    "whyCurrentSolutionsFail": [
+      "Tracking is manual",
+      "Users become the integration layer",
+      "Existing trackers focus on recording history instead of helping execute",
+      "High maintenance causes abandonment"
+    ]
+  },
+  "targetUser": {
+    "initialICP": {
+      "title": "Software engineers actively searching for remote or international jobs",
+      "experience": "3-8 years",
+      "characteristics": [
+        "High application volume",
+        "Heavy browser usage",
+        "Comfortable with Chrome extensions",
+        "Already uses AI tools",
+        "Already uses productivity tools",
+        "Outcome-oriented"
+      ],
+      "goals": [
+        "Land interviews faster",
+        "Stay organized",
+        "Reduce repetitive work",
+        "Avoid missed opportunities"
+      ]
+    },
+    "futureSegments": [
+      "Product managers",
+      "Designers",
+      "Data professionals",
+      "Career switchers",
+      "Knowledge workers"
+    ]
+  },
+  "positioning": {
+    "category": "Job Search Operating System",
+    "not": "A generic job application tracker",
+    "coreDifferentiator": "One-click job capture combined with an execution-first workflow that minimizes manual work.",
+    "competitiveStrategy": "Compete on workflow speed and automation rather than feature breadth."
+  },
+  "mvp": {
+    "objective": "Validate that users prefer an automated capture-and-execution workflow over spreadsheets and manual tracking.",
+    "promise": "Save, organize, and manage every opportunity in under five seconds.",
+    "activationEvent": "User installs the extension and successfully saves their first job.",
+    "ahaMoment": "A complete job record appears automatically with company, job, application pipeline, and next actions without manual entry.",
+    "mustWinExperience": "Job capture from browser to organized application pipeline in one seamless flow.",
+    "successCriteria": [
+      "Users repeatedly use the extension",
+      "Users manage active applications inside the product",
+      "Weekly returning users",
+      "Users stop relying on spreadsheets for active searches"
+    ]
+  },
+  "features": {
+    "p0": [
+      {
+        "name": "Authentication",
+        "purpose": "Secure user accounts",
+        "value": "Personal workspace",
+        "complexity": "Low"
+      },
+      {
+        "name": "Browser Extension",
+        "purpose": "Capture job opportunities",
+        "value": "Eliminates manual entry",
+        "complexity": "High"
+      },
+      {
+        "name": "Job Parser",
+        "purpose": "Extract structured job data",
+        "value": "Automatic organization",
+        "complexity": "Medium"
+      },
+      {
+        "name": "Company Management",
+        "purpose": "Store companies",
+        "value": "Centralized organization",
+        "complexity": "Medium"
+      },
+      {
+        "name": "Job Management",
+        "purpose": "Store job opportunities",
+        "value": "Core data model",
+        "complexity": "Low"
+      },
+      {
+        "name": "Application Pipeline",
+        "purpose": "Track application status",
+        "value": "Workflow visibility",
+        "complexity": "Low"
+      },
+      {
+        "name": "Kanban Board",
+        "purpose": "Visual workflow",
+        "value": "Simple pipeline management",
+        "complexity": "Low"
+      },
+      {
+        "name": "Resume Upload",
+        "purpose": "Associate resumes",
+        "value": "Document organization",
+        "complexity": "Low"
+      },
+      {
+        "name": "Tasks and Reminders",
+        "purpose": "Track follow-ups",
+        "value": "Prevent missed actions",
+        "complexity": "Medium"
+      },
+      {
+        "name": "Search and Filters",
+        "purpose": "Find opportunities quickly",
+        "value": "Improved navigation",
+        "complexity": "Low"
+      }
+    ],
+    "p1": [
+      {
+        "name": "Interview Tracking"
+      },
+      {
+        "name": "Recruiter Contacts"
+      },
+      {
+        "name": "Notes"
+      },
+      {
+        "name": "Saved Searches"
+      },
+      {
+        "name": "Basic Company Watchlists"
+      }
+    ],
+    "p2": [
+      {
+        "name": "Notion Sync"
+      },
+      {
+        "name": "Resume Matching"
+      },
+      {
+        "name": "AI Summaries"
+      },
+      {
+        "name": "Analytics Dashboard"
+      }
+    ],
+    "excluded": [
+      {
+        "name": "Gmail Integration",
+        "reason": "High implementation complexity"
+      },
+      {
+        "name": "Calendar Integration",
+        "reason": "Not required to validate MVP"
+      },
+      {
+        "name": "AI Career Coach",
+        "reason": "Insufficient user history"
+      },
+      {
+        "name": "Automatic Status Detection",
+        "reason": "Depends on email integration"
+      },
+      {
+        "name": "Job Discovery",
+        "reason": "Not core wedge"
+      },
+      {
+        "name": "Networking CRM",
+        "reason": "Low initial leverage"
+      },
+      {
+        "name": "Mobile App",
+        "reason": "Desktop-first workflow"
+      },
+      {
+        "name": "Team Collaboration",
+        "reason": "Single-user focus"
+      }
+    ]
+  },
+  "coreFlow": [
+    {
+      "step": "Sign up"
+    },
+    {
+      "step": "Install browser extension"
+    },
+    {
+      "step": "Browse supported job site"
+    },
+    {
+      "step": "Click Save Job"
+    },
+    {
+      "step": "Job is automatically parsed and stored"
+    },
+    {
+      "step": "Review opportunity"
+    },
+    {
+      "step": "Apply externally"
+    },
+    {
+      "step": "Move application through pipeline"
+    },
+    {
+      "step": "Complete follow-up tasks"
+    },
+    {
+      "step": "Track interview and outcome"
+    }
+  ],
+  "dataModel": {
+    "entities": [
+      "User",
+      "CareerProfile",
+      "Company",
+      "JobOpening",
+      "Application",
+      "Resume",
+      "Task",
+      "Activity",
+      "Integration"
+    ],
+    "relationships": {
+      "Company": "has many JobOpenings",
+      "JobOpening": "can have one or more Applications over time",
+      "Application": "belongs to one JobOpening",
+      "User": "owns all entities"
+    },
+    "uxDecision": {
+      "primaryExperience": "Job-first",
+      "reason": "Users naturally discover jobs first; companies become organizational context rather than onboarding friction."
+    }
+  },
+  "browserExtension": {
+    "supportedSources": [
+      "LinkedIn",
+      "Greenhouse",
+      "Lever"
+    ],
+    "architecture": {
+      "contentScript": "Extract page data",
+      "parser": "Convert DOM into structured schema",
+      "backgroundWorker": "Handle authentication and communication",
+      "backend": "Persist data"
+    },
+    "failureHandling": [
+      "Confidence score",
+      "Manual correction UI",
+      "Fallback to manual save"
+    ],
+    "designPrinciple": "Modular parsers so each supported source is independently maintainable."
+  },
+  "technical": {
+    "frontend": [
+      "React",
+      "TypeScript",
+      "Vite",
+      "Tailwind CSS",
+      "TanStack Query",
+      "React Router",
+      "shadcn/ui"
+    ],
+    "backend": [
+      "NestJS",
+      "REST API"
+    ],
+    "database": "PostgreSQL",
+    "storage": "S3-compatible object storage",
+    "authentication": "Clerk or Firebase Authentication",
+    "analytics": "PostHog",
+    "monitoring": "Sentry",
+    "payments": "Stripe"
+  },
+  "ai": {
+    "mvp": [],
+    "postMvp": [
+      {
+        "feature": "Resume Matching",
+        "input": "Resume + Job Description",
+        "output": "Match insights"
+      },
+      {
+        "feature": "Job Prioritization",
+        "input": "User preferences + Job",
+        "output": "Priority recommendation"
+      },
+      {
+        "feature": "Interview Preparation",
+        "input": "Job description",
+        "output": "Customized interview prep"
+      }
+    ],
+    "principle": "Only introduce AI where deterministic logic cannot deliver equivalent value."
+  },
+  "monetization": {
+    "model": "Freemium SaaS",
+    "free": [
+      "Browser extension",
+      "Limited saved jobs",
+      "Basic application tracking"
+    ],
+    "paid": [
+      "Unlimited jobs",
+      "Unlimited resumes",
+      "Advanced workflow",
+      "Future automation",
+      "Future intelligence"
+    ],
+    "pricingHypothesis": "USD 8-15 per month",
+    "validation": "Confirm willingness to pay after demonstrating repeat workflow usage."
+  },
+  "goToMarket": {
+    "first10": "Personal network and active job seekers",
+    "first100": [
+      "Developer communities",
+      "LinkedIn",
+      "Reddit",
+      "Discord",
+      "X"
+    ],
+    "first1000": [
+      "Chrome Web Store",
+      "Content marketing",
+      "SEO",
+      "YouTube"
+    ],
+    "longTerm": [
+      "Career coaches",
+      "Bootcamps",
+      "Universities",
+      "Referral programs"
+    ],
+    "primaryChannel": "Browser extension discovery"
+  },
+  "retention": {
+    "daily": "Manage active applications and tasks",
+    "weekly": "Follow-ups and pipeline updates",
+    "monthly": "Interview progression and opportunity tracking",
+    "longTerm": "Expand into career management beyond active job search"
+  },
+  "roadmap": {
+    "phase1": {
+      "name": "Capture",
+      "focus": [
+        "Extension",
+        "Job capture",
+        "Application pipeline",
+        "Tasks"
+      ]
+    },
+    "phase2": {
+      "name": "Workflow Expansion",
+      "focus": [
+        "Interview tracking",
+        "Recruiters",
+        "Notes",
+        "Watchlists"
+      ]
+    },
+    "phase3": {
+      "name": "Personal Intelligence",
+      "focus": [
+        "Resume insights",
+        "Job prioritization",
+        "Skill analysis",
+        "Personal analytics"
+      ]
+    },
+    "phase4": {
+      "name": "Automation",
+      "focus": [
+        "Email integration",
+        "Calendar integration",
+        "Automatic status updates",
+        "Company monitoring"
+      ]
+    },
+    "phase5": {
+      "name": "Career Operating System",
+      "focus": [
+        "Career planning",
+        "Recruiter CRM",
+        "Career intelligence",
+        "Professional relationship management",
+        "AI career assistant"
+      ]
+    }
+  },
+  "risks": [
+    {
+      "risk": "Users continue using spreadsheets",
+      "severity": "High",
+      "mitigation": "Deliver dramatically faster capture workflow"
+    },
+    {
+      "risk": "Browser parsers break",
+      "severity": "High",
+      "mitigation": "Modular parser architecture and manual correction"
+    },
+    {
+      "risk": "Low user retention",
+      "severity": "High",
+      "mitigation": "Focus on active workflow rather than passive tracking"
+    },
+    {
+      "risk": "Competitors copy features",
+      "severity": "Medium",
+      "mitigation": "Compete on workflow quality and accumulated user history"
+    },
+    {
+      "risk": "Users churn after employment",
+      "severity": "Medium",
+      "mitigation": "Expand into long-term career management"
+    }
+  ],
+  "validation": {
+    "coreHypotheses": [
+      "Users prefer automated capture over manual tracking",
+      "Users repeatedly use the extension",
+      "Users abandon spreadsheets after adopting workflow",
+      "Users will pay for advanced workflow features"
+    ],
+    "earlyExperiments": [
+      "Prototype extension demo",
+      "Closed beta with active software engineers",
+      "Measure repeat capture behavior",
+      "Interview retained and churned users"
+    ]
+  }
+}

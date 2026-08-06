@@ -1,0 +1,75 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: BILLING
+  title: Billing & Subscription
+  domain: product
+
+objective: >
+  Enable CareerOS to monetize through subscription plans while keeping
+  billing isolated from the core job-search workflow.
+
+milestone: POST_MVP
+
+dependencies:
+  - AUTHENTICATION
+  - SETTINGS
+
+success_metrics:
+  - id: TRIAL_TO_PAID
+    metric: trial_to_paid_conversion
+    target: ">=15%"
+  - id: PAYMENT_SUCCESS
+    metric: successful_payment_rate
+    target: ">=98%"
+
+features:
+  - id: SUBSCRIPTIONS
+    title: Subscription Management
+    priority: P2
+    issues:
+      - id: BILLING-001
+        title: Integrate Stripe Billing
+        type: task
+        priority: P2
+        estimate: 5
+        acceptance_criteria:
+          - Create subscriptions
+          - Upgrade and downgrade plans
+          - Cancel subscription
+      - id: BILLING-002
+        title: Billing portal
+        type: task
+        priority: P2
+        estimate: 3
+        dependencies:
+          - BILLING-001
+        acceptance_criteria:
+          - View current plan
+          - Manage payment method
+          - View invoices
+
+  - id: FEATURE_GATING
+    title: Plan Enforcement
+    priority: P2
+    issues:
+      - id: BILLING-003
+        title: Usage limits and feature flags
+        type: task
+        priority: P2
+        estimate: 3
+        acceptance_criteria:
+          - Free tier limits enforced
+          - Premium features gated
+
+acceptance_tests:
+  - User can subscribe and access premium features.
+  - Cancelled subscriptions revert to free plan.
+  - Failed payments are handled gracefully.
+
+future_scope:
+  - Annual billing
+  - Team plans
+  - Coupon codes
+  - Regional pricing
+  - Enterprise licensing

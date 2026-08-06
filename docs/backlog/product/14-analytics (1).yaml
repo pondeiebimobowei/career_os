@@ -1,0 +1,102 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: ANALYTICS
+  title: Analytics
+  domain: product
+
+objective: >
+  Help users understand the effectiveness of their job search by
+  surfacing meaningful application, interview, and task metrics.
+
+milestone: MVP_POLISH
+
+dependencies:
+  - DASHBOARD
+  - APPLICATIONS
+  - APPLICATION_PIPELINE
+  - TASKS
+
+success_metrics:
+  - id: DASHBOARD_USAGE
+    metric: weekly_dashboard_views
+    target: ">=80% of WAU"
+
+  - id: INSIGHT_ADOPTION
+    metric: users_viewing_analytics
+    target: ">=60%"
+
+features:
+  - id: DASHBOARD_ANALYTICS
+    title: Dashboard Metrics
+    priority: P1
+
+    issues:
+      - id: ANALYTICS-001
+        title: Analytics aggregation service
+        type: task
+        priority: P1
+        estimate: 3
+
+        acceptance_criteria:
+          - Aggregate application statistics
+          - Aggregate interview statistics
+          - Aggregate task statistics
+
+      - id: ANALYTICS-002
+        title: Dashboard analytics widgets
+        type: task
+        priority: P1
+        estimate: 3
+
+        dependencies:
+          - ANALYTICS-001
+
+        acceptance_criteria:
+          - Display total applications
+          - Display applications by status
+          - Display interviews
+          - Display pending tasks
+
+  - id: FUNNEL
+    title: Application Funnel
+    priority: P1
+
+    issues:
+      - id: ANALYTICS-003
+        title: Build application funnel metrics
+        type: task
+        priority: P1
+        estimate: 2
+
+        acceptance_criteria:
+          - Saved → Applied
+          - Applied → Interview
+          - Interview → Offer
+          - Offer → Accepted
+
+  - id: REPORTING
+    title: Basic Reporting
+    priority: P2
+
+    issues:
+      - id: ANALYTICS-004
+        title: Export analytics summary
+        type: task
+        priority: P2
+        estimate: 2
+
+        acceptance_criteria:
+          - Export summary as CSV
+
+acceptance_tests:
+  - Dashboard statistics match underlying data.
+  - Funnel percentages are correctly calculated.
+  - Analytics load in under two seconds.
+
+future_scope:
+  - AI-powered insights
+  - Goal tracking
+  - Benchmark comparisons
+  - Weekly performance reports
+  - Predictive career analytics

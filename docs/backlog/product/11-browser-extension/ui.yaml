@@ -1,0 +1,443 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: EXT-UI
+  title: Browser Extension User Interface
+  domain: BROWSER_EXTENSION
+  type: product
+  version: 1.0.0
+
+objective: >
+  Deliver a fast, intuitive, and unobtrusive browser extension interface that
+  allows users to capture jobs, review extracted information, resolve parsing
+  issues, and sync data into CareerOS with minimal friction.
+
+status: planned
+
+priority: P0
+
+milestone: CAPTURE
+
+owner: Product Engineering
+
+dependencies:
+  - EXT-ARCH
+  - EXT-PARSERS
+  - EXT-SYNC
+  - AUTH
+
+success_metrics:
+  - id: EXTUI-001
+    metric: successful_capture_rate
+    target: ">=95%"
+
+  - id: EXTUI-002
+    metric: average_capture_time
+    target: "<10 seconds"
+
+  - id: EXTUI-003
+    metric: user_confirmation_rate
+    target: ">=90%"
+
+  - id: EXTUI-004
+    metric: manual_edit_rate
+    target: "<15%"
+
+overview: >
+  The Browser Extension UI is the user's primary interaction surface during job
+  capture. It should require as few clicks as possible while remaining
+  transparent about what data was extracted, what requires review, and whether
+  synchronization succeeded.
+
+design_principles:
+
+  - Fast first
+  - Minimal clicks
+  - Progressive disclosure
+  - Clear feedback
+  - Forgiving interactions
+  - Consistent with CareerOS design system
+  - Accessible by default
+  - Responsive to different browser window sizes
+
+supported_states:
+
+  - Signed out
+  - Signed in
+  - Supported page
+  - Unsupported page
+  - Capturing
+  - Reviewing
+  - Syncing
+  - Success
+  - Partial success
+  - Error
+  - Offline
+
+screens:
+
+  - Landing
+  - Authentication
+  - Job Capture
+  - Review Extracted Data
+  - Duplicate Detection
+  - Sync Progress
+  - Success Confirmation
+  - Error Recovery
+  - Settings
+  - About
+
+components:
+
+  - Header
+  - User Avatar
+  - Status Banner
+  - Job Summary Card
+  - Company Summary Card
+  - Capture Button
+  - Review Form
+  - Duplicate Warning
+  - Sync Button
+  - Progress Indicator
+  - Success State
+  - Error Alert
+  - Footer
+
+navigation:
+
+  primary:
+
+    - Capture
+    - Settings
+
+  secondary:
+
+    - Help
+    - Documentation
+    - Sign Out
+
+interaction_flow:
+
+  - Detect supported page
+  - Display capture state
+  - User clicks Capture
+  - Parser extracts raw data
+  - Review screen opens
+  - User edits if necessary
+  - User confirms
+  - Sync starts
+  - Success confirmation shown
+
+empty_states:
+
+  unsupported_page:
+
+    message: >
+      This page is not currently supported.
+
+    actions:
+      - Open supported sites documentation
+      - Report unsupported site
+
+  no_data:
+
+    message: >
+      No job information could be extracted.
+
+    actions:
+      - Retry extraction
+      - Manual entry
+
+loading_states:
+
+  parsing:
+    indicator: Spinner
+
+  syncing:
+    indicator: Progress Bar
+
+  authentication:
+    indicator: Skeleton
+
+error_states:
+
+  authentication_failed:
+
+    actions:
+      - Retry
+      - Sign in again
+
+  parser_failed:
+
+    actions:
+      - Retry extraction
+      - Manual review
+
+  sync_failed:
+
+    actions:
+      - Retry sync
+      - Save locally
+
+  network_error:
+
+    actions:
+      - Retry later
+
+success_states:
+
+  capture_complete:
+
+    message: >
+      Job successfully added to CareerOS.
+
+    actions:
+      - View in Dashboard
+      - Capture another job
+
+duplicate_handling:
+
+  behaviors:
+
+    - Show existing application
+    - Allow overwrite
+    - Allow merge
+    - Cancel import
+
+notifications:
+
+  in_extension:
+
+    - Success
+    - Warning
+    - Error
+    - Information
+
+  browser_notifications:
+
+    enabled: false
+
+accessibility:
+
+  requirements:
+
+    - Keyboard navigation
+    - Focus management
+    - Screen reader labels
+    - Semantic HTML
+    - High contrast support
+    - Minimum touch targets
+    - Accessible color palette
+
+responsive_behavior:
+
+  minimum_width: 360
+
+  supported_sizes:
+
+    - Popup
+    - Side Panel
+    - Standalone Window
+
+performance_requirements:
+
+  popup_load_time: "<300ms"
+
+  interaction_latency: "<100ms"
+
+  animation_duration: "<250ms"
+
+visual_guidelines:
+
+  typography:
+
+    primary: Inter
+
+  spacing:
+
+    system: 8px
+
+  border_radius:
+
+    standard: 12px
+
+  icons:
+
+    library: Lucide
+
+  animations:
+
+    subtle_only: true
+
+engineering_principles:
+
+  - Presentational components only
+  - Shared UI library
+  - Strong typing
+  - No business logic in components
+  - State managed centrally
+  - Accessibility first
+  - Mobile-inspired interaction model
+
+future_scope:
+
+  - Side Panel experience
+  - Keyboard shortcuts
+  - Batch capture
+  - Saved drafts
+  - Dark mode
+  - AI-assisted field suggestions
+  - Recent captures
+  - Offline queue viewer
+
+features:
+
+  - id: EXTENSION-UI
+    title: Browser Extension UI
+
+    priority: P0
+
+    estimate: XL
+
+    issues:
+
+      - id: EXTUI-001
+        title: Build extension popup layout
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        labels:
+          - extension
+          - frontend
+
+        acceptance_criteria:
+          - Responsive popup
+          - Shared layout
+          - Header and footer implemented
+
+      - id: EXTUI-002
+        title: Implement capture screen
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - EXTUI-001
+
+        acceptance_criteria:
+          - Job summary displayed
+          - Capture button available
+          - Loading states supported
+
+      - id: EXTUI-003
+        title: Build review screen
+
+        type: task
+
+        priority: P0
+
+        estimate: L
+
+        dependencies:
+          - EXTUI-002
+
+        acceptance_criteria:
+          - Editable fields
+          - Validation errors shown
+          - User confirmation required
+
+      - id: EXTUI-004
+        title: Build sync progress UI
+
+        type: task
+
+        priority: P0
+
+        estimate: S
+
+        dependencies:
+          - EXTUI-003
+
+        acceptance_criteria:
+          - Progress indicator shown
+          - Success state displayed
+          - Error state displayed
+
+      - id: EXTUI-005
+        title: Implement duplicate resolution UI
+
+        type: task
+
+        priority: P1
+
+        estimate: M
+
+        dependencies:
+          - EXTUI-004
+
+        acceptance_criteria:
+          - Duplicate warning shown
+          - Merge option available
+          - Replace option available
+          - Cancel option available
+
+      - id: EXTUI-006
+        title: Implement settings screen
+
+        type: task
+
+        priority: P1
+
+        estimate: S
+
+        dependencies:
+          - EXTUI-001
+
+        acceptance_criteria:
+          - User profile shown
+          - Sign out available
+          - Preferences configurable
+
+      - id: EXTUI-007
+        title: Accessibility improvements
+
+        type: task
+
+        priority: P1
+
+        estimate: M
+
+        dependencies:
+          - EXTUI-006
+
+        acceptance_criteria:
+          - Keyboard navigation complete
+          - Screen reader support added
+          - WCAG AA requirements satisfied
+
+acceptance_tests:
+
+  - Popup opens in under 300ms.
+  - Supported pages display Capture UI.
+  - Unsupported pages display informative empty state.
+  - Review screen allows editing extracted fields.
+  - Duplicate resolution works correctly.
+  - Sync progress is clearly communicated.
+  - Success and error states are understandable.
+  - All interactions are keyboard accessible.
+  - UI matches CareerOS design system.
+  - Extension functions across supported Chromium browsers.
+
+notes: >
+  The extension UI should prioritize speed, clarity, and confidence.
+  Users should never wonder whether a job was captured successfully or
+  whether they need to take additional action. Business logic must remain
+  outside UI components, with the interface serving purely as a presentation
+  and interaction layer over the Parser Framework and Sync Engine.

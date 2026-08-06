@@ -1,0 +1,395 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: EXT-WORKDAY
+  title: Workday Job Parser
+  domain: BROWSER_EXTENSION
+  type: product
+  version: 1.0.0
+
+objective: >
+  Enable CareerOS users to capture job postings hosted on Workday-powered
+  career sites with a single click. The parser should reliably extract
+  structured job and company information despite Workday's highly customized,
+  tenant-specific implementations.
+
+status: planned
+
+priority: P0
+
+milestone: CAPTURE
+
+owner: Engineering
+
+dependencies:
+  - EXT-ARCH
+  - EXT-PARSERS
+  - JOBS
+  - COMPANIES
+  - APPLICATIONS
+
+success_metrics:
+  - id: WORKDAY-001
+    metric: extraction_success_rate
+    target: ">=92%"
+
+  - id: WORKDAY-002
+    metric: parser_execution_time
+    target: "<600ms"
+
+  - id: WORKDAY-003
+    metric: parser_failure_rate
+    target: "<5%"
+
+  - id: WORKDAY-004
+    metric: manual_edit_rate
+    target: "<15%"
+
+overview: >
+  Workday is one of the most challenging ATS platforms because every company
+  can heavily customize its careers site. The parser must use multiple
+  extraction strategies, gracefully degrade when information is unavailable,
+  and rely heavily on semantic detection rather than brittle DOM selectors.
+
+supported_pages:
+
+  - https://*.myworkdayjobs.com/*
+  - https://*.wd*.myworkdayjobs.com/*
+  - Regional Workday domains
+
+page_detection:
+
+  hostnames:
+    - myworkdayjobs.com
+
+  fallback_detection:
+    - Workday metadata
+    - JSON-LD
+    - Embedded application configuration
+    - Workday page signatures
+
+parser:
+
+  implementation: WorkdayParser
+
+  extends: BaseParser
+
+responsibilities:
+
+  - Detect Workday job pages
+  - Extract company information
+  - Extract job information
+  - Extract structured metadata
+  - Return raw extraction model
+
+must_not:
+
+  - Normalize data
+  - Perform duplicate detection
+  - Authenticate users
+  - Save records
+  - Call CareerOS APIs
+  - Execute business logic
+
+fields:
+
+  company:
+
+    required:
+      - name
+
+    optional:
+      - careersUrl
+      - website
+      - logo
+
+  job:
+
+    required:
+      - title
+      - url
+
+    optional:
+      - location
+      - description
+      - employmentType
+      - workplaceType
+      - jobFamily
+      - department
+      - postedDate
+      - requisitionId
+      - scheduleType
+      - workerSubtype
+
+  metadata:
+
+    required:
+      - source
+      - parser
+      - parserVersion
+      - extractedAt
+
+extraction_strategy:
+
+  priority:
+
+    - JSON-LD
+    - Embedded structured data
+    - Workday configuration objects
+    - Semantic HTML
+    - DOM selectors
+    - Visible text fallback
+
+common_patterns:
+
+  - Job header
+  - Job details panel
+  - About the role
+  - Qualifications
+  - Responsibilities
+  - Location blocks
+  - Requisition identifiers
+
+special_considerations:
+
+  - Tenant-specific layouts
+  - Regional deployments
+  - Dynamic content rendering
+  - Lazy-loaded sections
+  - Frequently changing DOM
+
+normalization:
+
+  handled_by: Parser Framework
+
+validation:
+
+  handled_by: Parser Framework
+
+duplicate_detection:
+
+  handled_by: Sync Engine
+
+confidence_scoring:
+
+  handled_by: Parser Framework
+
+unsupported_states:
+
+  - Login required
+  - Job removed
+  - Internal-only posting
+  - External redirect
+  - Region-restricted posting
+
+failure_handling:
+
+  missing_optional_fields:
+
+    action:
+      Continue extraction
+
+  missing_required_fields:
+
+    action:
+      Return validation warning
+
+  parser_exception:
+
+    action:
+      Log telemetry
+      Offer manual capture
+
+  dynamic_content_timeout:
+
+    action:
+      Retry extraction once
+      Continue with partial results
+
+telemetry:
+
+  collect:
+
+    - parserVersion
+    - extractionDuration
+    - extractionSuccess
+    - confidenceScore
+    - retryCount
+
+  never_collect:
+
+    - Applicant information
+    - Login credentials
+    - Session tokens
+    - Resume uploads
+    - Cookies
+
+engineering_principles:
+
+  - Pure extraction only
+  - No business logic
+  - Strong typing
+  - Resilient selector strategy
+  - Graceful degradation
+  - Retry only when deterministic
+  - Shared extraction helpers
+  - Easy to extend
+
+future_scope:
+
+  - Salary extraction
+  - Visa sponsorship detection
+  - Hiring manager extraction
+  - Benefits extraction
+  - AI-assisted selector recovery
+  - Automatic DOM change detection
+  - Multi-language parsing
+
+features:
+
+  - id: WORKDAY-PARSER
+    title: Workday Parser
+
+    priority: P0
+
+    estimate: XL
+
+    issues:
+
+      - id: WD-001
+        title: Detect Workday job pages
+
+        type: task
+
+        priority: P0
+
+        estimate: S
+
+        labels:
+          - extension
+          - workday
+
+        acceptance_criteria:
+          - Supported Workday domains detected
+          - Unsupported pages ignored
+          - Tenant detection implemented
+
+      - id: WD-002
+        title: Extract job information
+
+        type: task
+
+        priority: P0
+
+        estimate: L
+
+        dependencies:
+          - WD-001
+
+        acceptance_criteria:
+          - Job title extracted
+          - Description extracted
+          - URL extracted
+          - Location extracted
+          - Department extracted when available
+
+      - id: WD-003
+        title: Extract company information
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - WD-002
+
+        acceptance_criteria:
+          - Company name extracted
+          - Careers URL extracted
+          - Company metadata extracted
+
+      - id: WD-004
+        title: Extract Workday metadata
+
+        type: task
+
+        priority: P0
+
+        estimate: L
+
+        dependencies:
+          - WD-003
+
+        acceptance_criteria:
+          - Employment type extracted
+          - Workplace type extracted
+          - Requisition ID extracted
+          - Schedule type extracted
+          - Posted date extracted
+
+      - id: WD-005
+        title: Handle dynamic page loading
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - WD-004
+
+        acceptance_criteria:
+          - Lazy-loaded content supported
+          - Retry strategy implemented
+          - Partial extraction supported
+
+      - id: WD-006
+        title: Add parser telemetry
+
+        type: task
+
+        priority: P1
+
+        estimate: S
+
+        dependencies:
+          - WD-005
+
+        acceptance_criteria:
+          - Parser metrics recorded
+          - Retry metrics recorded
+          - Failure reasons logged
+          - Parser version tracked
+
+acceptance_tests:
+
+  - Workday pages detected correctly.
+  - Tenant-specific layouts supported.
+  - Company extracted correctly.
+  - Job title extracted.
+  - Description extracted.
+  - Location extracted.
+  - Dynamic content handled.
+  - Retry strategy functions correctly.
+  - Parser integrates with the shared Parser Framework.
+  - Unsupported pages ignored gracefully.
+
+known_limitations:
+
+  - Workday implementations vary significantly between organizations.
+  - Some pages require asynchronous rendering before extraction.
+  - Certain fields may not exist depending on employer configuration.
+  - Salary information is rarely exposed.
+  - Internal-only postings cannot always be parsed.
+
+notes: >
+  Workday should be considered the most complex supported ATS. Unlike
+  LinkedIn, Greenhouse, or Lever, there is no single canonical page
+  structure. The parser should prioritize resilience over completeness,
+  preferring partial but accurate extraction instead of brittle logic that
+  frequently breaks. All normalization, validation, duplicate detection,
+  confidence scoring, and synchronization responsibilities remain in the
+  shared Parser Framework and Sync Engine.

@@ -62,12 +62,10 @@ features:
 
       - SAVED
       - APPLIED
-      - SCREENING
-      - INTERVIEW
+      - INTERVIEWING
       - OFFER
-      - ACCEPTED
       - REJECTED
-      - WITHDRAWN
+      - ARCHIVED
 
     issues:
 

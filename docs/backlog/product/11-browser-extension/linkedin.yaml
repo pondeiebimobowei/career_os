@@ -1,0 +1,333 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: EXT-LINKEDIN
+  title: LinkedIn Job Parser
+  domain: BROWSER_EXTENSION
+  type: product
+  version: 1.0.0
+
+objective: >
+  Enable CareerOS users to capture LinkedIn job postings with a single click,
+  extracting structured job and company information into the CareerOS data
+  model while gracefully handling incomplete or changing page structures.
+
+status: planned
+
+priority: P0
+
+milestone: CAPTURE
+
+owner: Engineering
+
+dependencies:
+  - EXT-ARCH
+  - EXT-PARSERS
+  - JOBS
+  - COMPANIES
+  - APPLICATIONS
+
+success_metrics:
+  - id: LINKEDIN-001
+    metric: extraction_success_rate
+    target: ">=95%"
+
+  - id: LINKEDIN-002
+    metric: extraction_time
+    target: "<500ms"
+
+  - id: LINKEDIN-003
+    metric: manual_edit_rate
+    target: "<10%"
+
+  - id: LINKEDIN-004
+    metric: parser_failure_rate
+    target: "<2%"
+
+overview: >
+  The LinkedIn Parser is responsible only for extracting information from
+  LinkedIn job pages. It should never contain normalization,
+  validation, synchronization, authentication, or business logic.
+
+supported_pages:
+
+  - https://www.linkedin.com/jobs/view/*
+  - https://www.linkedin.com/jobs/collections/*
+  - https://www.linkedin.com/jobs/search/*
+
+page_detection:
+
+  hostname:
+    - linkedin.com
+
+  required_dom:
+    - job title
+    - company name
+
+parser:
+
+  implementation:
+    LinkedInParser
+
+  extends:
+    BaseParser
+
+responsibilities:
+
+  - Detect LinkedIn job pages
+  - Extract job information
+  - Extract company information
+  - Extract metadata
+  - Return raw structured data
+
+must_not:
+
+  - Call APIs
+  - Save data
+  - Authenticate users
+  - Detect duplicates
+  - Normalize entities
+  - Contain shared business logic
+
+fields:
+
+  company:
+
+    required:
+      - name
+
+    optional:
+      - logo
+      - linkedinUrl
+
+  job:
+
+    required:
+      - title
+      - url
+
+    optional:
+      - location
+      - employmentType
+      - workplaceType
+      - description
+      - postedDate
+      - applicantCount
+      - seniorityLevel
+      - industry
+      - jobFunction
+
+  metadata:
+
+    required:
+      - source
+      - parser
+      - parserVersion
+      - extractedAt
+
+extraction_strategy:
+
+  priority:
+
+    - Structured DOM
+    - Semantic HTML
+    - Meta tags
+    - JSON-LD
+    - Visible fallback text
+
+normalization:
+
+  handled_by:
+    Parser Framework
+
+validation:
+
+  handled_by:
+    Parser Framework
+
+duplicate_detection:
+
+  handled_by:
+    Sync Engine
+
+confidence_scoring:
+
+  handled_by:
+    Parser Framework
+
+unsupported_states:
+
+  - Login required
+  - Job removed
+  - Job expired
+  - Restricted visibility
+
+failure_handling:
+
+  missing_optional_field:
+
+    action:
+      Continue extraction
+
+  missing_required_field:
+
+    action:
+      Return validation warning
+
+  parser_failure:
+
+    action:
+      Log telemetry
+      Show manual capture screen
+
+telemetry:
+
+  collect:
+
+    - parserVersion
+    - extractionDuration
+    - confidenceScore
+    - extractionSuccess
+
+  never_collect:
+
+    - LinkedIn credentials
+    - Cookies
+    - Messages
+    - Private profile data
+
+engineering_principles:
+
+  - No duplicated selectors
+  - No business logic
+  - Pure extraction only
+  - Strong typing
+  - Small parser surface
+  - Fail gracefully
+  - Selector abstraction
+
+future_scope:
+
+  - Salary extraction improvements
+  - Recruiter information
+  - Skills extraction
+  - Hiring team extraction
+  - Easy Apply detection
+  - Company enrichment
+
+features:
+
+  - id: LINKEDIN-PARSER
+    title: LinkedIn Parser
+
+    priority: P0
+
+    estimate: L
+
+    issues:
+
+      - id: LNK-001
+        title: Detect LinkedIn job pages
+
+        type: task
+
+        priority: P0
+
+        estimate: S
+
+        labels:
+          - extension
+          - linkedin
+
+        acceptance_criteria:
+          - Supported URLs detected
+          - Unsupported pages ignored
+
+      - id: LNK-002
+        title: Extract job information
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - LNK-001
+
+        acceptance_criteria:
+          - Job title extracted
+          - Description extracted
+          - URL extracted
+          - Metadata extracted
+
+      - id: LNK-003
+        title: Extract company information
+
+        type: task
+
+        priority: P0
+
+        estimate: S
+
+        dependencies:
+          - LNK-002
+
+        acceptance_criteria:
+          - Company name extracted
+          - Logo extracted when available
+          - Company URL extracted when available
+
+      - id: LNK-004
+        title: Extract job metadata
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - LNK-003
+
+        acceptance_criteria:
+          - Employment type extracted
+          - Workplace type extracted
+          - Posted date extracted
+          - Applicant count extracted
+
+      - id: LNK-005
+        title: Add parser telemetry
+
+        type: task
+
+        priority: P1
+
+        estimate: S
+
+        dependencies:
+          - LNK-004
+
+        acceptance_criteria:
+          - Success recorded
+          - Failures logged
+          - Parser version tracked
+
+acceptance_tests:
+
+  - LinkedIn job page detected.
+  - Company extracted correctly.
+  - Job title extracted correctly.
+  - Description extracted correctly.
+  - Metadata extracted correctly.
+  - Missing optional fields do not fail extraction.
+  - Unsupported pages ignored.
+  - Parser returns structured output.
+  - Parser integrates with Parser Framework.
+  - Parser survives LinkedIn DOM variations.
+
+notes: >
+  This parser should remain intentionally small. Every responsibility
+  beyond extracting LinkedIn-specific DOM belongs to the shared Parser
+  Framework. This separation allows future parser maintenance without
+  duplicating business logic or synchronization behavior.

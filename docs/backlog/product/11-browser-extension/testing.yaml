@@ -1,0 +1,452 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: EXT-TESTING
+  title: Browser Extension Testing Strategy
+  domain: BROWSER_EXTENSION
+  type: engineering
+  version: 1.0.0
+
+objective: >
+  Establish a comprehensive testing strategy for the CareerOS Browser
+  Extension that ensures every supported browser feature, parser,
+  synchronization workflow, and user interaction is reliable before
+  reaching production.
+
+status: planned
+
+priority: P0
+
+milestone: CAPTURE
+
+owner: Engineering
+
+dependencies:
+  - EXT-ARCH
+  - EXT-PARSERS
+  - EXT-UI
+  - EXT-SYNC
+  - SECURITY
+  - TESTING
+
+success_metrics:
+  - id: TEST-001
+    metric: unit_test_coverage
+    target: ">=90%"
+
+  - id: TEST-002
+    metric: integration_test_coverage
+    target: "100% of critical flows"
+
+  - id: TEST-003
+    metric: end_to_end_pass_rate
+    target: "100%"
+
+  - id: TEST-004
+    metric: regression_escape_rate
+    target: "0 critical regressions"
+
+overview: >
+  The Browser Extension is distributed software that interacts with
+  third-party websites whose DOM structures change frequently. Testing
+  must therefore focus on isolation, deterministic behavior, resilience,
+  and early regression detection.
+
+testing_pyramid:
+
+  unit:
+    priority: Highest
+
+  integration:
+    priority: High
+
+  end_to_end:
+    priority: High
+
+  manual_exploratory:
+    priority: Medium
+
+test_layers:
+
+  unit:
+
+    scope:
+
+      - Parser Registry
+      - Base Parser
+      - Individual Parsers
+      - DOM utilities
+      - Data normalization
+      - Validation
+      - Duplicate detection
+      - Sync utilities
+      - Queue logic
+      - UI utilities
+
+  integration:
+
+    scope:
+
+      - Parser → Framework
+      - Framework → Sync
+      - Sync → API
+      - UI → Parser
+      - UI → Sync
+      - Authentication flow
+
+  end_to_end:
+
+    scope:
+
+      - Complete job capture
+      - Duplicate workflow
+      - Offline synchronization
+      - Error recovery
+      - Authentication
+      - Settings
+      - Unsupported pages
+
+supported_browsers:
+
+  primary:
+
+    - Chrome
+    - Microsoft Edge
+
+  secondary:
+
+    - Brave
+
+future_support:
+
+  - Firefox
+
+supported_platforms:
+
+  - macOS
+  - Windows
+  - Linux
+
+parser_testing:
+
+  requirements:
+
+    - Every parser has isolated fixtures
+    - No live websites used in unit tests
+    - DOM snapshots versioned
+    - Regression fixtures maintained
+
+  supported_parsers:
+
+    - LinkedIn
+    - Greenhouse
+    - Lever
+    - Workday
+
+fixture_strategy:
+
+  html:
+
+    stored_locally: true
+
+  screenshots:
+
+    optional: true
+
+  json_outputs:
+
+    versioned: true
+
+mocking_strategy:
+
+  mock:
+
+    - CareerOS API
+    - Firebase Authentication
+    - Browser Storage
+    - Chrome Extension APIs
+    - IndexedDB
+    - Network failures
+
+  never_mock:
+
+    - Parser business logic
+    - Validation logic
+    - Duplicate detection
+
+performance_testing:
+
+  parser_execution:
+
+    target: "<500ms"
+
+  popup_load:
+
+    target: "<300ms"
+
+  sync_completion:
+
+    target: "<2 seconds"
+
+security_testing:
+
+  verify:
+
+    - Token handling
+    - Storage encryption
+    - CSP compliance
+    - Input validation
+    - XSS prevention
+    - Message origin validation
+    - Permission boundaries
+
+accessibility_testing:
+
+  verify:
+
+    - Keyboard navigation
+    - Screen reader labels
+    - Focus management
+    - Contrast ratios
+    - Semantic HTML
+    - ARIA attributes
+
+ci_requirements:
+
+  required_checks:
+
+    - TypeScript compilation
+    - ESLint
+    - Unit tests
+    - Integration tests
+    - Parser regression tests
+    - Coverage thresholds
+    - Build verification
+
+release_requirements:
+
+  blockers:
+
+    - Failing P0 tests
+    - Coverage below threshold
+    - Parser regression
+    - Authentication failures
+    - Synchronization failures
+
+test_data:
+
+  sources:
+
+    - Local HTML fixtures
+    - Synthetic job data
+    - Mock companies
+    - Mock applications
+
+  restrictions:
+
+    - No production user data
+    - No personal information
+    - No credentials
+
+telemetry_validation:
+
+  verify:
+
+    - Events emitted
+    - Metrics recorded
+    - No sensitive data logged
+
+engineering_principles:
+
+  - Test behavior, not implementation
+  - Deterministic tests only
+  - No flaky tests
+  - Fast feedback loop
+  - Independent test execution
+  - Isolated fixtures
+  - Version-controlled snapshots
+
+future_scope:
+
+  - Automated DOM change detection
+  - Visual regression testing
+  - Cross-browser cloud testing
+  - Performance benchmarking dashboard
+  - Nightly parser validation against live sites
+
+features:
+
+  - id: EXTENSION-TESTING
+    title: Browser Extension Testing
+
+    priority: P0
+
+    estimate: XL
+
+    issues:
+
+      - id: TEST-001
+        title: Configure testing infrastructure
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        labels:
+          - testing
+          - infrastructure
+
+        acceptance_criteria:
+          - Vitest configured
+          - Playwright configured
+          - Coverage reporting enabled
+
+      - id: TEST-002
+        title: Create parser fixture library
+
+        type: task
+
+        priority: P0
+
+        estimate: L
+
+        dependencies:
+          - TEST-001
+
+        acceptance_criteria:
+          - HTML fixtures stored
+          - JSON expected outputs stored
+          - Fixtures versioned
+
+      - id: TEST-003
+        title: Implement parser unit tests
+
+        type: task
+
+        priority: P0
+
+        estimate: XL
+
+        dependencies:
+          - TEST-002
+
+        acceptance_criteria:
+          - LinkedIn parser tested
+          - Greenhouse parser tested
+          - Lever parser tested
+          - Workday parser tested
+
+      - id: TEST-004
+        title: Implement synchronization integration tests
+
+        type: task
+
+        priority: P0
+
+        estimate: L
+
+        dependencies:
+          - TEST-003
+
+        acceptance_criteria:
+          - API communication tested
+          - Retry logic verified
+          - Offline queue verified
+
+      - id: TEST-005
+        title: Implement end-to-end extension tests
+
+        type: task
+
+        priority: P0
+
+        estimate: XL
+
+        dependencies:
+          - TEST-004
+
+        acceptance_criteria:
+          - Full capture workflow tested
+          - Duplicate workflow tested
+          - Offline workflow tested
+          - Authentication workflow tested
+
+      - id: TEST-006
+        title: Add regression test suite
+
+        type: task
+
+        priority: P1
+
+        estimate: M
+
+        dependencies:
+          - TEST-005
+
+        acceptance_criteria:
+          - DOM snapshots versioned
+          - Parser regressions detected
+          - CI blocks regressions
+
+      - id: TEST-007
+        title: Implement accessibility and performance tests
+
+        type: task
+
+        priority: P1
+
+        estimate: M
+
+        dependencies:
+          - TEST-005
+
+        acceptance_criteria:
+          - Accessibility verified
+          - Performance thresholds enforced
+          - Reports generated
+
+acceptance_tests:
+
+  - Every supported parser passes all fixture tests.
+  - Unsupported pages fail gracefully.
+  - Complete job capture succeeds end-to-end.
+  - Offline queue survives browser restart.
+  - Duplicate detection works consistently.
+  - Authentication recovery functions correctly.
+  - All CI quality gates pass.
+  - Coverage thresholds are satisfied.
+  - No critical regression reaches production.
+  - Extension builds successfully for supported browsers.
+
+recommended_tooling:
+
+  unit_testing:
+    - Vitest
+
+  component_testing:
+    - React Testing Library
+
+  end_to_end:
+    - Playwright
+
+  api_mocking:
+    - MSW
+
+  coverage:
+    - V8 Coverage
+
+  linting:
+    - ESLint
+
+  formatting:
+    - Prettier
+
+notes: >
+  The Browser Extension is particularly vulnerable to regressions because
+  external job boards can change their DOM structures without notice.
+  Parser fixture testing should therefore be treated as a first-class
+  engineering discipline. Every parser bug that reaches production should
+  result in a new fixture and regression test so the same failure can never
+  occur twice.

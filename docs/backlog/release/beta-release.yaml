@@ -1,0 +1,102 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: BETA_RELEASE
+  title: Beta Release Readiness
+  domain: release
+
+objective: >
+  Validate that CareerOS is stable, secure, documented, observable,
+  and ready for a controlled beta launch with real users.
+
+milestone: BETA
+
+dependencies:
+  - DOCUMENTATION
+  - SECURITY
+  - TESTING
+  - PERFORMANCE
+  - OBSERVABILITY
+
+success_metrics:
+  - id: BETA_BLOCKERS
+    metric: open_p0_defects
+    target: "0"
+  - id: BETA_SUCCESS
+    metric: successful_beta_launch
+    target: "100%"
+  - id: EARLY_RETENTION
+    metric: week1_retention
+    target: ">=40%"
+
+features:
+  - id: RELEASE_AUDIT
+    title: Release Readiness Audit
+    priority: P0
+    issues:
+      - id: BETA-001
+        title: Complete production readiness checklist
+        type: task
+        priority: P0
+        estimate: 2
+        acceptance_criteria:
+          - All P0 issues closed
+          - Documentation complete
+          - Release notes prepared
+
+  - id: PRODUCTION_VALIDATION
+    title: Production Validation
+    priority: P0
+    issues:
+      - id: BETA-002
+        title: Verify production environment
+        type: task
+        priority: P0
+        estimate: 3
+        acceptance_criteria:
+          - Deployment successful
+          - Monitoring operational
+          - Backups verified
+          - Health checks passing
+
+  - id: USER_ONBOARDING
+    title: Beta User Onboarding
+    priority: P1
+    issues:
+      - id: BETA-003
+        title: Prepare onboarding and feedback loop
+        type: task
+        priority: P1
+        estimate: 2
+        acceptance_criteria:
+          - Welcome flow available
+          - Feedback form connected
+          - Support contact visible
+
+  - id: POST_RELEASE
+    title: Post-Launch Monitoring
+    priority: P1
+    issues:
+      - id: BETA-004
+        title: Monitor launch metrics
+        type: task
+        priority: P1
+        estimate: 2
+        acceptance_criteria:
+          - Analytics dashboard live
+          - Error alerts configured
+          - Daily review process established
+
+acceptance_tests:
+  - No critical security vulnerabilities remain.
+  - Core user journeys pass in production.
+  - Monitoring, logging, and backups verified.
+  - First beta cohort can onboard without founder assistance.
+  - Feedback collection process is operational.
+
+future_scope:
+  - Public launch checklist
+  - Multi-region deployment
+  - Enterprise readiness
+  - SLA monitoring
+  - Incident response playbooks

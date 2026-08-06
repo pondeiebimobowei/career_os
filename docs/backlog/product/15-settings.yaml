@@ -1,0 +1,90 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: SETTINGS
+  title: Settings
+  domain: product
+
+objective: >
+  Provide users with a centralized place to manage their account,
+  preferences, notifications, privacy, and appearance.
+
+milestone: MVP_POLISH
+
+dependencies:
+  - AUTHENTICATION
+  - USER_PROFILE
+  - NOTIFICATIONS
+
+success_metrics:
+  - id: SETTINGS_COMPLETION
+    metric: users_configuring_settings
+    target: ">=70%"
+
+features:
+  - id: ACCOUNT_SETTINGS
+    title: Account Settings
+    priority: P1
+    issues:
+      - id: SETTINGS-001
+        title: Account settings page
+        type: task
+        priority: P1
+        estimate: 3
+        acceptance_criteria:
+          - View account information
+          - Update display name
+          - Update profile picture
+          - Update password
+
+  - id: NOTIFICATION_PREFERENCES
+    title: Notification Preferences
+    priority: P1
+    issues:
+      - id: SETTINGS-002
+        title: Notification preference management
+        type: task
+        priority: P1
+        estimate: 2
+        acceptance_criteria:
+          - Enable/disable reminder notifications
+          - Save preferences
+
+  - id: APPEARANCE
+    title: Appearance
+    priority: P2
+    issues:
+      - id: SETTINGS-003
+        title: Theme preferences
+        type: task
+        priority: P2
+        estimate: 1
+        acceptance_criteria:
+          - Light mode
+          - Dark mode
+          - System preference
+
+  - id: PRIVACY
+    title: Privacy & Data
+    priority: P2
+    issues:
+      - id: SETTINGS-004
+        title: Privacy controls
+        type: task
+        priority: P2
+        estimate: 2
+        acceptance_criteria:
+          - Export personal data
+          - Delete account confirmation
+
+acceptance_tests:
+  - User can update account information.
+  - Notification preferences persist.
+  - Theme selection is applied after refresh.
+  - Account deletion requires confirmation.
+
+future_scope:
+  - Connected integrations
+  - Session management
+  - API keys
+  - Advanced privacy controls

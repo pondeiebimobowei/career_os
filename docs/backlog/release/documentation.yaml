@@ -1,0 +1,94 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: DOCUMENTATION
+  title: Documentation
+  domain: release
+
+objective: >
+  Maintain accurate, versioned documentation that enables contributors,
+  AI coding assistants, and stakeholders to understand, build, deploy,
+  and operate CareerOS consistently.
+
+milestone: BETA
+
+dependencies:
+  - FOUNDATION
+  - TESTING
+  - OBSERVABILITY
+
+success_metrics:
+  - id: DOC_COMPLETENESS
+    metric: required_documents_complete
+    target: "100%"
+  - id: SETUP_TIME
+    metric: developer_setup_time
+    target: "<30 minutes"
+
+features:
+  - id: PROJECT_DOCS
+    title: Core Project Documentation
+    priority: P0
+    issues:
+      - id: DOC-001
+        title: Finalize README and setup guides
+        type: task
+        priority: P0
+        estimate: 2
+        acceptance_criteria:
+          - README is complete
+          - Local setup documented
+          - Environment variables documented
+
+  - id: ARCHITECTURE_DOCS
+    title: Architecture Documentation
+    priority: P0
+    issues:
+      - id: DOC-002
+        title: Publish architecture documentation
+        type: task
+        priority: P0
+        estimate: 3
+        acceptance_criteria:
+          - Frontend documented
+          - Backend documented
+          - Extension documented
+          - Data model documented
+
+  - id: API_DOCS
+    title: API Documentation
+    priority: P1
+    issues:
+      - id: DOC-003
+        title: Maintain API reference
+        type: task
+        priority: P1
+        estimate: 2
+        acceptance_criteria:
+          - Endpoints documented
+          - Request/response examples included
+
+  - id: CONTRIBUTING
+    title: Contributor & AI Guides
+    priority: P1
+    issues:
+      - id: DOC-004
+        title: Create contributing guides
+        type: task
+        priority: P1
+        estimate: 2
+        acceptance_criteria:
+          - CONTRIBUTING guide available
+          - agents.md maintained
+          - Coding standards documented
+
+acceptance_tests:
+  - New developer can run the project using documentation only.
+  - AI assistant can navigate the repository using documented conventions.
+  - Public documentation matches implemented functionality.
+
+future_scope:
+  - Versioned documentation site
+  - Interactive API explorer
+  - Architecture decision index
+  - Automated documentation generation

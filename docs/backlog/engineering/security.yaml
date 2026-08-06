@@ -1,0 +1,83 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: SECURITY
+  title: Security
+  domain: engineering
+
+objective: >
+  Establish a secure foundation for CareerOS by protecting user data,
+  APIs, authentication flows, and infrastructure.
+
+milestone: MVP_POLISH
+
+dependencies:
+  - FOUNDATION
+  - AUTHENTICATION
+
+success_metrics:
+  - id: CRITICAL_VULNS
+    metric: critical_vulnerabilities
+    target: "0"
+  - id: SECURITY_HEADERS
+    metric: security_header_coverage
+    target: "100%"
+
+features:
+  - id: API_SECURITY
+    title: API Security
+    priority: P0
+    issues:
+      - id: SEC-001
+        title: Authentication middleware
+        type: task
+        priority: P0
+        estimate: 3
+        acceptance_criteria:
+          - Protected routes require valid session
+          - Unauthorized requests return 401
+      - id: SEC-002
+        title: Authorization policies
+        type: task
+        priority: P0
+        estimate: 3
+        acceptance_criteria:
+          - Users access only their own resources
+
+  - id: INPUT_VALIDATION
+    title: Validation & Sanitization
+    priority: P0
+    issues:
+      - id: SEC-003
+        title: Request validation
+        type: task
+        priority: P0
+        estimate: 2
+        acceptance_criteria:
+          - All API inputs validated
+          - Invalid payloads rejected
+
+  - id: PLATFORM_HARDENING
+    title: Platform Hardening
+    priority: P1
+    issues:
+      - id: SEC-004
+        title: Security headers and rate limiting
+        type: task
+        priority: P1
+        estimate: 2
+        acceptance_criteria:
+          - Standard security headers enabled
+          - Rate limiting applied to auth endpoints
+
+acceptance_tests:
+  - Cross-user data access is impossible.
+  - Invalid tokens are rejected.
+  - Malformed payloads return validation errors.
+
+future_scope:
+  - Audit logging
+  - Secret rotation
+  - SSO
+  - WebAuthn
+  - Automated penetration testing

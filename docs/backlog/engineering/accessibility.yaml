@@ -1,0 +1,90 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: ACCESSIBILITY
+  title: Accessibility
+  domain: engineering
+
+objective: >
+  Ensure CareerOS is usable by the widest possible audience by meeting
+  modern accessibility standards across the web application and browser extension.
+
+milestone: MVP_POLISH
+
+dependencies:
+  - FOUNDATION
+  - TESTING
+
+success_metrics:
+  - id: WCAG_LEVEL
+    metric: wcag_compliance
+    target: "WCAG 2.2 AA (core flows)"
+  - id: KEYBOARD_SUPPORT
+    metric: keyboard_completion_rate
+    target: "100% of P0 workflows"
+
+features:
+  - id: SEMANTIC_UI
+    title: Semantic HTML & ARIA
+    priority: P0
+    issues:
+      - id: A11Y-001
+        title: Add semantic markup and ARIA labels
+        type: task
+        priority: P0
+        estimate: 2
+        acceptance_criteria:
+          - Interactive controls have accessible names
+          - Landmarks are present
+          - Forms expose labels and errors
+
+  - id: KEYBOARD_NAVIGATION
+    title: Keyboard Navigation
+    priority: P0
+    issues:
+      - id: A11Y-002
+        title: Support complete keyboard navigation
+        type: task
+        priority: P0
+        estimate: 3
+        acceptance_criteria:
+          - Logical tab order
+          - Visible focus indicators
+          - No keyboard traps
+
+  - id: SCREEN_READER
+    title: Screen Reader Support
+    priority: P1
+    issues:
+      - id: A11Y-003
+        title: Improve screen reader announcements
+        type: task
+        priority: P1
+        estimate: 2
+        acceptance_criteria:
+          - Dynamic updates announced
+          - Dialogs correctly described
+
+  - id: VISUAL_ACCESSIBILITY
+    title: Visual Accessibility
+    priority: P1
+    issues:
+      - id: A11Y-004
+        title: Verify contrast and scalable typography
+        type: task
+        priority: P1
+        estimate: 2
+        acceptance_criteria:
+          - Contrast meets WCAG AA
+          - Zoom to 200% without loss of functionality
+
+acceptance_tests:
+  - All P0 workflows usable via keyboard only.
+  - Automated accessibility scans report no critical issues.
+  - Manual screen reader testing completed for authentication and application management.
+
+future_scope:
+  - Reduced motion preferences
+  - Voice control optimization
+  - High contrast theme
+  - Accessibility regression testing in CI

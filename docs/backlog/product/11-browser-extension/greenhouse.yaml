@@ -1,0 +1,347 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: EXT-GREENHOUSE
+  title: Greenhouse Job Parser
+  domain: BROWSER_EXTENSION
+  type: product
+  version: 1.0.0
+
+objective: >
+  Enable CareerOS users to capture job postings hosted on Greenhouse-powered
+  career sites with a single click. The parser should extract structured job
+  and company information while remaining resilient to branding and layout
+  differences across companies using Greenhouse.
+
+status: planned
+
+priority: P0
+
+milestone: CAPTURE
+
+owner: Engineering
+
+dependencies:
+  - EXT-ARCH
+  - EXT-PARSERS
+  - JOBS
+  - COMPANIES
+  - APPLICATIONS
+
+success_metrics:
+  - id: GREENHOUSE-001
+    metric: extraction_success_rate
+    target: ">=97%"
+
+  - id: GREENHOUSE-002
+    metric: extraction_time
+    target: "<400ms"
+
+  - id: GREENHOUSE-003
+    metric: parser_failure_rate
+    target: "<2%"
+
+  - id: GREENHOUSE-004
+    metric: manual_edit_rate
+    target: "<8%"
+
+overview: >
+  Greenhouse powers thousands of company career pages with similar page
+  structures but different branding. This parser should leverage those common
+  structures while avoiding assumptions based on company styling.
+
+supported_pages:
+
+  - https://boards.greenhouse.io/*
+  - https://job-boards.greenhouse.io/*
+  - Custom Greenhouse-hosted domains
+
+page_detection:
+
+  hostnames:
+    - boards.greenhouse.io
+    - job-boards.greenhouse.io
+
+  fallback_detection:
+    - Greenhouse metadata
+    - JSON-LD
+    - Application form markers
+
+parser:
+
+  implementation: GreenhouseParser
+
+  extends: BaseParser
+
+responsibilities:
+
+  - Detect Greenhouse job pages
+  - Extract company details
+  - Extract job details
+  - Extract structured metadata
+  - Return raw extraction model
+
+must_not:
+
+  - Perform normalization
+  - Perform duplicate detection
+  - Save data
+  - Authenticate users
+  - Call CareerOS APIs
+  - Execute business logic
+
+fields:
+
+  company:
+
+    required:
+      - name
+
+    optional:
+      - website
+      - logo
+      - careersUrl
+
+  job:
+
+    required:
+      - title
+      - url
+
+    optional:
+      - location
+      - department
+      - employmentType
+      - description
+      - workplaceType
+      - postedDate
+      - requisitionId
+
+  metadata:
+
+    required:
+      - source
+      - parser
+      - parserVersion
+      - extractedAt
+
+extraction_strategy:
+
+  priority:
+
+    - JSON-LD
+    - Structured metadata
+    - Semantic HTML
+    - DOM selectors
+    - Visible text fallback
+
+common_patterns:
+
+  - Department blocks
+  - Office location blocks
+  - Job description sections
+  - Metadata tables
+  - Greenhouse application metadata
+
+normalization:
+
+  handled_by: Parser Framework
+
+validation:
+
+  handled_by: Parser Framework
+
+duplicate_detection:
+
+  handled_by: Sync Engine
+
+confidence_scoring:
+
+  handled_by: Parser Framework
+
+unsupported_states:
+
+  - Job removed
+  - Invalid posting
+  - Archived posting
+  - External redirect
+
+failure_handling:
+
+  missing_optional_fields:
+
+    action:
+      Continue extraction
+
+  invalid_required_fields:
+
+    action:
+      Return validation warning
+
+  parser_exception:
+
+    action:
+      Log telemetry
+      Offer manual capture
+
+telemetry:
+
+  collect:
+
+    - parserVersion
+    - extractionDuration
+    - extractionSuccess
+    - confidenceScore
+
+  never_collect:
+
+    - Applicant information
+    - Resume uploads
+    - Form responses
+    - Authentication cookies
+
+engineering_principles:
+
+  - Pure extraction
+  - Strong typing
+  - Reusable selector helpers
+  - Zero duplicated business logic
+  - Small parser surface
+  - Deterministic extraction
+  - Fail gracefully
+
+future_scope:
+
+  - Hiring manager extraction
+  - Salary parsing
+  - Benefits extraction
+  - Remote policy detection
+  - Application deadline extraction
+  - Multi-language support
+
+features:
+
+  - id: GREENHOUSE-PARSER
+    title: Greenhouse Parser
+
+    priority: P0
+
+    estimate: L
+
+    issues:
+
+      - id: GH-001
+        title: Detect Greenhouse job pages
+
+        type: task
+
+        priority: P0
+
+        estimate: S
+
+        labels:
+          - extension
+          - greenhouse
+
+        acceptance_criteria:
+          - Supported URLs detected
+          - Custom Greenhouse domains detected
+          - Unsupported pages ignored
+
+      - id: GH-002
+        title: Extract job information
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - GH-001
+
+        acceptance_criteria:
+          - Title extracted
+          - Description extracted
+          - URL extracted
+          - Department extracted
+          - Location extracted
+
+      - id: GH-003
+        title: Extract company information
+
+        type: task
+
+        priority: P0
+
+        estimate: S
+
+        dependencies:
+          - GH-002
+
+        acceptance_criteria:
+          - Company name extracted
+          - Careers URL extracted
+          - Company metadata extracted
+
+      - id: GH-004
+        title: Extract job metadata
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - GH-003
+
+        acceptance_criteria:
+          - Employment type extracted
+          - Posted date extracted
+          - Requisition ID extracted
+          - Workplace type extracted
+
+      - id: GH-005
+        title: Add parser telemetry
+
+        type: task
+
+        priority: P1
+
+        estimate: S
+
+        dependencies:
+          - GH-004
+
+        acceptance_criteria:
+          - Success metrics recorded
+          - Failure metrics recorded
+          - Parser version logged
+
+acceptance_tests:
+
+  - Greenhouse pages detected correctly.
+  - Company extracted correctly.
+  - Job title extracted.
+  - Description extracted.
+  - Department extracted.
+  - Location extracted.
+  - Metadata extracted.
+  - Parser returns normalized raw structure.
+  - Unsupported pages ignored.
+  - Parser integrates with shared Parser Framework.
+
+known_limitations:
+
+  - Company-specific branding may alter DOM structure.
+  - Some legacy Greenhouse pages expose limited structured metadata.
+  - Salary information is rarely available.
+  - Not all pages expose posted dates.
+
+notes: >
+  Greenhouse is one of the most common ATS platforms used by technology
+  companies. Because Greenhouse maintains relatively consistent HTML and
+  structured metadata across customers, this parser should prioritize
+  JSON-LD and semantic extraction before relying on DOM selectors.
+  Company-specific styling should never affect parser behavior.

@@ -1,0 +1,97 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: PERFORMANCE
+  title: Performance Engineering
+  domain: engineering
+
+objective: >
+  Ensure CareerOS delivers a fast, responsive experience by optimizing
+  frontend rendering, backend APIs, database queries, and browser extension
+  execution without premature optimization.
+
+milestone: MVP_POLISH
+
+dependencies:
+  - FOUNDATION
+  - TESTING
+
+success_metrics:
+  - id: PAGE_LOAD
+    metric: dashboard_load_time
+    target: "<2s"
+  - id: API_P95
+    metric: api_p95_latency
+    target: "<300ms"
+  - id: LIGHTHOUSE
+    metric: lighthouse_performance
+    target: ">=90"
+
+features:
+  - id: FRONTEND_PERFORMANCE
+    title: Frontend Optimization
+    priority: P0
+    issues:
+      - id: PERF-001
+        title: Optimize bundle and code splitting
+        type: task
+        priority: P0
+        estimate: 3
+        acceptance_criteria:
+          - Route-based code splitting enabled
+          - Lazy loading implemented where appropriate
+          - Production bundle analyzed
+
+  - id: API_PERFORMANCE
+    title: Backend Performance
+    priority: P0
+    issues:
+      - id: PERF-002
+        title: Optimize API response times
+        type: task
+        priority: P0
+        estimate: 3
+        acceptance_criteria:
+          - N+1 queries eliminated
+          - Pagination implemented
+          - Response compression enabled
+
+  - id: DATABASE_PERFORMANCE
+    title: Database Optimization
+    priority: P1
+    issues:
+      - id: PERF-003
+        title: Add indexes and query tuning
+        type: task
+        priority: P1
+        estimate: 3
+        acceptance_criteria:
+          - Critical indexes created
+          - Slow queries identified
+          - Query plans reviewed
+
+  - id: EXTENSION_PERFORMANCE
+    title: Browser Extension Efficiency
+    priority: P1
+    issues:
+      - id: PERF-004
+        title: Minimize extension overhead
+        type: task
+        priority: P1
+        estimate: 2
+        acceptance_criteria:
+          - Parsing completes quickly
+          - No unnecessary DOM observers
+          - Memory usage remains stable
+
+acceptance_tests:
+  - Dashboard consistently loads within target.
+  - Core API endpoints meet latency targets.
+  - Browser extension remains responsive on supported job sites.
+
+future_scope:
+  - CDN optimization
+  - Edge caching
+  - Background prefetching
+  - Distributed caching
+  - Performance budgets in CI

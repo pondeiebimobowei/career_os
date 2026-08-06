@@ -1,0 +1,70 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: NOTIFICATIONS
+  title: Notifications
+  domain: product
+
+objective: >
+  Keep users on top of follow-ups, interviews and deadlines without
+  becoming noisy.
+
+milestone: MVP_POLISH
+
+dependencies:
+  - TASKS
+  - APPLICATIONS
+  - SETTINGS
+
+success_metrics:
+  - id: REMINDER_COMPLETION
+    metric: reminder_completion_rate
+    target: ">=70%"
+
+features:
+  - id: IN_APP
+    title: In-app Notifications
+    priority: P1
+    issues:
+      - id: NOTIFY-001
+        title: Notification data model
+        type: task
+        priority: P1
+        estimate: 2
+        acceptance_criteria:
+          - Notifications stored
+          - Read/unread supported
+      - id: NOTIFY-002
+        title: Notification center UI
+        type: task
+        priority: P1
+        estimate: 3
+        dependencies:
+          - NOTIFY-001
+        acceptance_criteria:
+          - List notifications
+          - Mark as read
+          - Empty state
+
+  - id: REMINDERS
+    title: Task & Follow-up Reminders
+    priority: P1
+    issues:
+      - id: NOTIFY-003
+        title: Reminder scheduler
+        type: task
+        priority: P1
+        estimate: 3
+        acceptance_criteria:
+          - Generate reminders for due tasks
+          - Prevent duplicates
+
+acceptance_tests:
+  - Due task creates reminder.
+  - User can mark notification as read.
+
+future_scope:
+  - Email notifications
+  - Push notifications
+  - Slack integration
+  - Digest summaries

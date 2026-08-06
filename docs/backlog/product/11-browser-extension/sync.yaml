@@ -1,0 +1,459 @@
+schema_version: CBS-v1.0
+
+epic:
+  id: EXT-SYNC
+  title: Browser Extension Synchronization Engine
+  domain: BROWSER_EXTENSION
+  type: product
+  version: 1.0.0
+
+objective: >
+  Build a reliable synchronization engine that securely transfers captured
+  jobs from the browser extension into CareerOS while handling authentication,
+  duplicate detection, retries, offline scenarios, and partial failures
+  without losing user data.
+
+status: planned
+
+priority: P0
+
+milestone: CAPTURE
+
+owner: Platform Engineering
+
+dependencies:
+  - EXT-ARCH
+  - EXT-PARSERS
+  - AUTH
+  - APPLICATIONS
+  - JOBS
+  - COMPANIES
+
+success_metrics:
+  - id: SYNC-001
+    metric: successful_sync_rate
+    target: ">=99%"
+
+  - id: SYNC-002
+    metric: average_sync_time
+    target: "<2 seconds"
+
+  - id: SYNC-003
+    metric: duplicate_detection_accuracy
+    target: ">=98%"
+
+  - id: SYNC-004
+    metric: offline_recovery_rate
+    target: "100%"
+
+overview: >
+  The Sync Engine is responsible for moving validated job data from the
+  extension into CareerOS. It sits between the Parser Framework and the
+  CareerOS API, ensuring synchronization is reliable, idempotent, secure,
+  and resilient to connectivity issues.
+
+responsibilities:
+
+  - Authenticate requests
+  - Prepare sync payloads
+  - Detect duplicates
+  - Queue offline operations
+  - Retry failed requests
+  - Resolve conflicts
+  - Report sync status
+  - Record telemetry
+
+must_not:
+
+  - Parse websites
+  - Manipulate the DOM
+  - Perform UI rendering
+  - Execute business workflows unrelated to synchronization
+
+sync_pipeline:
+
+  - Verify authentication
+  - Validate payload
+  - Generate idempotency key
+  - Check local queue
+  - Submit request
+  - Handle API response
+  - Resolve duplicates
+  - Update local state
+  - Notify UI
+  - Record telemetry
+
+authentication:
+
+  strategy:
+
+    - Firebase ID Token
+    - Secure refresh
+    - Automatic token renewal
+
+  failure_behavior:
+
+    - Pause synchronization
+    - Request user login
+    - Preserve queued jobs
+
+request_strategy:
+
+  protocol: HTTPS
+
+  format: JSON
+
+  compression: false
+
+  timeout: 15000
+
+  retries:
+
+    max_attempts: 3
+
+    strategy: exponential_backoff
+
+idempotency:
+
+  enabled: true
+
+  strategy:
+
+    - UUID
+    - SHA256 request fingerprint
+
+duplicate_detection:
+
+  primary:
+
+    - externalJobId
+
+  secondary:
+
+    - company
+    - title
+    - url
+
+  fallback:
+
+    - fuzzy_title_match
+    - fuzzy_company_match
+
+conflict_resolution:
+
+  duplicate_found:
+
+    options:
+
+      - Ignore
+      - Merge
+      - Replace
+      - Review
+
+  server_version_newer:
+
+    action:
+
+      Prefer server version
+
+offline_support:
+
+  enabled: true
+
+  storage:
+
+    IndexedDB
+
+  capabilities:
+
+    - Queue requests
+    - Retry automatically
+    - Preserve pending captures
+    - Recover after restart
+
+queue_management:
+
+  processing:
+
+    FIFO
+
+  retry_limit:
+
+    3
+
+  dead_letter:
+
+    enabled: true
+
+    action:
+
+      User review required
+
+error_handling:
+
+  network_failure:
+
+    action:
+
+      Queue locally
+
+  authentication_failure:
+
+    action:
+
+      Re-authenticate
+
+  validation_failure:
+
+    action:
+
+      Open review UI
+
+  server_failure:
+
+    action:
+
+      Retry with backoff
+
+  unexpected_error:
+
+    action:
+
+      Log telemetry
+      Preserve data
+
+api_endpoints:
+
+  authenticate:
+
+    POST /api/v1/auth/session
+
+  sync_job:
+
+    POST /api/v1/browser-extension/jobs
+
+  duplicate_lookup:
+
+    POST /api/v1/browser-extension/duplicates
+
+  sync_status:
+
+    GET /api/v1/browser-extension/status
+
+payload_structure:
+
+  company:
+
+    - name
+    - website
+
+  job:
+
+    - title
+    - url
+    - description
+    - location
+
+  metadata:
+
+    - parser
+    - parserVersion
+    - extractedAt
+    - confidenceScore
+
+telemetry:
+
+  collect:
+
+    - syncDuration
+    - retryCount
+    - duplicateDetected
+    - syncResult
+    - queueLength
+    - parserVersion
+
+  never_collect:
+
+    - authenticationTokens
+    - cookies
+    - passwords
+    - resumeFiles
+    - personalMessages
+
+security:
+
+  requirements:
+
+    - HTTPS only
+    - JWT verification
+    - Token rotation
+    - No sensitive local storage
+    - Payload validation
+    - CSRF protection
+    - Rate limiting
+
+performance_requirements:
+
+  maximum_sync_time: "<2 seconds"
+
+  queue_processing_latency: "<100ms"
+
+  retry_delay:
+
+    exponential_backoff
+
+engineering_principles:
+
+  - Idempotent operations
+  - Event-driven architecture
+  - Retry only safe requests
+  - Never lose user data
+  - Fail gracefully
+  - Observable by default
+  - Strong typing
+  - Clear separation of concerns
+
+future_scope:
+
+  - Background synchronization
+  - Batch synchronization
+  - Delta updates
+  - Cross-device queue sync
+  - Sync conflict dashboard
+  - WebSocket updates
+
+features:
+
+  - id: SYNC-ENGINE
+    title: Synchronization Engine
+
+    priority: P0
+
+    estimate: XL
+
+    issues:
+
+      - id: SYNC-001
+        title: Implement authenticated API client
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        labels:
+          - extension
+          - backend
+
+        acceptance_criteria:
+          - Authenticated requests supported
+          - Token refresh implemented
+          - Failed authentication handled
+
+      - id: SYNC-002
+        title: Implement synchronization pipeline
+
+        type: task
+
+        priority: P0
+
+        estimate: L
+
+        dependencies:
+          - SYNC-001
+
+        acceptance_criteria:
+          - Payload submitted
+          - Responses processed
+          - UI notified
+
+      - id: SYNC-003
+        title: Implement offline queue
+
+        type: task
+
+        priority: P0
+
+        estimate: L
+
+        dependencies:
+          - SYNC-002
+
+        acceptance_criteria:
+          - Queue persists locally
+          - Automatic retry works
+          - Queue survives browser restart
+
+      - id: SYNC-004
+        title: Implement duplicate detection flow
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - SYNC-002
+
+        acceptance_criteria:
+          - Duplicate API queried
+          - Merge options returned
+          - UI informed
+
+      - id: SYNC-005
+        title: Implement retry and recovery logic
+
+        type: task
+
+        priority: P0
+
+        estimate: M
+
+        dependencies:
+          - SYNC-003
+
+        acceptance_criteria:
+          - Exponential backoff implemented
+          - Failed requests retried
+          - Dead-letter queue supported
+
+      - id: SYNC-006
+        title: Add telemetry and monitoring
+
+        type: task
+
+        priority: P1
+
+        estimate: S
+
+        dependencies:
+          - SYNC-005
+
+        acceptance_criteria:
+          - Sync metrics collected
+          - Queue metrics collected
+          - Failures logged
+          - Performance tracked
+
+acceptance_tests:
+
+  - Authenticated sync succeeds.
+  - Duplicate detection works correctly.
+  - Offline queue stores pending jobs.
+  - Queued jobs synchronize automatically.
+  - Browser restart preserves queued jobs.
+  - Retry logic handles transient failures.
+  - Permanent failures enter dead-letter queue.
+  - UI receives synchronization status updates.
+  - Telemetry records synchronization events.
+  - No captured job is lost during failures.
+
+notes: >
+  The Sync Engine is the reliability layer of the Browser Extension. Unlike
+  the Parser Framework, which focuses on extracting structured information,
+  the Sync Engine is responsible for guaranteeing delivery of captured data
+  into CareerOS. It should be designed around idempotency, resilience, and
+  observability. Under no circumstances should a successfully captured job
+  be silently discarded due to temporary network or server failures.

@@ -75,6 +75,6 @@ automation:
     - release
 
 commands:
-  validate: npm run backlog:validate
-  sync: npm run backlog:sync
-  status: npm run backlog:status
+  validate: pnpm run backlog:validate
+  sync: pnpm run backlog:sync
+  status: pnpm run backlog:status
