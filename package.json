@@ -30,7 +30,8 @@
     "backlog:version": "pnpm --filter @repo/backlog-cli start version",
     "backlog:setup": "pnpm --filter @repo/backlog-cli start setup",
     "backlog:bootstrap": "pnpm --filter @repo/backlog-cli start setup",
-    "backlog:repair": "pnpm --filter @repo/backlog-cli start repair"
+    "backlog:repair": "pnpm --filter @repo/backlog-cli start repair",
+    "gate": "pnpm backlog:verify --json && pnpm backlog:sync --dry-run && pnpm check-types && pnpm lint && pnpm test && pnpm build"
   },
   "devDependencies": {
     "prettier": "^3.6.0",

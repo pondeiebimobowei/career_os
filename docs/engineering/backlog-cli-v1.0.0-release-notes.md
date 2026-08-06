@@ -11,7 +11,7 @@
 
 Backlog CLI v1.0.0 is the canonical developer operating system for CareerOS. It automates the full engineering lifecycle: from backlog planning and dependency graph evaluation to feature branch creation, local finish validation, documentation generation, PR template assembly, and GitHub synchronization.
 
-With this release, the **public interface, CLI commands, and backlog YAML schema specification are FROZEN**. Future changes to `@repo/backlog-cli` are limited strictly to internal performance optimizations, bug fixes, and non-breaking refactorings.
+With this release, the **public interface, CLI commands, and backlog YAML schema specification are STABILIZED**. All engineering focus now shifts to delivering CareerOS product features.
 
 ---
 
@@ -26,13 +26,29 @@ With this release, the **public interface, CLI commands, and backlog YAML schema
 
 ---
 
-## Contract & Stability Guarantees
+## Maintenance Budget Policy
 
-### Frozen Public Interface
-- **YAML Backlog Schema Specification** (`docs/backlog/`)
-- **ADR Document Structure** (`docs/adr/`)
-- **CLI Commands**: `work`, `finish`, `start`, `explain`, `ai`, `dashboard`, `doctor`, `verify`, `stats`, `setup`, `version`, `sync`, `validate`, `docs`, `export`, `graph`, `pr`.
+To avoid over-engineering the CLI tooling, the following maintenance policy governs all future changes:
 
-### Policy on Changes
-- **Allowed**: Internal performance enhancements, bug fixes, test expansions, non-breaking refactorings.
-- **Prohibited**: Breaking changes to YAML schema fields, removal or renaming of public CLI commands, or adding non-essential tooling abstractions that do not directly accelerate product feature delivery.
+- **New CLI Features**: Permitted ONLY if they directly remove friction from building or operating CareerOS product features.
+- **Bug Fixes**: Always allowed.
+- **Security & Dependency Updates**: Always allowed.
+- **Internal Refactoring**: Permitted ONLY when required by a new product feature.
+
+---
+
+## Confidence Gate
+
+Every Pull Request must satisfy the monorepo confidence gate (`pnpm gate`):
+
+```bash
+pnpm gate
+```
+
+Execution sequence:
+1. `pnpm backlog verify --json`: Validates backlog schema, unique IDs, DAG dependencies, and milestones.
+2. `pnpm backlog sync --dry-run`: Verifies GitHub state alignment without mutating API.
+3. `pnpm check-types`: Monorepo TypeScript compilation check.
+4. `pnpm lint`: ESLint code quality check across all apps and packages.
+5. `pnpm test`: Monorepo unit and integration test suite pass.
+6. `pnpm build`: Production compilation check for NestJS API, Web app, Extension, and shared packages.
