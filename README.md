@@ -12,7 +12,7 @@ CareerOS is structured as a **pnpm + Turborepo** monorepo containing the followi
 
 - **`apps/api`**: [NestJS](https://nestjs.com/) backend API service managing jobs, applications, resumes, and user accounts with PostgreSQL & Prisma.
 - **`apps/web`**: [React (Vite)](https://vitejs.dev/) modern single-page application dashboard styled with TailwindCSS.
-- **`apps/extension`**: Manifest V3 Chrome Browser Extension for one-click job capture from LinkedIn, Greenhouse, Lever, and Workday.
+- **`apps/extension`**: Manifest V3 Chrome Browser Extension built on WXT for one-click job capture (Tier 1 MVP: LinkedIn, Greenhouse, Lever; Tier 2 Expansion: Workday, Ashby).
 
 ### Shared Packages (`packages/`)
 
@@ -21,7 +21,7 @@ CareerOS is structured as a **pnpm + Turborepo** monorepo containing the followi
 - **`@repo/logger`** (`packages/logger`): Isomorphic logging utility.
 - **`@repo/eslint-config`** (`packages/config-eslint`): Shared ESLint configuration rules.
 - **`@repo/typescript-config`** (`packages/config-typescript`): Base TypeScript `tsconfig.json` configurations.
-- **`@repo/jest-presets`** (`packages/jest-presets`): Shared testing presets.
+- **`@repo/jest-presets`** (`packages/jest-presets`): Shared testing configuration presets (Jest for NestJS backend, Vitest for frontend & CLI packages).
 
 ---
 

@@ -104,6 +104,8 @@ DELETE /resource/:id
 
 # Browser Extension
 
+Framework: WXT (Web Extension Tools) + React 19 + TypeScript (Manifest V3)
+
 Supported MVP Sites
 - LinkedIn
 - Greenhouse

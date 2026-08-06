@@ -38,7 +38,10 @@ Out of Scope:
 
 # High-Level Architecture
 
-Browser
+> [!NOTE]
+> **Extension Framework Architecture**: As defined in **ADR-002**, **ADR-041**, and `apps/extension/README.md`, the browser extension is built using the **WXT Framework (Next-gen Web Extension Framework)** with React 19, TypeScript, and Manifest V3. Entrypoints (`entrypoints/popup/`, `entrypoints/background.ts`, `entrypoints/content.ts`) are compiled via Vite + WXT.
+
+Browser (WXT Manifest V3)
 ├── Content Script
 ├── Background Service Worker
 ├── Popup UI
