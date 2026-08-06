@@ -6,17 +6,39 @@ This specification defines the multi-step onboarding profile architecture for Ca
 
 ---
 
-## 0. Fundamental Architecture Principles
+## 0. Fundamental Capability-First Architecture Principles
 
 ### Backend Architecture (NestJS)
 - **Feature Modules**: Backend modules are organized by business capability inside `apps/api/src/modules/` (e.g. `modules/profile/`, `modules/jobs/`, `modules/companies/`). Shared utilities reside in `apps/api/src/shared/`.
-- **Pragmatic Layering**: Simple CRUD endpoints use standard NestJS Controller/Service/Repository patterns. As complexity grows, modules adopt internal layers (`presentation/`, `application/`, `domain/`, `infrastructure/`).
-- **No Premature Abstractions**: Simple 50-line CRUD endpoints do not require 17 layers of abstraction; structure scales with domain complexity.
+- **Pragmatic Layering**: Simple CRUD endpoints use standard NestJS Controller/Service/Repository patterns.
+- **Layer Evolution Triggers**: A module evolves internal layers (`presentation/`, `application/`, `domain/`, `infrastructure/`) ONLY when it encounters:
+  - Multiple distinct use cases per entity
+  - Rich business rules or validation logic
+  - External third-party API integrations
+  - Multiple data repositories or complex multi-entity transactions
+  - Domain event publication
+- **No Premature Abstraction**: Simple 50-line CRUD endpoints do not require 17 layers of abstraction; structure scales strictly with domain complexity.
 
-### Frontend Architecture (React / Next.js)
+### Frontend Architecture (React / Vite)
 - **Feature Boundaries**: Web UI is organized into business features inside `apps/web/src/features/` (e.g., `features/profile/`, `features/dashboard/`).
 - **Feature Structure**: Each feature encapsulates its own `components/`, `hooks/`, `api/`, and `types.ts`.
+- **Component Reuse Rule**: Build UI components inside the feature directory first. Extract components into shared UI libraries (`@repo/ui` or `src/components/ui/`) ONLY after two or three features genuinely reuse them.
 - **UI Focus**: React component architecture emphasizes clean composition, reactivity, and performance rather than backend domain layers.
+
+### Engineering & Refactoring Rule
+> **Working code is not a refactoring candidate solely because a better architecture exists.**
+
+Completed features remain untouched in production. Structure evolves organically when a new product requirement explicitly demands additional capability.
+
+### Architecture Evolution Matrix
+
+| Complexity Level | Trigger Scenario | Preferred Architecture Pattern |
+| :--- | :--- | :--- |
+| **Level 1: Simple CRUD** | Single entity, straightforward DB persistence | Controller → Service → Database Service / Repository |
+| **Level 2: Moderate Logic** | Feature-specific business rules & validations | Feature module with internal helper services |
+| **Level 3: Rich Domain Model** | Complex business invariants, external integrations | Presentation / Application / Domain / Infrastructure layers |
+| **Level 4: Cross-Module Workflows** | Inter-domain side effects, multi-entity flows | Domain Events (`EventDispatcher`) or Saga Orchestrators |
+| **Level 5: Shared Infrastructure** | Proven multi-consumer code (2+ apps/packages) | Shared monorepo package (`@repo/ui`, `@repo/database`) |
 
 ---
 
@@ -133,7 +155,7 @@ Submits completed onboarding form data and marks profile setup as completed.
 
 ## 4. UI Architecture & Step Component Specifications
 
-Next.js page component structure in `apps/web/src/features/profile/`:
+React / Vite component structure in `apps/web/src/features/profile/`:
 
 - `<OnboardingContainer />`: Root wizard layout managing step state (`currentStep: 1..4`).
 - `<ProgressHeader currentStep={step} totalSteps={4} />`: Animated progress bar & step title indicator.
