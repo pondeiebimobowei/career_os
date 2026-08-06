@@ -1,0 +1,11 @@
+Task: Bug Fix
+Issue ID: <ISSUE_ID>
+Symptom / Traceback: <SYMPTOM_OR_LOG>
+
+Please follow AGENTS.md and .ai/bugfix.md:
+1. Inspect logs and read full tracebacks before changing code.
+2. Reproduce the bug and write a behavioral regression test.
+3. Fix the underlying root cause without masking symptoms.
+4. Run `pnpm gate` and ensure all checks pass.
+5. Finish work using `pnpm backlog:finish <ISSUE_ID>` and `pnpm backlog:pr <ISSUE_ID>`.
+6. Provide the standard Completion Report.

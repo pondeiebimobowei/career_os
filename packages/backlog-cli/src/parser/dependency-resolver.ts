@@ -142,7 +142,8 @@ export class DependencyResolver {
       const unsatisfiedDeps = (issue.dependencies || []).filter(
         (depId) => !completedIssueIds.has(depId)
       );
-      const unblocked = unsatisfiedDeps.length === 0 && (issue.status || '').toLowerCase() !== 'blocked';
+      const isEpicBlocked = this.checkEpicBlocked(issue, backlog, completedIssueIds);
+      const unblocked = unsatisfiedDeps.length === 0 && !isEpicBlocked && (issue.status || '').toLowerCase() !== 'blocked';
 
       // 1. Priority factor
       const priorityStr = (issue.priority || 'P1').toUpperCase();
@@ -369,5 +370,34 @@ export class DependencyResolver {
     }
 
     return problems;
+  }
+
+  static checkEpicBlocked(issue: Issue, backlog: Backlog, completedIssueIds: Set<string>): boolean {
+    const feature = backlog.features.find((f) => f.issues.some((i) => i.id === issue.id));
+    if (!feature || !feature.epicId) return false;
+
+    const epic = backlog.epicsById.get(feature.epicId) || backlog.epics.find((e) => e.id === feature.epicId);
+    if (!epic || !epic.dependencies) return false;
+
+    let requiredEpicIds: string[] = [];
+    if (Array.isArray(epic.dependencies)) {
+      requiredEpicIds = epic.dependencies;
+    } else if (typeof epic.dependencies === 'object' && (epic.dependencies as any).epics) {
+      requiredEpicIds = (epic.dependencies as any).epics;
+    }
+
+    for (const reqEpicId of requiredEpicIds) {
+      const reqEpicFeatures = backlog.features.filter((f) => f.epicId === reqEpicId);
+      const reqEpicIssues = reqEpicFeatures.flatMap((f) => f.issues);
+
+      if (reqEpicIssues.length > 0) {
+        const hasCompleted = reqEpicIssues.some((i) => completedIssueIds.has(i.id));
+        if (!hasCompleted) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }

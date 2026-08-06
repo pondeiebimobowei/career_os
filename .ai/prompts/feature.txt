@@ -1,0 +1,10 @@
+Task: Feature Implementation
+Issue ID: <ISSUE_ID>
+
+Please follow AGENTS.md and .ai/feature.md:
+1. Run `pnpm backlog:explain <ISSUE_ID>` to review acceptance criteria.
+2. Run `pnpm backlog:start <ISSUE_ID>`.
+3. Implement the feature according to module architecture.
+4. Run `pnpm gate` and ensure all checks pass.
+5. Finish work using `pnpm backlog:finish <ISSUE_ID>` and `pnpm backlog:pr <ISSUE_ID>`.
+6. Provide the standard Completion Report.
