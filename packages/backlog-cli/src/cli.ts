@@ -20,6 +20,7 @@ import { verifyCommand } from './commands/verify.js';
 import { statsCommand } from './commands/stats.js';
 import { versionCommand } from './commands/version.js';
 import { setupCommand } from './commands/setup.js';
+import { repairCommand } from './commands/repair.js';
 
 const program = new Command();
 
@@ -41,6 +42,13 @@ program
   .description('Bootstrap and verify developer workspace environment')
   .action(async () => {
     await setupCommand();
+  });
+
+program
+  .command('repair')
+  .description('Repair GitHub backlog state, close duplicate issues, and reconcile closed issue states')
+  .action(async () => {
+    await repairCommand();
   });
 
 program

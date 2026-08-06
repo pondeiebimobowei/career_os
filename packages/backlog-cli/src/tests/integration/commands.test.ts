@@ -8,6 +8,7 @@ import { VerifyCommand } from '../../commands/verify.js';
 import { DoctorCommand } from '../../commands/doctor.js';
 import { VersionCommand } from '../../commands/version.js';
 import { SetupCommand } from '../../commands/setup.js';
+import { RepairCommand } from '../../commands/repair.js';
 
 describe('CLI Integration Tests', () => {
   it('should execute WorkCommand successfully', async () => {
@@ -60,6 +61,12 @@ describe('CLI Integration Tests', () => {
 
   it('should execute SetupCommand successfully', async () => {
     const command = new SetupCommand();
+    const res = await command.execute();
+    expect(res.success).toBe(true);
+  });
+
+  it('should execute RepairCommand successfully', async () => {
+    const command = new RepairCommand(process.cwd(), true);
     const res = await command.execute();
     expect(res.success).toBe(true);
   });
