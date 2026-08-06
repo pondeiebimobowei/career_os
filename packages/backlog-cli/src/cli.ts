@@ -19,6 +19,7 @@ import { dashboardCommand } from './commands/dashboard.js';
 import { verifyCommand } from './commands/verify.js';
 import { statsCommand } from './commands/stats.js';
 import { versionCommand } from './commands/version.js';
+import { setupCommand } from './commands/setup.js';
 
 const program = new Command();
 
@@ -32,6 +33,14 @@ program
   .description('Daily developer entry point (prints milestone, next unblocked task, branch & suggested actions)')
   .action(async () => {
     await workCommand();
+  });
+
+program
+  .command('setup')
+  .alias('bootstrap')
+  .description('Bootstrap and verify developer workspace environment')
+  .action(async () => {
+    await setupCommand();
   });
 
 program

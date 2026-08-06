@@ -58,6 +58,8 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@swc/helpers": "^0.5.18"
+    "@swc/helpers": "^0.5.18",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.479.0"
   }
 }

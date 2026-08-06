@@ -1,5 +1,5 @@
 # CareerOS - Development Platform Report
-*Generated on 2026-08-04*
+*Generated on 2026-08-06*
 
 ## Executive Summary
 - **Total Domains**: 10
@@ -12,7 +12,8 @@
 | Milestone | Issues Count | Target Phase |
 |---|---|---|
 | **FOUNDATION** | 5 | Phase 1 |
-| **UNASSIGNED** | 102 | Phase 2+ |
+| **CORE_TRACKER** | 61 | Phase 2+ |
+| **PRODUCTIVITY** | 41 | Phase 2+ |
 
 ## Product Roadmap & Domain Coverage
 ### Epic: Foundation (FOUNDATION)

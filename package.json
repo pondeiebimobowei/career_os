@@ -27,7 +27,9 @@
     "backlog:dashboard": "pnpm --filter @repo/backlog-cli start dashboard",
     "backlog:verify": "pnpm --filter @repo/backlog-cli start verify",
     "backlog:stats": "pnpm --filter @repo/backlog-cli start stats",
-    "backlog:version": "pnpm --filter @repo/backlog-cli start version"
+    "backlog:version": "pnpm --filter @repo/backlog-cli start version",
+    "backlog:setup": "pnpm --filter @repo/backlog-cli start setup",
+    "backlog:bootstrap": "pnpm --filter @repo/backlog-cli start setup"
   },
   "devDependencies": {
     "prettier": "^3.6.0",
