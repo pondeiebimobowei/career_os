@@ -19,7 +19,15 @@
     "backlog:docs": "pnpm --filter @repo/backlog-cli start docs",
     "backlog:next": "pnpm --filter @repo/backlog-cli start next",
     "backlog:start": "pnpm --filter @repo/backlog-cli start start",
-    "backlog:pr": "pnpm --filter @repo/backlog-cli start pr"
+    "backlog:pr": "pnpm --filter @repo/backlog-cli start pr",
+    "backlog:finish": "pnpm --filter @repo/backlog-cli start finish",
+    "backlog:work": "pnpm --filter @repo/backlog-cli start work",
+    "backlog:explain": "pnpm --filter @repo/backlog-cli start explain",
+    "backlog:ai": "pnpm --filter @repo/backlog-cli start ai",
+    "backlog:dashboard": "pnpm --filter @repo/backlog-cli start dashboard",
+    "backlog:verify": "pnpm --filter @repo/backlog-cli start verify",
+    "backlog:stats": "pnpm --filter @repo/backlog-cli start stats",
+    "backlog:version": "pnpm --filter @repo/backlog-cli start version"
   },
   "devDependencies": {
     "prettier": "^3.6.0",

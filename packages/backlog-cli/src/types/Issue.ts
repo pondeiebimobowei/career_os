@@ -14,6 +14,8 @@ export interface Issue {
   implementation?: { layer?: string };
   milestone?: string;
   status?: 'todo' | 'in_progress' | 'done' | 'blocked' | string;
+  completedAt?: string;
+  completedBy?: string;
   featureId?: string;
   epicId?: string;
   filePath?: string;

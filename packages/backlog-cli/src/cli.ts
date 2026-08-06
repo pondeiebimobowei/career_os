@@ -11,6 +11,14 @@ import { doctorCommand } from './commands/doctor.js';
 import { graphCommand } from './commands/graph.js';
 import { exportCommand } from './commands/export.js';
 import { docsCommand } from './commands/docs.js';
+import { finishCommand } from './commands/finish.js';
+import { workCommand } from './commands/work.js';
+import { explainCommand } from './commands/explain.js';
+import { aiCommand } from './commands/ai.js';
+import { dashboardCommand } from './commands/dashboard.js';
+import { verifyCommand } from './commands/verify.js';
+import { statsCommand } from './commands/stats.js';
+import { versionCommand } from './commands/version.js';
 
 const program = new Command();
 
@@ -18,6 +26,62 @@ program
   .name('backlog')
   .description('CareerOS Development Platform CLI - v1.0 Product operating system compiler')
   .version('1.0.0');
+
+program
+  .command('work')
+  .description('Daily developer entry point (prints milestone, next unblocked task, branch & suggested actions)')
+  .action(async () => {
+    await workCommand();
+  });
+
+program
+  .command('finish <issueId>')
+  .description('Finish implementation of an issue locally (validates AC/git state, updates YAML & dispatches events)')
+  .action(async (issueId) => {
+    await finishCommand(issueId);
+  });
+
+program
+  .command('explain <issueId>')
+  .description('Human-optimized issue summary (objective, impact, ADR references, DoD)')
+  .action(async (issueId) => {
+    await explainCommand(issueId);
+  });
+
+program
+  .command('ai <issueId>')
+  .description('Generate rich AI implementation context bundle for coding assistants')
+  .action(async (issueId) => {
+    await aiCommand(issueId);
+  });
+
+program
+  .command('dashboard')
+  .description('Display terminal executive dashboard with velocity, milestone progress & critical path')
+  .action(async () => {
+    await dashboardCommand();
+  });
+
+program
+  .command('verify')
+  .description('Run comprehensive repository & backlog integrity gate for CI')
+  .action(async () => {
+    await verifyCommand();
+  });
+
+program
+  .command('stats')
+  .description('Report engineering telemetry, velocity, cycle time, and WIP metrics')
+  .action(async () => {
+    await statsCommand();
+  });
+
+program
+  .command('version')
+  .description('Display CLI framework version, schema version, and workspace version')
+  .action(async () => {
+    await versionCommand();
+  });
 
 program
   .command('validate')
@@ -93,7 +157,7 @@ program
 
 program
   .command('doctor')
-  .description('Run health diagnostics (missing AC, orphaned dependencies, circular dependencies)')
+  .description('Run health diagnostics (missing AC, orphaned dependencies, circular dependencies, tooling)')
   .action(async () => {
     await doctorCommand();
   });
