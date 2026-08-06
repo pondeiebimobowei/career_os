@@ -20,15 +20,19 @@ export class ProfileService {
   async upsertProfile(userId: string, dto: CreateProfileDto) {
     const { fullName, timezone, ...profileData } = dto;
 
-    if (fullName || timezone) {
-      await this.db.client.user.update({
-        where: { id: userId },
-        data: {
-          ...(fullName && { fullName }),
-          ...(timezone && { timezone }),
-        },
-      });
-    }
+    await this.db.client.user.upsert({
+      where: { id: userId },
+      create: {
+        id: userId,
+        email: `${userId}@careeros.dev`,
+        fullName: fullName || 'CareerOS User',
+        timezone: timezone || 'UTC',
+      },
+      update: {
+        ...(fullName && { fullName }),
+        ...(timezone && { timezone }),
+      },
+    });
 
     const updatedProfile = await this.db.client.careerProfile.upsert({
       where: { userId },

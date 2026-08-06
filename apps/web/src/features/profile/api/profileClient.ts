@@ -34,5 +34,25 @@ export async function fetchUserProfile(userId: string): Promise<OnboardingData |
     throw new Error(`Failed to fetch profile: ${response.statusText}`);
   }
 
-  return response.json();
+  const json = await response.json();
+  const raw = json.data || json;
+  if (!raw) return null;
+
+  const profileObj = raw.profile || raw;
+
+  return {
+    fullName: raw.fullName || profileObj.fullName || '',
+    timezone: raw.timezone || profileObj.timezone || 'UTC',
+    bio: profileObj.bio || '',
+    targetRole: profileObj.targetRole || '',
+    seniority: profileObj.seniority || 'SENIOR',
+    skills: profileObj.skills || [],
+    preferredLocations: profileObj.preferredLocations || [],
+    remotePreference: profileObj.remotePreference || 'REMOTE_ONLY',
+    openToRelocation: profileObj.openToRelocation ?? false,
+    minSalary: profileObj.minSalary,
+    maxSalary: profileObj.maxSalary,
+    currency: profileObj.currency || 'USD',
+    searchStatus: profileObj.searchStatus || 'ACTIVELY_LOOKING',
+  };
 }

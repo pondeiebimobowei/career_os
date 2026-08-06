@@ -13,7 +13,7 @@ describe('ProfileService', () => {
           fullName: 'Test User',
           profile: { targetRole: 'Software Engineer' },
         }),
-        update: jest.fn().mockResolvedValue({ id: 'u123' }),
+        upsert: jest.fn().mockResolvedValue({ id: 'u123' }),
       },
       careerProfile: {
         upsert: jest.fn().mockResolvedValue({
