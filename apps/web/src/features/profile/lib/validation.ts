@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { OnboardingData } from '../types';
 
 export const OnboardingStep1Schema = z.object({
   fullName: z.string().min(2, 'Full name must be at least 2 characters').max(100),
@@ -29,3 +30,6 @@ export const CompleteOnboardingProfileSchema = OnboardingStep1Schema
   .merge(OnboardingStep2Schema)
   .merge(OnboardingStep3Schema)
   .merge(OnboardingStep4Schema);
+
+export type CompleteOnboardingProfile = z.infer<typeof CompleteOnboardingProfileSchema>;
+export type { OnboardingData };
