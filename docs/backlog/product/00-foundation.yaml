@@ -61,6 +61,7 @@ features:
 
       - id: FND-004
         title: Environment configuration
+        status: done
         type: task
         estimate: 1
         acceptance_criteria:
