@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { syncIssues } from '../github/issues.js';
+import { syncIssues, repairIssues } from '../github/issues.js';
 import { BacklogRepository } from '../domain/repository.js';
 
 describe('GitHub Synchronizer & Parity Reconciliation', () => {
@@ -12,7 +12,11 @@ describe('GitHub Synchronizer & Parity Reconciliation', () => {
       const msMap = new Map<string, number>([['FOUNDATION', 1]]);
       const res1 = await syncIssues(null, 'owner', 'repo', backlogRes.data, msMap, true);
       expect(res1.issuesCreated).toBe(0);
-      expect(res1.duplicatesClosed).toBe(0);
+      expect(res1.issuesUpdated).toBe(0);
+
+      const res2 = await repairIssues(null, 'owner', 'repo', backlogRes.data, msMap, true);
+      expect(res2.duplicatesClosed).toBe(0);
+      expect(res2.issuesReconciled).toBe(0);
     }
   });
 

@@ -1,6 +1,7 @@
 import { Octokit } from '@octokit/rest';
 import { Backlog } from '../types/backlog.js';
 import { IssueService } from '../services/issueService.js';
+import { GitHubMappingStore } from '../infrastructure/github/mapping.js';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -10,16 +11,125 @@ export async function syncIssues(
   repo: string,
   backlog: Backlog,
   milestoneMap: Map<string, number>,
-  dryRun: boolean
-): Promise<{ issuesCreated: number; issuesUpdated: number; duplicatesClosed: number }> {
+  dryRun: boolean,
+  workspaceRoot: string = process.cwd()
+): Promise<{ issuesCreated: number; issuesUpdated: number }> {
   if (!octokit) {
-    return { issuesCreated: 0, issuesUpdated: 0, duplicatesClosed: 0 };
+    return { issuesCreated: 0, issuesUpdated: 0 };
   }
   if (dryRun) {
-    return { issuesCreated: backlog.issues.length, issuesUpdated: 0, duplicatesClosed: 0 };
+    return { issuesCreated: backlog.issues.length, issuesUpdated: 0 };
   }
 
-  // Map backlogId -> list of GH issue numbers & objects
+  const mapping = GitHubMappingStore.load(workspaceRoot);
+  const existingMap = new Map<number, { number: number; title: string; body: string; state: string }>();
+
+  try {
+    const allIssues = await octokit.paginate(octokit.issues.listForRepo, {
+      owner,
+      repo,
+      state: 'all',
+      per_page: 100,
+    });
+
+    for (const ghIss of allIssues) {
+      if (ghIss.pull_request) continue;
+      existingMap.set(ghIss.number, {
+        number: ghIss.number,
+        title: ghIss.title,
+        body: ghIss.body || '',
+        state: ghIss.state,
+      });
+    }
+  } catch {
+    // API listing error
+  }
+
+  let createdCount = 0;
+  let updatedCount = 0;
+
+  for (const issue of backlog.issues) {
+    const formattedTitle = `[${issue.id}] ${issue.title}`;
+    const body = IssueService.formatGitHubIssueBody(issue);
+    const labels = [
+      ...(issue.labels || []),
+      ...(issue.priority ? [`priority:${issue.priority}`] : []),
+      ...(issue.type ? [issue.type] : []),
+    ];
+    const msNum = issue.milestone ? milestoneMap.get(issue.milestone) : undefined;
+    const targetState: 'open' | 'closed' = (issue.status || 'todo').toLowerCase() === 'done' ? 'closed' : 'open';
+
+    const mappedNumber = mapping.issues[issue.id.toUpperCase()];
+    const existing = mappedNumber ? existingMap.get(mappedNumber) : undefined;
+
+    if (!existing) {
+      // Create issue and persist mapping
+      try {
+        const created = await octokit.issues.create({
+          owner,
+          repo,
+          title: formattedTitle,
+          body,
+          labels,
+          milestone: msNum,
+        });
+
+        const newNum = created.data.number;
+        GitHubMappingStore.setIssueNumber(issue.id, newNum, workspaceRoot);
+
+        if (targetState === 'closed') {
+          await octokit.issues.update({
+            owner,
+            repo,
+            issue_number: newNum,
+            state: 'closed',
+          });
+        }
+
+        createdCount++;
+        await sleep(300);
+      } catch {
+        // Ignored rate limit error
+      }
+    } else {
+      // Reconcile primary issue title, body, labels, milestone, and state
+      if (existing.title !== formattedTitle || existing.body !== body || existing.state !== targetState) {
+        try {
+          await octokit.issues.update({
+            owner,
+            repo,
+            issue_number: existing.number,
+            title: formattedTitle,
+            body,
+            labels,
+            milestone: msNum,
+            state: targetState,
+          });
+          updatedCount++;
+          await sleep(250);
+        } catch {
+          // Ignored update error
+        }
+      }
+    }
+  }
+
+  return { issuesCreated: createdCount, issuesUpdated: updatedCount };
+}
+
+export async function repairIssues(
+  octokit: Octokit | null,
+  owner: string,
+  repo: string,
+  backlog: Backlog,
+  milestoneMap: Map<string, number>,
+  dryRun: boolean,
+  workspaceRoot: string = process.cwd()
+): Promise<{ duplicatesClosed: number; issuesReconciled: number }> {
+  if (!octokit || dryRun) {
+    return { duplicatesClosed: 0, issuesReconciled: 0 };
+  }
+
   const existingMap = new Map<string, { number: number; title: string; body: string; state: string }[]>();
 
   try {
@@ -31,9 +141,9 @@ export async function syncIssues(
     });
 
     for (const ghIss of allIssues) {
-      if (ghIss.pull_request) continue; // Ignore PRs
-
+      if (ghIss.pull_request) continue;
       let backlogId: string | null = null;
+
       const titleMatch = ghIss.title.match(/^\[([A-Z0-9-]+)\]/);
       if (titleMatch && titleMatch[1]) {
         backlogId = titleMatch[1].toUpperCase();
@@ -56,64 +166,20 @@ export async function syncIssues(
       }
     }
   } catch {
-    // API error listing existing issues
+    // API error
   }
 
-  let createdCount = 0;
-  let updatedCount = 0;
   let duplicatesClosed = 0;
+  let issuesReconciled = 0;
 
-  for (const issue of backlog.issues) {
-    const formattedTitle = `[${issue.id}] ${issue.title}`;
-    const body = IssueService.formatGitHubIssueBody(issue);
-    const labels = [
-      ...(issue.labels || []),
-      ...(issue.priority ? [`priority:${issue.priority}`] : []),
-      ...(issue.type ? [issue.type] : []),
-    ];
-    const msNum = issue.milestone ? milestoneMap.get(issue.milestone) : undefined;
-    const targetState: 'open' | 'closed' = (issue.status || 'todo').toLowerCase() === 'done' ? 'closed' : 'open';
+  for (const [id, list] of existingMap.entries()) {
+    if (list.length > 1) {
+      // Keep primary (first/lowest issue number)
+      const primary = list[0];
+      GitHubMappingStore.setIssueNumber(id, primary.number, workspaceRoot);
 
-    const existingList = existingMap.get(issue.id.toUpperCase()) || [];
-
-    if (existingList.length === 0) {
-      // Create new issue
-      let attempts = 0;
-      while (attempts < 3) {
-        try {
-          const created = await octokit.issues.create({
-            owner,
-            repo,
-            title: formattedTitle,
-            body,
-            labels,
-            milestone: msNum,
-          });
-
-          if (targetState === 'closed') {
-            await octokit.issues.update({
-              owner,
-              repo,
-              issue_number: created.data.number,
-              state: 'closed',
-            });
-          }
-
-          createdCount++;
-          await sleep(300);
-          break;
-        } catch (err: any) {
-          attempts++;
-          await sleep(err.status === 403 ? 2000 : 500);
-        }
-      }
-    } else {
-      // Primary issue is the first one found (lowest issue number)
-      const primary = existingList[0];
-
-      // Close any extra duplicate issues
-      for (let i = 1; i < existingList.length; i++) {
-        const dup = existingList[i];
+      for (let i = 1; i < list.length; i++) {
+        const dup = list[i];
         if (dup.state !== 'closed') {
           try {
             await octokit.issues.createComment({
@@ -135,33 +201,14 @@ export async function syncIssues(
           }
         }
       }
-
-      // Reconcile primary issue title, body, labels, milestone, and state
-      if (primary.title !== formattedTitle || primary.body !== body || primary.state !== targetState) {
-        let attempts = 0;
-        while (attempts < 3) {
-          try {
-            await octokit.issues.update({
-              owner,
-              repo,
-              issue_number: primary.number,
-              title: formattedTitle,
-              body,
-              labels,
-              milestone: msNum,
-              state: targetState,
-            });
-            updatedCount++;
-            await sleep(250);
-            break;
-          } catch (err: any) {
-            attempts++;
-            await sleep(err.status === 403 ? 2000 : 500);
-          }
-        }
-      }
+    } else if (list.length === 1) {
+      GitHubMappingStore.setIssueNumber(id, list[0].number, workspaceRoot);
     }
   }
 
-  return { issuesCreated: createdCount, issuesUpdated: updatedCount, duplicatesClosed };
+  // Reconcile remaining issues
+  const syncRes = await syncIssues(octokit, owner, repo, backlog, milestoneMap, dryRun, workspaceRoot);
+  issuesReconciled = syncRes.issuesUpdated;
+
+  return { duplicatesClosed, issuesReconciled };
 }

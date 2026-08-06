@@ -4,7 +4,7 @@ import { Result, ok, fail } from '../core/result.js';
 import { BacklogRepository } from '../domain/repository.js';
 import { createGitHubClient } from '../github/github.js';
 import { syncMilestones } from '../github/milestones.js';
-import { syncIssues } from '../github/issues.js';
+import { repairIssues } from '../github/issues.js';
 
 export class RepairCommand extends CommandExecutor<{ duplicatesClosed: number; issuesReconciled: number }> {
   constructor(
@@ -31,26 +31,27 @@ export class RepairCommand extends CommandExecutor<{ duplicatesClosed: number; i
       return ok({ duplicatesClosed: 0, issuesReconciled: 0 });
     }
 
-    console.log(pc.bold('1. Syncing Milestones...'));
+    console.log(pc.bold('1. Reconciling Milestones...'));
     const { milestoneMap } = await syncMilestones(octokit, owner, repo, backlogRes.data, false);
     console.log(`   ✓ Milestones reconciled (${milestoneMap.size} milestones)\n`);
 
     console.log(pc.bold('2. Repairing GitHub Issues & Closing Duplicates...'));
-    const res = await syncIssues(
+    const res = await repairIssues(
       octokit,
       owner,
       repo,
       backlogRes.data,
       milestoneMap,
-      false
+      false,
+      this.startDir
     );
 
-    console.log(`   ✓ Duplicates closed:   ${pc.bold(pc.yellow(String(res.duplicatesClosed)))}`);
-    console.log(`   ✓ Issues reconciled:   ${pc.bold(pc.green(String(res.issuesUpdated)))}`);
-    console.log(`   ✓ New issues created:  ${pc.bold(pc.cyan(String(res.issuesCreated)))}\n`);
+    console.log(`   ✓ Active Canonical Issues: ${pc.bold(pc.green(String(backlogRes.data.issues.length)))}`);
+    console.log(`   ✓ Historical Duplicates Closed: ${pc.bold(pc.yellow(String(res.duplicatesClosed)))}`);
+    console.log(`   ✓ Issues Reconciled:       ${pc.bold(pc.cyan(String(res.issuesReconciled)))}\n`);
 
     console.log(pc.bold(pc.green('✔ GitHub state successfully repaired and synchronized with canonical YAML backlog.\n')));
-    return ok({ duplicatesClosed: res.duplicatesClosed, issuesReconciled: res.issuesUpdated });
+    return ok({ duplicatesClosed: res.duplicatesClosed, issuesReconciled: res.issuesReconciled });
   }
 }
 
