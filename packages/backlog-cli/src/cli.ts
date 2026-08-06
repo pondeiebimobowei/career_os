@@ -32,8 +32,9 @@ program
 program
   .command('work')
   .description('Daily developer entry point (prints milestone, next unblocked task, branch & suggested actions)')
-  .action(async () => {
-    await workCommand();
+  .option('--force', 'Bypass active work resume prompt and recommend next task', false)
+  .action(async (options) => {
+    await workCommand({ force: options.force });
   });
 
 program

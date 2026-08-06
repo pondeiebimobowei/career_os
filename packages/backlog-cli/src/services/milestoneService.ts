@@ -1,5 +1,6 @@
 import pc from 'picocolors';
 import { Backlog, Issue } from '../types/backlog.js';
+import { PlanningService } from '../application/planningService.js';
 
 export function renderProgressBar(percentage: number, width: number = 10): string {
   const filledLength = Math.round((width * percentage) / 100);
@@ -14,7 +15,10 @@ export class MilestoneService {
 
     const completedIssueIds = new Set<string>();
     for (const issue of backlog.issues) {
-      if (issue.status === 'done' || issue.lifecycle?.phase === 'done') {
+      if (
+        (issue.status || '').toLowerCase() === 'done' ||
+        (issue.lifecycle?.phase || '').toLowerCase() === 'done'
+      ) {
         completedIssueIds.add(issue.id);
       }
     }
@@ -47,13 +51,13 @@ export class MilestoneService {
           done++;
           continue;
         }
-        if (issue.status === 'in_progress') {
+        if ((issue.status || '').toLowerCase() === 'in_progress') {
           inProgress++;
           continue;
         }
 
         const hasUnfinishedDeps = (issue.dependencies || []).some((depId) => !completedIssueIds.has(depId));
-        if (hasUnfinishedDeps || issue.status === 'blocked') {
+        if (hasUnfinishedDeps || (issue.status || '').toLowerCase() === 'blocked') {
           blocked++;
         } else {
           todo++;
@@ -70,7 +74,10 @@ export class MilestoneService {
 
       lines.push(`\nMilestone: ${pc.green(pc.bold(ms))}`);
       lines.push(`Progress:  ${pc.magenta(bar)}  ${pc.yellow(percentage + '%')}`);
-      lines.push(`Total Issues: ${total} (Done: ${done}, In Progress: ${inProgress}, Todo: ${todo}, Blocked: ${blocked})`);
+      lines.push(`${total} issues`);
+      lines.push(`  ${pc.green('✓')} ${done} completed`);
+      lines.push(`  ${pc.cyan('•')} ${todo + inProgress} ready`);
+      lines.push(`  ${pc.red('⛔')} ${blocked} blocked`);
     }
 
     lines.push(pc.bold(`\nOverall Summary:`));
@@ -78,6 +85,21 @@ export class MilestoneService {
     lines.push(`  In Progress: ${pc.cyan(totalInProgress)}`);
     lines.push(`  Todo:        ${pc.yellow(totalTodo)}`);
     lines.push(`  Blocked:     ${pc.red(totalBlocked)}`);
+
+    const bottlenecks = PlanningService.getImpactOrderedBottlenecks(backlog);
+    lines.push(`\n${pc.bold('Current bottlenecks')}`);
+
+    if (bottlenecks.length === 0) {
+      lines.push(pc.green('  None! No active blockers found.'));
+    } else {
+      for (const b of bottlenecks) {
+        lines.push(`\n${pc.bold(pc.yellow(b.blocker.id))} — ${b.blocker.title}`);
+        lines.push(`blocks:`);
+        for (const blockedIssue of b.blockedIssues) {
+          lines.push(`  • ${blockedIssue.id} — ${blockedIssue.title}`);
+        }
+      }
+    }
 
     lines.push(`\n${pc.bold('Next Critical Path:')}`);
     const critical = backlog.issues
@@ -93,7 +115,10 @@ export class MilestoneService {
       lines.push(pc.green('  None! All critical path tasks completed.'));
     } else {
       for (const issue of critical) {
-        const deps = issue.dependencies && issue.dependencies.length > 0 ? pc.gray(` (depends on: ${issue.dependencies.join(', ')})`) : '';
+        const deps =
+          issue.dependencies && issue.dependencies.length > 0
+            ? pc.gray(` (depends on: ${issue.dependencies.join(', ')})`)
+            : '';
         lines.push(`  - ${pc.bold(pc.yellow(issue.id))}: ${issue.title}${deps}`);
       }
     }

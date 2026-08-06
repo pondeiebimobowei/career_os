@@ -3,9 +3,20 @@ import { Result, ok } from '../core/result.js';
 import { BacklogRepository } from '../domain/repository.js';
 import { PlanningService } from '../application/planningService.js';
 import { WorkRenderer } from '../infrastructure/renderers/workRenderer.js';
+import { ResumeDetectionService } from '../application/resumeDetectionService.js';
+import { GitAdapter } from '../infrastructure/git/adapter.js';
+import { DependencyResolver } from '../parser/dependency-resolver.js';
+
+export interface WorkCommandOptions {
+  force?: boolean;
+  cwd?: string;
+}
 
 export class WorkCommand extends CommandExecutor<void> {
-  constructor(private startDir: string = process.cwd()) {
+  constructor(
+    private options: WorkCommandOptions = {},
+    private startDir: string = options.cwd || process.cwd()
+  ) {
     super();
   }
 
@@ -14,19 +25,39 @@ export class WorkCommand extends CommandExecutor<void> {
     const backlogRes = await repository.load();
     if (!backlogRes.success) return backlogRes;
 
-    const planRes = PlanningService.plan(backlogRes.data);
+    const backlog = backlogRes.data;
+
+    // Step 1: Resume Detection (unless --force is specified)
+    if (!this.options.force) {
+      const activeIssue = ResumeDetectionService.detectActiveIssue(this.startDir, backlog);
+      if (activeIssue) {
+        WorkRenderer.renderResume(activeIssue);
+        return ok(undefined);
+      }
+    }
+
+    // Step 2: Planning & Recommendation Engine
+    const gitStatusRes = GitAdapter.getStatus(this.startDir);
+    const branchName = gitStatusRes.success ? gitStatusRes.data.branch : '';
+    const activeIssueId = ResumeDetectionService.parseBranchName(branchName);
+    const activeCapability = activeIssueId ? DependencyResolver.extractCapability(activeIssueId) : undefined;
+
+    const planRes = PlanningService.plan(backlog, {
+      activeCapability,
+      activeBranchContext: branchName,
+    });
     if (!planRes.success) return planRes;
 
     const currentMilestone = planRes.data.nextIssue?.milestone || 'FOUNDATION';
     const progressRes = await repository.computeMilestoneProgress(currentMilestone);
     if (!progressRes.success) return progressRes;
 
-    WorkRenderer.render(progressRes.data, planRes.data.nextIssue);
+    WorkRenderer.render(progressRes.data, planRes.data);
     return ok(undefined);
   }
 }
 
-export async function workCommand(options: { cwd?: string } = {}) {
-  const command = new WorkCommand(options.cwd);
+export async function workCommand(options: WorkCommandOptions = {}) {
+  const command = new WorkCommand(options, options.cwd);
   await command.execute(options.cwd);
 }
