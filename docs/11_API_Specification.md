@@ -207,14 +207,15 @@ PATCH /applications/{id}/status
 
 Statuses:
 - SAVED
-- READY
+- READY_TO_APPLY
 - APPLIED
 - FOLLOW_UP
-- SCREEN
+- RECRUITER_SCREEN
 - TECHNICAL
 - FINAL
 - OFFER
 - REJECTED
+- WITHDRAWN
 
 ---
 

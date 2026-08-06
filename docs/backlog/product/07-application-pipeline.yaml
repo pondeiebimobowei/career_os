@@ -61,11 +61,15 @@ features:
     workflow:
 
       - SAVED
+      - READY_TO_APPLY
       - APPLIED
-      - INTERVIEWING
+      - FOLLOW_UP
+      - RECRUITER_SCREEN
+      - TECHNICAL
+      - FINAL
       - OFFER
       - REJECTED
-      - ARCHIVED
+      - WITHDRAWN
 
     issues:
 
