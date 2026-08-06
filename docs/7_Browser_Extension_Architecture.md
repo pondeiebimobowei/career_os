@@ -21,12 +21,11 @@ It should NOT become a full automation platform.
 
 ---
 
-# MVP Scope
+# Job Board Scope & Parser Strategy
 
-Supported Sources:
-- LinkedIn Jobs
-- Greenhouse
-- Lever
+- **Tier 1 (MVP Core)**: LinkedIn Jobs, Greenhouse, Lever
+- **Tier 2 (Post-MVP Expansion)**: Workday, Ashby
+- **Tier 3 (Future Backlog)**: Indeed, Glassdoor, ZipRecruiter
 
 Out of Scope:
 - Auto-applying
@@ -211,22 +210,31 @@ New providers implement the same interface.
 
 # Backend API
 
-POST /capture
+The extension communicates with CareerOS REST API via the following endpoints:
 
-Payload:
+- `POST /api/v1/browser-extension/jobs`: Captures job posting.
+- `POST /api/v1/browser-extension/duplicates`: Checks if job posting URL or metadata already exists.
+- `GET /api/v1/browser-extension/status`: Reports extension sync and authentication status.
+
+Payload (`POST /api/v1/browser-extension/jobs`):
+```json
 {
   "source": "linkedin",
-  "url": "...",
-  "company": "...",
-  "title": "...",
+  "url": "https://www.linkedin.com/jobs/view/123456",
+  "company": "TechCorp",
+  "title": "Senior Fullstack Engineer",
   "description": "..."
 }
+```
 
 Response:
+```json
 {
-  "applicationId": "...",
-  "status": "created"
+  "jobId": "job_12345",
+  "status": "created",
+  "duplicate": false
 }
+```
 
 ---
 

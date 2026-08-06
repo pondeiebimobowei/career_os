@@ -162,6 +162,9 @@ Company payload
 
 # Jobs
 
+> [!NOTE]
+> **Domain Entity Mapping**: The REST resource `/jobs` projects the underlying Prisma database model `JobOpening` (table `job_openings`, foreign key `jobOpeningId`).
+
 GET /jobs
 
 Supports:
@@ -255,7 +258,7 @@ Returns storage URL and metadata.
 
 # Browser Extension
 
-POST /extension/capture
+POST /api/v1/browser-extension/jobs
 
 Input
 
@@ -280,9 +283,13 @@ Output
 }
 ```
 
-POST /extension/heartbeat
+POST /api/v1/browser-extension/duplicates
 
-Reports extension version.
+Checks if job posting URL or metadata already exists for the user.
+
+GET /api/v1/browser-extension/status
+
+Reports extension version, sync health, and authentication status.
 
 ---
 

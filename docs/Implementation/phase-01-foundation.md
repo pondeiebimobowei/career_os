@@ -6,7 +6,7 @@
 **Priority:** Critical  
 **Estimated Duration:** 2–3 Weeks  
 **Related Milestone:** M1 — Engineering Foundation  
-**Related ADRs:** ADR-001, ADR-002, ADR-003, ADR-009, ADR-019, ADR-020, ADR-023, ADR-024, ADR-025, ADR-026, ADR-027, ADR-028, ADR-029, ADR-031, ADR-032, ADR-033, ADR-035, ADR-036
+**Related ADRs:** ADR-001, ADR-002, ADR-003, ADR-009, ADR-020 (Supersedes ADR-019), ADR-023, ADR-024, ADR-025, ADR-026, ADR-027, ADR-028, ADR-029, ADR-031, ADR-032, ADR-033, ADR-035, ADR-036
 
 ---
 

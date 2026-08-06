@@ -63,6 +63,10 @@ Indexes:
 - (userId, name)
 
 ## JobOpening
+
+> [!NOTE]
+> **Domain Naming Mapping**: The database table `job_openings` and Prisma model `JobOpening` represent job postings (with foreign key `jobOpeningId` on `Application`). The REST API exposes this entity under the `/api/v1/jobs` resource path for clean endpoint URL ergonomics.
+
 - id
 - companyId
 - source

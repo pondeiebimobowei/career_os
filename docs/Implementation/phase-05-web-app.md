@@ -6,7 +6,7 @@
 **Priority:** Critical  
 **Estimated Duration:** 8–10 Weeks  
 **Related Milestone:** M5 — Web Application MVP  
-**Related ADRs:** ADR-001, ADR-003, ADR-004, ADR-005, ADR-009, ADR-010, ADR-011, ADR-012, ADR-017, ADR-018, ADR-030, ADR-031, ADR-032, ADR-033
+**Related ADRs:** ADR-001, ADR-003, ADR-004, ADR-005, ADR-009, ADR-010, ADR-011, ADR-012, ADR-017, ADR-043 (Supersedes ADR-018), ADR-030, ADR-031, ADR-032, ADR-033
 
 ---
 

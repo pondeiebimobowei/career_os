@@ -36,35 +36,35 @@ This document defines the deployment, infrastructure, CI/CD, environment managem
 
 ---
 
-# Recommended Stack
+# Recommended Stack & Self-Hosted Infrastructure Rules
 
-## Source Control
-- GitHub
+> [!IMPORTANT]
+> **Canonical Self-Hosted Deployment Platform (ADR-035)**:
+> CareerOS applications are hosted entirely on private Virtual Private Servers (VPS) using **Coolify**, **Docker**, and **Cloudflare**. Third-party PaaS platforms (Vercel, Railway, Fly.io, Render) are not used.
+>
+> - **Frontend Web App (`apps/web`)**: Web container deployed & managed via Coolify on VPS.
+> - **Backend REST API (`apps/api`)**: NestJS Node.js Docker container deployed & managed via Coolify on VPS.
+> - **Database**: PostgreSQL container (or managed PostgreSQL instance on VPS) managed via Coolify.
+> - **DNS, SSL & Edge Security**: Cloudflare (Cloudflare Tunnels / SSL Termination / WAF).
+> - **Kubernetes Policy**: Kubernetes is strictly **Out of Scope** for MVP ("Avoid Kubernetes for MVP") per Technical Requirements Document & DevOps guide.
 
-## Monorepo
-- Turborepo
-- pnpm
-
-## Runtime
-- Node.js LTS
+## Hosting & Platform
+- Private VPS self-hosted via **Coolify** + **Docker**
 
 ## Frontend
-- Vercel
+- Containerized Vite + React Web App (`apps/web`) on Coolify VPS
 
 ## Backend
-- Railway, Fly.io, Render, or Coolify on VPS
+- Containerized NestJS REST API (`apps/api`) on Coolify VPS
 
 ## Database
-- PostgreSQL
+- PostgreSQL container on Coolify VPS
 
 ## ORM
 - Prisma
 
-## Object Storage
-- Cloudflare R2 or S3-compatible storage
-
-## DNS/CDN
-- Cloudflare
+## DNS/CDN & Security
+- Cloudflare (Cloudflare Tunnels, DNS, SSL)
 
 ---
 

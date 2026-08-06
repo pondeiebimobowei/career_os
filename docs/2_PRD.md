@@ -25,7 +25,7 @@ Primary: Software engineers with 3–8 years experience actively applying to rem
 
 ### P0
 - Authentication
-- Browser extension (LinkedIn, Greenhouse, Lever)
+- Browser extension (Tier 1 MVP: LinkedIn, Greenhouse, Lever; Tier 2/3 Expansion: Workday, Ashby, Indeed)
 - Automatic job parsing
 - Company records
 - Job records

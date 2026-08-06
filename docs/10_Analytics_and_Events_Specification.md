@@ -174,13 +174,19 @@ Hash or anonymize identifiers where possible.
 
 ---
 
-# Recommended Stack
+# Recommended Stack & Analytics Provider Architecture
 
-MVP:
-- PostHog
-- Sentry
-- Google Search Console
-- Plausible (marketing site optional)
+> [!NOTE]
+> **Canonical Analytics Provider Architecture**: As decided in **ADR-043**, product events are ingested via a server-side NestJS proxy (`POST /api/v1/analytics/event`) backed by **PostHog** (with Plausible for marketing site analytics).
+>
+> - **Supersedes**: Legacy Segment references and ADR-018 direct client calculation.
+> - **OpenTelemetry Boundary**: OpenTelemetry (in `observability.yaml`) is reserved strictly for operational APM, tracing, and infrastructure metrics, keeping product telemetry separate.
+
+MVP Stack:
+- PostHog (Product analytics via NestJS API proxy)
+- Sentry (Error tracking)
+- Google Search Console (SEO)
+- Plausible (Optional self-hosted marketing site analytics)
 
 ---
 

@@ -75,7 +75,10 @@ subdomains:
     description: >
       Shared parsing engine, extraction pipeline,
       confidence scoring, duplicate detection,
-      and normalization.
+      and normalization across the 3-tier parser roadmap:
+      Tier 1 MVP (LinkedIn, Greenhouse, Lever),
+      Tier 2 Expansion (Workday, Ashby),
+      Tier 3 Backlog (Indeed, Glassdoor, ZipRecruiter).
 
   - id: EXT-LINKEDIN
     title: LinkedIn Parser

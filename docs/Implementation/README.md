@@ -472,14 +472,14 @@ This README serves as the entry point to the implementation roadmap.
 Detailed execution plans are provided in:
 
 - `phase-01-foundation.md`
-- `phase-02-shared-platform.md`
-- `phase-03-backend-platform.md`
+- `phase-02-platform.md`
+- `phase-03-backend.md`
 - `phase-04-browser-extension.md`
-- `phase-05-web-application.md`
-- `phase-06-resume-platform.md`
+- `phase-05-web-app.md`
+- `phase-06-resume-library.md`
 - `phase-07-analytics.md`
-- `phase-08-product-hardening.md`
-- `phase-09-production-readiness.md`
+- `phase-08-polish.md`
+- `phase-09-production.md`
 - `implementation-checklist.md`
 - `dependency-map.md`
 - `risk-register.md`

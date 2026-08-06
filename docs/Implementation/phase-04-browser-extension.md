@@ -6,7 +6,7 @@
 **Priority:** Critical  
 **Estimated Duration:** 8–10 Weeks  
 **Related Milestone:** M4 — Browser Extension MVP  
-**Related ADRs:** ADR-008, ADR-013, ADR-014, ADR-015, ADR-016, ADR-021, ADR-030, ADR-031, ADR-032, ADR-033, ADR-034
+**Related ADRs:** ADR-041 (Supersedes ADR-008, ADR-013), ADR-014, ADR-015, ADR-016, ADR-021, ADR-030, ADR-031, ADR-032, ADR-033, ADR-034
 
 ---
 

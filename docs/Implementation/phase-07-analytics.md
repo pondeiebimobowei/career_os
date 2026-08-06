@@ -6,7 +6,7 @@
 **Priority:** High  
 **Estimated Duration:** 4–5 Weeks  
 **Related Milestone:** M7 — Analytics & Insights  
-**Related ADRs:** ADR-012, ADR-018, ADR-030, ADR-031, ADR-032, ADR-033
+**Related ADRs:** ADR-012, ADR-043 (Supersedes ADR-018), ADR-030, ADR-031, ADR-032, ADR-033
 
 ---
 

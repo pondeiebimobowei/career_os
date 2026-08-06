@@ -6,7 +6,7 @@
 **Priority:** Critical  
 **Estimated Duration:** 6–8 Weeks  
 **Related Milestone:** M3 — Backend Platform  
-**Related ADRs:** ADR-003, ADR-005, ADR-006, ADR-007, ADR-010, ADR-011, ADR-012, ADR-017, ADR-018, ADR-030, ADR-031, ADR-032, ADR-033, ADR-035, ADR-036
+**Related ADRs:** ADR-003, ADR-005, ADR-006, ADR-007, ADR-010, ADR-011, ADR-012, ADR-017, ADR-043 (Supersedes ADR-018), ADR-030, ADR-031, ADR-032, ADR-033, ADR-035, ADR-036
 
 ---
 
