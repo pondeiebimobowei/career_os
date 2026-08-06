@@ -25,7 +25,9 @@ User
 ## User
 - id (UUID)
 - email (unique)
-- firebaseUid (unique)
+- passwordHash (optional for OAuth-only users)
+- googleId (unique, optional)
+- githubId (unique, optional)
 - fullName
 - avatarUrl
 - timezone

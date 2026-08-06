@@ -87,7 +87,7 @@ authentication:
 
   strategy:
 
-    - Firebase ID Token
+    - NestJS JWT Access Token
     - Secure refresh
     - Automatic token renewal
 
@@ -226,7 +226,7 @@ api_endpoints:
 
   authenticate:
 
-    POST /api/v1/auth/session
+    POST /api/v1/auth/login
 
   sync_job:
 

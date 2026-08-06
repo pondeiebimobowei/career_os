@@ -51,19 +51,19 @@ Do not store passwords.
 # Authentication
 
 MVP:
-- Firebase Authentication
-- Google
-- GitHub
-- Email/Password (optional)
+- NestJS JWT & Social OAuth2 Authentication (@nestjs/jwt + Passport)
+- Password Hashing (bcrypt / argon2) for local email/password login
+- Social OAuth2 Sign-In: Google / Gmail (`passport-google-oauth20`) & GitHub (`passport-github2`)
 
 Backend:
-- Verify Firebase ID Tokens
-- Never trust client identity
-- Create application user after token verification
+- Validate Google / GitHub OAuth2 tokens/codes server-side before account linking
+- Link `googleId` / `githubId` to internal user primary keys in PostgreSQL
+- Issue signed NestJS JWT Access Tokens & Refresh Tokens post-authentication
+- Never trust client identity without validating bearer token via NestJS `JwtAuthGuard`
 
 Requirements:
 - HTTPS only
-- Short-lived ID tokens
+- Short-lived Access Tokens (15m) + secure HTTP-only Refresh Tokens
 - Server-side authorization checks
 
 ---

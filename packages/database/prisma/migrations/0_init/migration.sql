@@ -8,7 +8,9 @@ CREATE TYPE "TaskPriority" AS ENUM ('LOW', 'MEDIUM', 'HIGH');
 CREATE TABLE "users" (
     "id" UUID NOT NULL,
     "email" TEXT NOT NULL,
-    "firebaseUid" TEXT NOT NULL,
+    "passwordHash" TEXT,
+    "googleId" TEXT,
+    "githubId" TEXT,
     "fullName" TEXT NOT NULL,
     "avatarUrl" TEXT,
     "timezone" TEXT,
@@ -138,7 +140,10 @@ CREATE TABLE "activities" (
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_firebaseUid_key" ON "users"("firebaseUid");
+CREATE UNIQUE INDEX "users_googleId_key" ON "users"("googleId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_githubId_key" ON "users"("githubId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "career_profiles_userId_key" ON "career_profiles"("userId");

@@ -102,16 +102,14 @@ User should always understand what will be saved.
 
 # Authentication
 
-Uses Firebase Authentication.
+Uses **NestJS JWT Authentication**.
 
 Flow:
-1. User signs into CareerOS.
-2. Web app issues Firebase session.
-3. Extension retrieves ID token.
-4. Backend verifies token.
-5. Extension uses authenticated API requests.
-
-No credentials stored in extension code.
+1. Extension authenticates via API (`POST /api/v1/auth/login`).
+2. NestJS API returns JWT Access & Refresh Tokens.
+3. Extension securely stores token in `chrome.storage.local`.
+4. Extension includes `Authorization: Bearer <jwt_token>` header on API requests.
+5. Background worker automatically refreshes tokens when expired.
 
 ---
 

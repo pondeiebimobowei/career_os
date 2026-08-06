@@ -13,9 +13,14 @@ This guide details all environment configuration variables, required secrets, en
 | `NODE_ENV` | Global | API, Web, Ext | Execution environment (`development`, `staging`, `production`) | No | `development` |
 | `PORT` | API | API | HTTP server listening port | No | `3000` |
 | `DATABASE_URL` | Infrastructure | API, Database | PostgreSQL connection URL string with credentials & schema | **Yes** | `postgresql://user:pass@localhost:5432/careeros` |
-| `FIREBASE_PROJECT_ID` | Auth | API, Web, Ext | Firebase Project Identifier | No | `careeros-dev` |
-| `FIREBASE_CLIENT_EMAIL` | Auth | API | Firebase Admin Service Account email | **Yes** | `firebase-adminsdk@...` |
-| `FIREBASE_PRIVATE_KEY` | Auth | API | Firebase Admin RSA Private Key | **Yes** | `"-----BEGIN PRIVATE KEY-----\n..."` |
+| `JWT_SECRET` | Auth | API | Secret key used to sign JWT Access Tokens | **Yes** | `dev_jwt_secret_change_in_prod` |
+| `JWT_EXPIRES_IN` | Auth | API | Lifetime of JWT Access Token | No | `15m` |
+| `JWT_REFRESH_SECRET` | Auth | API | Secret key used to sign Refresh Tokens | **Yes** | `dev_refresh_secret_change_in_prod` |
+| `JWT_REFRESH_EXPIRES_IN` | Auth | API | Lifetime of Refresh Token | No | `7d` |
+| `GOOGLE_CLIENT_ID` | Auth | API, Web | Google OAuth2 Client Identifier | No | `google_client_id_dev` |
+| `GOOGLE_CLIENT_SECRET` | Auth | API | Google OAuth2 Client Secret | **Yes** | `google_client_secret_dev` |
+| `GITHUB_CLIENT_ID` | Auth | API, Web | GitHub OAuth2 Client Identifier | No | `github_client_id_dev` |
+| `GITHUB_CLIENT_SECRET` | Auth | API | GitHub OAuth2 Client Secret | **Yes** | `github_client_secret_dev` |
 | `VITE_API_URL` | Web | Web | Backend REST API base URL | No | `http://localhost:3000` |
 | `WXT_VITE_API_URL` | Extension | Extension | Extension API base URL | No | `http://localhost:3000` |
 | `STORAGE_BUCKET` | Storage | API | Cloudflare R2 / S3 Storage bucket name | No | `careeros-dev-storage` |

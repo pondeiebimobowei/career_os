@@ -66,8 +66,10 @@ Storage
 └── S3-compatible object storage
 
 # Authentication
-- Firebase Authentication
-- Backend verifies ID tokens
+- NestJS JWT & Social OAuth2 Authentication (@nestjs/jwt + Passport)
+- Social Sign-In: Google / Gmail (`passport-google-oauth20`) & GitHub (`passport-github2`)
+- Local Auth: Password hashing using bcrypt / argon2
+- Backend issues & verifies signed NestJS JWT Access & Refresh Tokens
 - Role: User/Admin
 - Stateless API
 

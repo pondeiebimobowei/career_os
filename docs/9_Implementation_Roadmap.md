@@ -82,7 +82,7 @@ Setup
 - Docker Compose
 - PostgreSQL
 - Prisma
-- Firebase project
+- NestJS Auth setup (JWT + Passport)
 
 Definition of Done
 - CI passing
@@ -95,7 +95,7 @@ Definition of Done
 Working authentication and dashboard shell.
 
 Build
-- Firebase Auth
+- NestJS Auth (JWT endpoints, login/register/refresh)
 - Protected routes
 - Sidebar
 - Layout

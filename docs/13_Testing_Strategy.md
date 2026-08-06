@@ -60,7 +60,7 @@ Validate:
 - Activity logging
 
 Mock:
-- Firebase
+- NestJS Auth / JWT Service
 - Storage
 - AI services
 

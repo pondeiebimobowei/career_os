@@ -4,7 +4,7 @@
 ## Principles
 - RESTful JSON API
 - Versioned: `/api/v1`
-- Firebase ID Token authentication
+- NestJS JWT Bearer Token authentication
 - Resource-oriented endpoints
 - Cursor pagination
 - Consistent error responses
@@ -13,7 +13,7 @@
 
 All protected requests:
 
-`Authorization: Bearer <firebase_id_token>`
+`Authorization: Bearer <jwt_access_token>`
 
 ## Standard Response
 
@@ -42,22 +42,80 @@ Error
 
 # Auth
 
-## POST /api/v1/auth/session
+## POST /api/v1/auth/register
 
-Verifies Firebase token and creates user profile.
+Registers a new user account.
+
+Input:
+```json
+{
+  "email": "user@example.com",
+  "password": "SecurePassword123!",
+  "fullName": "Jane Doe"
+}
+```
+
+## POST /api/v1/auth/login
+
+Authenticates user and returns JWT Access & Refresh Tokens.
+
+Input:
+```json
+{
+  "email": "user@example.com",
+  "password": "SecurePassword123!"
+}
+```
 
 Response:
 ```json
 {
-  "data":{
-    "user":{
-      "id":"usr_123",
-      "email":"user@example.com",
-      "name":"Jane Doe"
+  "data": {
+    "accessToken": "eyJhbGciOi...",
+    "refreshToken": "eyJhbGciOi...",
+    "user": {
+      "id": "usr_123",
+      "email": "user@example.com",
+      "fullName": "Jane Doe"
     }
   }
 }
 ```
+
+## POST /api/v1/auth/refresh
+
+Refreshes JWT Access Token using a valid Refresh Token.
+
+## GET /api/v1/auth/google
+
+Initiates Google / Gmail OAuth2 authentication flow.
+
+## GET /api/v1/auth/google/callback (or POST /api/v1/auth/google)
+
+Handles Google OAuth2 callback / verifies Google ID token, upserts user, and returns JWT Access & Refresh Tokens.
+
+Response:
+```json
+{
+  "data": {
+    "accessToken": "eyJhbGciOi...",
+    "refreshToken": "eyJhbGciOi...",
+    "user": {
+      "id": "usr_123",
+      "email": "user@gmail.com",
+      "fullName": "Jane Doe"
+    }
+  }
+}
+```
+
+## GET /api/v1/auth/github
+
+Initiates GitHub OAuth2 authentication flow.
+
+## GET /api/v1/auth/github/callback (or POST /api/v1/auth/github)
+
+Handles GitHub OAuth2 callback / verifies code, upserts user, and returns JWT Access & Refresh Tokens.
 
 ---
 

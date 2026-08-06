@@ -162,7 +162,7 @@ mocking_strategy:
   mock:
 
     - CareerOS API
-    - Firebase Authentication
+    - NestJS JWT Authentication
     - Browser Storage
     - Chrome Extension APIs
     - IndexedDB
