@@ -6,7 +6,11 @@ import { Step2RoleForm } from './Step2RoleForm';
 import { Step3LocationForm } from './Step3LocationForm';
 import { Step4SearchStatusForm } from './Step4SearchStatusForm';
 
-export const OnboardingLayout: React.FC = () => {
+interface OnboardingLayoutProps {
+  onComplete?: () => void;
+}
+
+export const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({ onComplete }) => {
   const {
     currentStep,
     formData,
@@ -30,7 +34,10 @@ export const OnboardingLayout: React.FC = () => {
           Your profile preferences have been successfully saved to CareerOS. You are now ready to track job applications, optimize resumes, and accelerate your job search.
         </p>
         <button
-          onClick={() => (window.location.href = '/')}
+          onClick={() => {
+            if (onComplete) onComplete();
+            else window.location.href = '/';
+          }}
           className="px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors cursor-pointer"
         >
           Go to Executive Dashboard

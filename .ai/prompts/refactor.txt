@@ -1,0 +1,10 @@
+Task: Refactoring / Architecture Evolution
+Target Module: <MODULE_PATH>
+Rationale: <EVOLUTION_TRIGGER_RATIONALE>
+
+Please follow AGENTS.md:
+1. Ensure refactoring is explicitly authorized by documented evolution triggers.
+2. Maintain existing public API contracts and component behavior.
+3. Keep changes minimal and isolated to the target module.
+4. Run `pnpm gate` to ensure zero regressions.
+5. Provide the standard Completion Report.

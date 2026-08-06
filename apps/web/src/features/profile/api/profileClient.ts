@@ -17,3 +17,22 @@ export async function submitOnboardingProfile(userId: string, data: OnboardingDa
 
   return response.json();
 }
+
+export async function fetchUserProfile(userId: string): Promise<OnboardingData | null> {
+  const response = await fetch(`${API_BASE}/api/v1/profile/${userId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch profile: ${response.statusText}`);
+  }
+
+  return response.json();
+}
