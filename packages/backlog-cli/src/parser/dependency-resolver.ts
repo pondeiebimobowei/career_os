@@ -16,6 +16,7 @@ export interface RecommendationFactors {
   context: number;
   totalScore: number;
   confidencePercentage: number;
+  margin: number;
   explanations: RecommendationExplanation[];
 }
 
@@ -130,7 +131,7 @@ export class DependencyResolver {
     const scoredList: {
       issue: Issue;
       unblocked: boolean;
-      factors: Omit<RecommendationFactors, 'confidencePercentage'>;
+      factors: Omit<RecommendationFactors, 'confidencePercentage' | 'margin'>;
       unlockedIssues: Issue[];
     }[] = [];
 
@@ -268,21 +269,23 @@ export class DependencyResolver {
       return a.issue.id.localeCompare(b.issue.id);
     });
 
-    // Calculate margin-based confidence percentage
+    // Calculate margin-based confidence percentage and raw score margin
     const unblockedCandidates = scoredList.filter((s) => s.unblocked);
     const topScore = unblockedCandidates[0]?.factors.totalScore || 0;
     const runnerUpScore = unblockedCandidates[1]?.factors.totalScore || 0;
+    const rawMargin = unblockedCandidates.length > 1 ? topScore - runnerUpScore : topScore;
 
     let confidencePercentage = 100;
     if (unblockedCandidates.length > 1 && topScore > 0) {
-      const margin = (topScore - runnerUpScore) / topScore;
-      confidencePercentage = Math.min(100, Math.max(50, Math.round(50 + margin * 50)));
+      const relMargin = (topScore - runnerUpScore) / topScore;
+      confidencePercentage = Math.min(100, Math.max(50, Math.round(50 + relMargin * 50)));
     }
 
     return scoredList.map((item) => {
       const factors: RecommendationFactors = {
         ...item.factors,
         confidencePercentage: item.issue.id === unblockedCandidates[0]?.issue.id ? confidencePercentage : 50,
+        margin: item.issue.id === unblockedCandidates[0]?.issue.id ? rawMargin : 0,
       };
 
       const reasonStr = item.factors.explanations.map((e) => e.message).join(', ');

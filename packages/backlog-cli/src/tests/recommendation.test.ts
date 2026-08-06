@@ -133,4 +133,43 @@ describe('Recommendation Engine & Invariants', () => {
     expect(res.data.confidencePercentage).toBeGreaterThanOrEqual(70);
     expect(res.data.factors?.explanations.length).toBeGreaterThan(0);
   });
+
+  describe('Scenario-Based Golden Tests', () => {
+    it('Golden Scenario 1: Active branch resume detection', () => {
+      const backlog = createMockBacklog([
+        { id: 'PROFILE-003', title: 'Build profile onboarding UI', priority: 'P0', status: 'in_progress' },
+        { id: 'PROFILE-004', priority: 'P0', dependencies: ['PROFILE-003'], status: 'todo' },
+        { id: 'DASH-001', priority: 'P0', status: 'todo' },
+      ]);
+
+      const activeIssueId = ResumeDetectionService.parseBranchName('feature/profile-003-build-profile-onboarding-ui');
+      expect(activeIssueId).toBe('PROFILE-003');
+
+      const activeIssue = backlog.issuesById.get(activeIssueId!);
+      expect(activeIssue).toBeDefined();
+      expect(activeIssue?.status).toBe('in_progress');
+    });
+
+    it('Golden Scenario 2: PROFILE-008 wins over DASH-001 when continuing capability and unlocking downstream tasks', () => {
+      const backlog = createMockBacklog([
+        { id: 'PROFILE-003', status: 'done', milestone: 'CORE_TRACKER' },
+        { id: 'PROFILE-008', priority: 'P0', milestone: 'CORE_TRACKER', status: 'todo' },
+        { id: 'PROFILE-009', priority: 'P0', milestone: 'CORE_TRACKER', dependencies: ['PROFILE-008'], status: 'todo' },
+        { id: 'PROFILE-010', priority: 'P1', milestone: 'CORE_TRACKER', dependencies: ['PROFILE-008'], status: 'todo' },
+        { id: 'DASH-001', priority: 'P0', milestone: 'CORE_TRACKER', status: 'todo' },
+      ]);
+
+      const planRes = PlanningService.plan(backlog, {
+        activeCapability: 'PROFILE',
+        activeBranchContext: 'feature/profile-008-user-settings',
+      });
+
+      expect(planRes.success).toBe(true);
+      if (!planRes.success) return;
+
+      expect(planRes.data.nextIssue?.id).toBe('PROFILE-008');
+      expect(planRes.data.factors?.dependency).toBeGreaterThan(0);
+      expect(planRes.data.factors?.capability).toBeGreaterThan(0);
+    });
+  });
 });
