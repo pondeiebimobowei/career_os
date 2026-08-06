@@ -11,12 +11,7 @@ This specification defines the multi-step onboarding profile architecture for Ca
 ### Backend Architecture (NestJS)
 - **Feature Modules**: Backend modules are organized by business capability inside `apps/api/src/modules/` (e.g. `modules/profile/`, `modules/jobs/`, `modules/companies/`). Shared utilities reside in `apps/api/src/shared/`.
 - **Pragmatic Layering**: Simple CRUD endpoints use standard NestJS Controller/Service/Repository patterns.
-- **Layer Evolution Triggers**: A module evolves internal layers (`presentation/`, `application/`, `domain/`, `infrastructure/`) ONLY when it encounters:
-  - Multiple distinct use cases per entity
-  - Rich business rules or validation logic
-  - External third-party API integrations
-  - Multiple data repositories or complex multi-entity transactions
-  - Domain event publication
+- **Layer Evolution Triggers**: A module evolves internal layers (`presentation/`, `application/`, `domain/`, `infrastructure/`) ONLY when objective metrics warrant it.
 - **No Premature Abstraction**: Simple 50-line CRUD endpoints do not require 17 layers of abstraction; structure scales strictly with domain complexity.
 
 ### Frontend Architecture (React / Vite)
@@ -30,15 +25,28 @@ This specification defines the multi-step onboarding profile architecture for Ca
 
 Completed features remain untouched in production. Structure evolves organically when a new product requirement explicitly demands additional capability.
 
-### Architecture Evolution Matrix
+### Objective Promotion Thresholds
 
-| Complexity Level | Trigger Scenario | Preferred Architecture Pattern |
-| :--- | :--- | :--- |
-| **Level 1: Simple CRUD** | Single entity, straightforward DB persistence | Controller → Service → Database Service / Repository |
-| **Level 2: Moderate Logic** | Feature-specific business rules & validations | Feature module with internal helper services |
-| **Level 3: Rich Domain Model** | Complex business invariants, external integrations | Presentation / Application / Domain / Infrastructure layers |
-| **Level 4: Cross-Module Workflows** | Inter-domain side effects, multi-entity flows | Domain Events (`EventDispatcher`) or Saga Orchestrators |
-| **Level 5: Shared Infrastructure** | Proven multi-consumer code (2+ apps/packages) | Shared monorepo package (`@repo/ui`, `@repo/database`) |
+The architecture matrix represents an **escalation path**, not a mandatory ladder. A feature stops at the simplest architecture satisfying its requirements.
+
+| Level | Feature Architecture | Objective Promotion Trigger (Promote When...) | Example Feature |
+| :--- | :--- | :--- | :--- |
+| **Level 1** | Simple CRUD (Controller → Service → Repository) | Baseline for simple persistence and CRUD operations | User Profile, Basic Settings |
+| **Level 2** | Moderate Logic (Feature module with internal services) | Module has **3+ use cases** or business rules exceeding single service scope | Job Search, Application Tracking |
+| **Level 3** | Rich Domain Model (Presentation/App/Domain/Infra) | Uses **multiple aggregates**, external API providers, domain events, or multi-step transactions | Resume AI Parser, Auto-Filler |
+| **Level 4** | Cross-Module Workflows (EventDispatcher / Sagas) | Workflow spans **multiple bounded contexts** or domain modules | Notification Pipeline, Analytics |
+| **Level 5** | Shared Infrastructure (`@repo/*` monorepo packages) | Code is **reused by 2+ independent apps/packages** and has stable API | `@repo/ui`, `@repo/database` |
+
+### Architecture Decision Checklist
+
+Before introducing a new layer, package, shared component, or abstraction, answer:
+1. Is there **measurable complexity today** (not predicted)?
+2. Does this **reduce duplication** rather than move it?
+3. Would a new team member **understand it quickly**?
+4. Is it solving a **current problem** rather than a hypothetical future requirement?
+5. Can this decision be **reversed easily** without major cost?
+
+*If any answer is "No", maintain the simpler design.*
 
 ---
 
@@ -155,9 +163,9 @@ Submits completed onboarding form data and marks profile setup as completed.
 
 ## 4. UI Architecture & Step Component Specifications
 
-React / Vite component structure in `apps/web/src/features/profile/`:
+React / Vite feature component structure in `apps/web/src/features/profile/`:
 
-- `<OnboardingContainer />`: Root wizard layout managing step state (`currentStep: 1..4`).
+- `<OnboardingLayout />`: Root wizard layout managing step state (`currentStep: 1..4`).
 - `<ProgressHeader currentStep={step} totalSteps={4} />`: Animated progress bar & step title indicator.
 - `<Step1IdentityForm />`: Name, bio, timezone input fields.
 - `<Step2RoleForm />`: Target role combobox, seniority selector pills, skills multi-select tag input.

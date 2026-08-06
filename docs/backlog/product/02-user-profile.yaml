@@ -104,6 +104,9 @@ features:
           - User can select preferred location
           - User can define employment type
           - User can continue through onboarding
+        status: done
+        completedAt: 2026-08-06T13:12:53.987Z
+        completedBy: pondeiebimobowei
 
   - id: PROFILE-MANAGEMENT
     title: Profile Management
