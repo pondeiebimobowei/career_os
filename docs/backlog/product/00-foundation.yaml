@@ -52,6 +52,7 @@ features:
     issues:
       - id: FND-003
         title: Configure PostgreSQL and Prisma
+        status: done
         type: task
         estimate: 2
         acceptance_criteria:
