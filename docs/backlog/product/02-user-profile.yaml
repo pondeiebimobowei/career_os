@@ -81,6 +81,9 @@ features:
           - Updates authenticated user's profile
           - Input validation implemented
           - Returns updated profile
+        status: done
+        completedAt: 2026-08-06T11:43:49.614Z
+        completedBy: pondeiebimobowei
 
       - id: PROFILE-003
         title: Build profile onboarding UI
@@ -89,6 +92,7 @@ features:
         estimate: 3
 
         dependencies:
+          - PROFILE-001
           - PROFILE-002
 
         labels:
@@ -114,6 +118,10 @@ features:
         priority: P0
         estimate: 2
 
+        dependencies:
+          - PROFILE-002
+          - PROFILE-003
+
         labels:
           - frontend
 
@@ -127,6 +135,9 @@ features:
         type: task
         priority: P0
         estimate: 3
+
+        dependencies:
+          - PROFILE-004
 
         labels:
           - frontend
@@ -184,6 +195,9 @@ features:
         type: task
         priority: P0
         estimate: 1
+
+        dependencies:
+          - PROFILE-002
 
         labels:
           - backend

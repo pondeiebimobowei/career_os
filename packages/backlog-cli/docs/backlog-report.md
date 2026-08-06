@@ -134,15 +134,15 @@
 | RESUME_METADATA | Resume Metadata | 1 | P0 |
 
 ## Dependency Risk & Critical Path Analysis
-Found **36** issues with explicit dependencies:
+Found **39** issues with explicit dependencies:
 
 - **FND-002** (Configure CI) ← *Waiting for: FND-001*
-- **PROFILE-003** (Build profile onboarding UI) ← *Waiting for: PROFILE-002*
+- **PROFILE-003** (Build profile onboarding UI) ← *Waiting for: PROFILE-001, PROFILE-002*
+- **PROFILE-004** (View profile) ← *Waiting for: PROFILE-002, PROFILE-003*
+- **PROFILE-005** (Edit profile) ← *Waiting for: PROFILE-004*
+- **PROFILE-008** (Store onboarding completion state) ← *Waiting for: PROFILE-002*
 - **DASH-003** (Build summary statistics cards) ← *Waiting for: DASH-002*
 - **COMPANY-002** (Build create company modal) ← *Waiting for: COMPANY-001*
 - **JOB-002** (Build Create Job UI) ← *Waiting for: JOB-001*
 - **APP-002** (Create application API) ← *Waiting for: APP-001*
 - **APP-003** (Build create application dialog) ← *Waiting for: APP-002*
-- **APP-005** (Build applications list UI) ← *Waiting for: APP-004*
-- **APP-007** (Build application details page) ← *Waiting for: APP-006*
-- **APP-009** (Build edit application form) ← *Waiting for: APP-008*
