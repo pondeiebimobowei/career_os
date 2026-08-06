@@ -122,33 +122,26 @@ Every module follows the same internal structure.
 
 ---
 
-# Standard Module Structure
+# Standard NestJS Module Structure
 
 ```text
-module/
+feature-module/
 
-controllers/
-
-services/
-
-repositories/
-
-schemas/
-
-dtos/
-
-routes/
-
-validators/
-
-mappers/
-
-types/
-
-tests/
+    feature.module.ts
+    feature.controller.ts
+    feature.service.ts
+    dto/
+    entities/
+    repositories/
+    guards/
+    pipes/
+    mappers/
+    types/
+    feature.controller.spec.ts
+    feature.service.spec.ts
 ```
 
-Every module should remain self-contained.
+Every NestJS module should remain self-contained and registered in the root `AppModule`.
 
 ---
 

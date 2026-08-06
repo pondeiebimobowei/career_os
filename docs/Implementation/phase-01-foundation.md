@@ -482,9 +482,9 @@ apps/api
 
 Include:
 
-- Hono
-- routing
-- middleware
+- NestJS
+- modules, controllers, and services
+- middleware / guards
 - health endpoint
 - configuration
 - logging
