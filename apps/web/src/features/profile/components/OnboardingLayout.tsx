@@ -21,36 +21,17 @@ export const OnboardingLayout: React.FC = () => {
 
   if (isSuccess) {
     return (
-      <div
-        style={{
-          maxWidth: '560px',
-          margin: '60px auto',
-          padding: '32px',
-          borderRadius: '12px',
-          backgroundColor: '#ffffff',
-          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
-          textAlign: 'center',
-        }}
-      >
-        <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎉</div>
-        <h2 style={{ fontSize: '24px', fontWeight: 700, margin: '0 0 12px 0', color: '#1e293b' }}>
+      <div className="max-w-xl mx-auto my-14 p-8 rounded-xl bg-white shadow-xl text-center border border-slate-100">
+        <div className="text-5xl mb-4">🎉</div>
+        <h2 className="text-2xl font-bold mb-3 text-slate-800">
           Profile Onboarding Completed!
         </h2>
-        <p style={{ color: '#64748b', fontSize: '15px', lineHeight: 1.6, marginBottom: '24px' }}>
+        <p className="text-slate-500 text-sm leading-relaxed mb-6">
           Your profile preferences have been successfully saved to CareerOS. You are now ready to track job applications, optimize resumes, and accelerate your job search.
         </p>
         <button
           onClick={() => (window.location.href = '/')}
-          style={{
-            padding: '12px 24px',
-            borderRadius: '6px',
-            backgroundColor: '#3b82f6',
-            color: '#ffffff',
-            border: 'none',
-            fontWeight: 600,
-            fontSize: '15px',
-            cursor: 'pointer',
-          }}
+          className="px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors cursor-pointer"
         >
           Go to Executive Dashboard
         </button>
@@ -59,17 +40,7 @@ export const OnboardingLayout: React.FC = () => {
   }
 
   return (
-    <div
-      style={{
-        maxWidth: '600px',
-        margin: '40px auto',
-        padding: '32px',
-        borderRadius: '12px',
-        backgroundColor: '#ffffff',
-        boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
-        fontFamily: 'Inter, system-ui, sans-serif',
-      }}
-    >
+    <div className="max-w-xl mx-auto my-10 p-8 rounded-xl bg-white shadow-xl border border-slate-100 font-sans">
       <ProgressHeader currentStep={currentStep} totalSteps={4} />
 
       {currentStep === 1 && <Step1IdentityForm data={formData} errors={errors} updateFields={updateFields} />}
@@ -78,35 +49,17 @@ export const OnboardingLayout: React.FC = () => {
       {currentStep === 4 && <Step4SearchStatusForm data={formData} updateFields={updateFields} />}
 
       {errors.submit && (
-        <div
-          style={{
-            marginTop: '16px',
-            padding: '10px',
-            borderRadius: '6px',
-            backgroundColor: '#fef2f2',
-            color: '#ef4444',
-            fontSize: '13px',
-          }}
-        >
+        <div className="mt-4 p-3 rounded-lg bg-red-50 text-red-500 text-xs font-medium border border-red-100">
           {errors.submit}
         </div>
       )}
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '32px' }}>
+      <div className="flex justify-between items-center mt-8 pt-4 border-t border-slate-100">
         {currentStep > 1 ? (
           <button
             type="button"
             onClick={prevStep}
-            style={{
-              padding: '10px 20px',
-              borderRadius: '6px',
-              border: '1px solid #cbd5e1',
-              backgroundColor: '#ffffff',
-              color: '#334155',
-              cursor: 'pointer',
-              fontWeight: 600,
-              fontSize: '14px',
-            }}
+            className="px-5 py-2.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm transition-colors cursor-pointer"
           >
             Back
           </button>
@@ -118,16 +71,7 @@ export const OnboardingLayout: React.FC = () => {
           <button
             type="button"
             onClick={nextStep}
-            style={{
-              padding: '10px 24px',
-              borderRadius: '6px',
-              border: 'none',
-              backgroundColor: '#3b82f6',
-              color: '#ffffff',
-              cursor: 'pointer',
-              fontWeight: 600,
-              fontSize: '14px',
-            }}
+            className="px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors cursor-pointer"
           >
             Continue
           </button>
@@ -136,16 +80,7 @@ export const OnboardingLayout: React.FC = () => {
             type="button"
             onClick={submitForm}
             disabled={isSubmitting}
-            style={{
-              padding: '10px 24px',
-              borderRadius: '6px',
-              border: 'none',
-              backgroundColor: '#22c55e',
-              color: '#ffffff',
-              cursor: isSubmitting ? 'not-allowed' : 'pointer',
-              fontWeight: 600,
-              fontSize: '14px',
-            }}
+            className="px-6 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-300 disabled:cursor-not-allowed text-white font-semibold text-sm transition-colors cursor-pointer"
           >
             {isSubmitting ? 'Saving Profile...' : 'Complete Onboarding'}
           </button>

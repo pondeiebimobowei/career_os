@@ -11,14 +11,16 @@ const SENIORITY_OPTIONS: SeniorityLevel[] = ['ENTRY', 'MID', 'SENIOR', 'LEAD', '
 
 export const Step2RoleForm: React.FC<Step2Props> = ({ data, errors, updateFields }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <h2 style={{ fontSize: '20px', fontWeight: 700, margin: 0 }}>Target Role & Seniority</h2>
-      <p style={{ color: '#64748b', fontSize: '14px', margin: 0 }}>
-        Specify the role titles and seniority level you are targeting in your search.
-      </p>
+    <div className="flex flex-col gap-5">
+      <div>
+        <h2 className="text-xl font-bold text-slate-900 m-0">Target Role & Seniority</h2>
+        <p className="text-slate-500 text-sm mt-1 mb-0">
+          Specify the role titles and seniority level you are targeting in your search.
+        </p>
+      </div>
 
       <div>
-        <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '6px' }}>
+        <label className="block text-sm font-semibold text-slate-700 mb-1.5">
           Target Role Title *
         </label>
         <input
@@ -26,37 +28,30 @@ export const Step2RoleForm: React.FC<Step2Props> = ({ data, errors, updateFields
           value={data.targetRole}
           onChange={(e) => updateFields({ targetRole: e.target.value })}
           placeholder="e.g. Senior Fullstack Engineer"
-          style={{
-            width: '100%',
-            padding: '10px 12px',
-            borderRadius: '6px',
-            border: errors.targetRole ? '1px solid #ef4444' : '1px solid #cbd5e1',
-            boxSizing: 'border-box',
-          }}
+          className={`w-full px-3.5 py-2.5 rounded-lg border text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 transition-colors ${
+            errors.targetRole
+              ? 'border-red-500 focus:ring-red-500/20 focus:border-red-500'
+              : 'border-slate-300 focus:ring-blue-500/20 focus:border-blue-500'
+          }`}
         />
-        {errors.targetRole && <span style={{ color: '#ef4444', fontSize: '12px' }}>{errors.targetRole}</span>}
+        {errors.targetRole && <span className="text-red-500 text-xs mt-1 block font-medium">{errors.targetRole}</span>}
       </div>
 
       <div>
-        <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '6px' }}>
+        <label className="block text-sm font-semibold text-slate-700 mb-1.5">
           Target Seniority *
         </label>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <div className="flex gap-2 flex-wrap pt-1">
           {SENIORITY_OPTIONS.map((lvl) => (
             <button
               key={lvl}
               type="button"
               onClick={() => updateFields({ seniority: lvl })}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '20px',
-                border: '1px solid #cbd5e1',
-                backgroundColor: data.seniority === lvl ? '#3b82f6' : '#f8fafc',
-                color: data.seniority === lvl ? '#ffffff' : '#334155',
-                cursor: 'pointer',
-                fontWeight: 600,
-                fontSize: '13px',
-              }}
+              className={`px-4 py-2 rounded-full font-semibold text-xs transition-colors cursor-pointer ${
+                data.seniority === lvl
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700'
+              }`}
             >
               {lvl}
             </button>

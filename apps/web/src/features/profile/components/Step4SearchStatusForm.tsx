@@ -15,37 +15,34 @@ const SEARCH_STATUSES: { label: string; value: SearchStatus }[] = [
 
 export const Step4SearchStatusForm: React.FC<Step4Props> = ({ data, updateFields }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <h2 style={{ fontSize: '20px', fontWeight: 700, margin: 0 }}>Salary Expectations & Search Status</h2>
-      <p style={{ color: '#64748b', fontSize: '14px', margin: 0 }}>
-        Help us surface opportunities matching your compensation goals.
-      </p>
+    <div className="flex flex-col gap-5">
+      <div>
+        <h2 className="text-xl font-bold text-slate-900 m-0">Salary Expectations & Search Status</h2>
+        <p className="text-slate-500 text-sm mt-1 mb-0">
+          Help us surface opportunities matching your compensation goals.
+        </p>
+      </div>
 
       <div>
-        <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, marginBottom: '6px' }}>
+        <label className="block text-sm font-semibold text-slate-700 mb-1.5">
           Current Search Status *
         </label>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div className="flex flex-col gap-2.5 pt-1">
           {SEARCH_STATUSES.map((status) => (
             <label
               key={status.value}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                padding: '10px 14px',
-                borderRadius: '6px',
-                border: '1px solid #cbd5e1',
-                backgroundColor: data.searchStatus === status.value ? '#eff6ff' : '#ffffff',
-                cursor: 'pointer',
-                fontSize: '14px',
-              }}
+              className={`flex items-center gap-3 p-3.5 rounded-lg border text-sm font-medium cursor-pointer transition-colors select-none ${
+                data.searchStatus === status.value
+                  ? 'border-blue-300 bg-blue-50/60 text-slate-900'
+                  : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
+              }`}
             >
               <input
                 type="radio"
                 name="searchStatus"
                 checked={data.searchStatus === status.value}
                 onChange={() => updateFields({ searchStatus: status.value })}
+                className="text-blue-600 focus:ring-blue-500/20 h-4 w-4 cursor-pointer"
               />
               {status.label}
             </label>
