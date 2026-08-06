@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ApplicationStatus {
+  SAVED
+  READY_TO_APPLY
+  APPLIED
+  FOLLOW_UP
+  RECRUITER_SCREEN
+  TECHNICAL
+  FINAL
+  OFFER
+  REJECTED
+  WITHDRAWN
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  id           String         @id @default(uuid()) @db.Uuid
+  email        String         @unique
+  firebaseUid  String         @unique
+  fullName     String
+  avatarUrl    String?
+  timezone     String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  profile      CareerProfile?
+  companies    Company[]
+  resumes      Resume[]
+  tasks        Task[]
+  applications Application[]
+  activities   Activity[]
+
+  @@map("users")
+}
+
+model CareerProfile {
+  id                 String   @id @default(uuid()) @db.Uuid
+  userId             String   @unique @db.Uuid
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetRole         String?
+  seniority          String?
+  preferredLocations String[]
+  remotePreference   String?
+  salaryExpectation  String?
+  employmentTypes    String[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@map("career_profiles")
+}
+
+model Company {
+  id           String       @id @default(uuid()) @db.Uuid
+  userId       String       @db.Uuid
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  website      String?
+  careersUrl   String?
+  linkedinUrl  String?
+  industry     String?
+  size         String?
+  headquarters String?
+  remotePolicy String?
+  notes        String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  jobOpenings  JobOpening[]
+
+  @@index([userId, name])
+  @@map("companies")
+}
+
+model JobOpening {
+  id             String        @id @default(uuid()) @db.Uuid
+  companyId      String        @db.Uuid
+  company        Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  source         String
+  sourceUrl      String
+  externalId     String?
+  title          String
+  location       String?
+  employmentType String?
+  workplaceType  String?
+  salaryMin      Float?
+  salaryMax      Float?
+  currency       String?
+  description    String?
+  postedAt       DateTime?
+  capturedAt     DateTime      @default(now())
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  applications   Application[]
+
+  @@index([companyId])
+  @@index([source])
+  @@index([sourceUrl])
+  @@map("job_openings")
+}
+
+model Application {
+  id             String            @id @default(uuid()) @db.Uuid
+  jobOpeningId   String            @db.Uuid
+  jobOpening     JobOpening        @relation(fields: [jobOpeningId], references: [id], onDelete: Cascade)
+  userId         String            @db.Uuid
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status         ApplicationStatus @default(SAVED)
+  appliedAt      DateTime?
+  resumeId       String?           @db.Uuid
+  resume         Resume?           @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+  coverLetterUrl String?
+  nextFollowUp   DateTime?
+  outcome        String?
+  notes          String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  tasks          Task[]
+  activities     Activity[]
+
+  @@index([userId, status])
+  @@map("applications")
+}
+
+model Resume {
+  id           String        @id @default(uuid()) @db.Uuid
+  userId       String        @db.Uuid
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  storageKey   String
+  version      Int           @default(1)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
+
+  @@map("resumes")
+}
+
+model Task {
+  id            String       @id @default(uuid()) @db.Uuid
+  userId        String       @db.Uuid
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applicationId String?      @db.Uuid
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  title         String
+  dueDate       DateTime?
+  completedAt   DateTime?
+  priority      TaskPriority @default(MEDIUM)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@map("tasks")
+}
+
+model Activity {
+  id            String       @id @default(uuid()) @db.Uuid
+  userId        String       @db.Uuid
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applicationId String?      @db.Uuid
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  eventType     String
+  payload       Json?
+  createdAt     DateTime     @default(now())
+
+  @@map("activities")
+}

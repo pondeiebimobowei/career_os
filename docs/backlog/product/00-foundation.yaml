@@ -25,6 +25,7 @@ features:
     issues:
       - id: FND-001
         title: Initialize monorepo
+        status: done
         type: task
         estimate: 2
         labels: [foundation,devops]
@@ -35,6 +36,7 @@ features:
 
       - id: FND-002
         title: Configure CI
+        status: done
         type: task
         estimate: 2
         dependencies: [FND-001]
