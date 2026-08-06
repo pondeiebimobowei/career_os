@@ -82,8 +82,9 @@ program
 program
   .command('verify')
   .description('Run comprehensive repository & backlog integrity gate for CI')
-  .action(async () => {
-    await verifyCommand();
+  .option('--json', 'Output machine-readable verification report as JSON', false)
+  .action(async (options) => {
+    await verifyCommand({ json: options.json });
   });
 
 program

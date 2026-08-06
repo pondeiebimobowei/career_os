@@ -3,7 +3,8 @@ import path from 'node:path';
 
 export interface GitHubBacklogMap {
   version: '1.0.0';
-  lastSyncedAt: string;
+  generatedAt: string;
+  repository: string;
   issues: Record<string, number>;
 }
 
@@ -19,19 +20,29 @@ export class GitHubMappingStore {
   static load(workspaceRoot: string = process.cwd()): GitHubBacklogMap {
     const file = this.mapFilePath(workspaceRoot);
     if (!fs.existsSync(file)) {
-      return { version: '1.0.0', lastSyncedAt: new Date().toISOString(), issues: {} };
+      return {
+        version: '1.0.0',
+        generatedAt: new Date().toISOString(),
+        repository: 'pondeiebimobowei/career_os',
+        issues: {},
+      };
     }
     try {
       const content = fs.readFileSync(file, 'utf-8');
       return JSON.parse(content);
     } catch {
-      return { version: '1.0.0', lastSyncedAt: new Date().toISOString(), issues: {} };
+      return {
+        version: '1.0.0',
+        generatedAt: new Date().toISOString(),
+        repository: 'pondeiebimobowei/career_os',
+        issues: {},
+      };
     }
   }
 
   static save(map: GitHubBacklogMap, workspaceRoot: string = process.cwd()): void {
     const file = this.mapFilePath(workspaceRoot);
-    map.lastSyncedAt = new Date().toISOString();
+    map.generatedAt = new Date().toISOString();
     fs.writeFileSync(file, JSON.stringify(map, null, 2), 'utf-8');
   }
 

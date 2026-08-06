@@ -47,6 +47,12 @@ describe('CLI Integration Tests', () => {
     expect(res.success).toBe(true);
   });
 
+  it('should execute VerifyCommand with --json option successfully', async () => {
+    const command = new VerifyCommand({ json: true });
+    const res = await command.execute();
+    expect(res.success).toBe(true);
+  });
+
   it('should execute DoctorCommand successfully', async () => {
     const command = new DoctorCommand();
     const res = await command.execute();
