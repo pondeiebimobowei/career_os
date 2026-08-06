@@ -163,11 +163,12 @@ export class BacklogLoader {
         };
 
         if (raw.epic) {
+          const epicMilestone = raw.epic.milestone || raw.milestone || 'UNASSIGNED';
           const epic: Epic = {
             id: raw.epic.id,
             title: raw.epic.title,
             type: raw.epic.type || category,
-            milestone: raw.epic.milestone,
+            milestone: epicMilestone,
             objective: raw.objective,
             dependencies: raw.dependencies || [],
             features: [],
@@ -199,7 +200,8 @@ export class BacklogLoader {
                 definition_of_done: rawIss.definition_of_done || [],
                 lifecycle: rawIss.lifecycle,
                 implementation: rawIss.implementation,
-                milestone: rawIss.milestone || epic.milestone,
+                milestone: rawIss.milestone || epicMilestone,
+                status: rawIss.status || rawIss.state || (rawIss.lifecycle?.phase === 'done' ? 'done' : 'todo'),
                 featureId: feature.id,
                 epicId: epic.id,
                 filePath: fullPath,

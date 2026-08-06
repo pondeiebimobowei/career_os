@@ -19,7 +19,10 @@ export async function syncLabels(
 
   const labelList = Array.from(desired);
 
-  if (!octokit || dryRun) {
+  if (!octokit) {
+    return { labelsCreated: 0 };
+  }
+  if (dryRun) {
     return { labelsCreated: labelList.length };
   }
 

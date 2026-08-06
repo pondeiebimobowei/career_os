@@ -13,6 +13,7 @@ export interface Issue {
   lifecycle?: { phase?: string };
   implementation?: { layer?: string };
   milestone?: string;
+  status?: 'todo' | 'in_progress' | 'done' | 'blocked' | string;
   featureId?: string;
   epicId?: string;
   filePath?: string;

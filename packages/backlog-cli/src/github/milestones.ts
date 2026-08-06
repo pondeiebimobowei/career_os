@@ -20,7 +20,10 @@ export async function syncMilestones(
 
   const milestoneMap = new Map<string, number>();
 
-  if (!octokit || dryRun) {
+  if (!octokit) {
+    return { milestonesCreated: 0, milestoneMap };
+  }
+  if (dryRun) {
     let dummy = 1;
     for (const m of desired) milestoneMap.set(m, dummy++);
     return { milestonesCreated: desired.size, milestoneMap };

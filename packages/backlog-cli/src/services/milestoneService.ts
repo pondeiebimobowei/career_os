@@ -12,6 +12,13 @@ export class MilestoneService {
     const lines: string[] = [];
     lines.push(pc.bold(pc.cyan(`\n=== CareerOS Backlog Status ===\n`)));
 
+    const completedIssueIds = new Set<string>();
+    for (const issue of backlog.issues) {
+      if (issue.status === 'done' || issue.lifecycle?.phase === 'done') {
+        completedIssueIds.add(issue.id);
+      }
+    }
+
     const milestoneMap = new Map<string, Issue[]>();
     for (const issue of backlog.issues) {
       const ms = issue.milestone || 'UNASSIGNED';
@@ -29,11 +36,32 @@ export class MilestoneService {
 
     for (const [ms, issues] of milestoneMap.entries()) {
       const total = issues.length;
-      const done = issues.filter((i) => i.milestone === 'FOUNDATION' && i.priority === 'P0').length;
-      const blocked = issues.filter((i) => i.dependencies && i.dependencies.length > 0).length;
-      const todo = total - done;
+      let done = 0;
+      let inProgress = 0;
+      let blocked = 0;
+      let todo = 0;
+
+      for (const issue of issues) {
+        const isDone = completedIssueIds.has(issue.id);
+        if (isDone) {
+          done++;
+          continue;
+        }
+        if (issue.status === 'in_progress') {
+          inProgress++;
+          continue;
+        }
+
+        const hasUnfinishedDeps = (issue.dependencies || []).some((depId) => !completedIssueIds.has(depId));
+        if (hasUnfinishedDeps || issue.status === 'blocked') {
+          blocked++;
+        } else {
+          todo++;
+        }
+      }
 
       totalDone += done;
+      totalInProgress += inProgress;
       totalTodo += todo;
       totalBlocked += blocked;
 
@@ -42,7 +70,7 @@ export class MilestoneService {
 
       lines.push(`\nMilestone: ${pc.green(pc.bold(ms))}`);
       lines.push(`Progress:  ${pc.magenta(bar)}  ${pc.yellow(percentage + '%')}`);
-      lines.push(`Total Issues: ${total} (Done: ${done}, Todo: ${todo}, Blocked: ${blocked})`);
+      lines.push(`Total Issues: ${total} (Done: ${done}, In Progress: ${inProgress}, Todo: ${todo}, Blocked: ${blocked})`);
     }
 
     lines.push(pc.bold(`\nOverall Summary:`));
@@ -52,10 +80,22 @@ export class MilestoneService {
     lines.push(`  Blocked:     ${pc.red(totalBlocked)}`);
 
     lines.push(`\n${pc.bold('Next Critical Path:')}`);
-    const critical = backlog.issues.filter((i) => i.priority === 'P0').slice(0, 5);
-    for (const issue of critical) {
-      const deps = issue.dependencies && issue.dependencies.length > 0 ? pc.gray(` (depends on: ${issue.dependencies.join(', ')})`) : '';
-      lines.push(`  - ${pc.bold(pc.yellow(issue.id))}: ${issue.title}${deps}`);
+    const critical = backlog.issues
+      .filter((i) => !completedIssueIds.has(i.id))
+      .filter((i) => !(i.dependencies || []).some((depId) => !completedIssueIds.has(depId)))
+      .sort((a, b) => {
+        const pOrder: Record<string, number> = { P0: 0, P1: 1, P2: 2, P3: 3 };
+        return (pOrder[a.priority || 'P1'] ?? 9) - (pOrder[b.priority || 'P1'] ?? 9);
+      })
+      .slice(0, 5);
+
+    if (critical.length === 0) {
+      lines.push(pc.green('  None! All critical path tasks completed.'));
+    } else {
+      for (const issue of critical) {
+        const deps = issue.dependencies && issue.dependencies.length > 0 ? pc.gray(` (depends on: ${issue.dependencies.join(', ')})`) : '';
+        lines.push(`  - ${pc.bold(pc.yellow(issue.id))}: ${issue.title}${deps}`);
+      }
     }
 
     lines.push('\n');

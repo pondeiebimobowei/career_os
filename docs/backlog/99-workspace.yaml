@@ -5,8 +5,8 @@ workspace:
 
 project:
   github:
-    owner: YOUR_GITHUB_USERNAME
-    repository: careeros
+    owner: pondeiebimobowei
+    repository: career_os
 
 current:
   milestone: FOUNDATION

@@ -2,6 +2,8 @@ import { Octokit } from '@octokit/rest';
 import { Backlog } from '../types/backlog.js';
 import { IssueService } from '../services/issueService.js';
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export async function syncIssues(
   octokit: Octokit | null,
   owner: string,
@@ -10,15 +12,18 @@ export async function syncIssues(
   milestoneMap: Map<string, number>,
   dryRun: boolean
 ): Promise<{ issuesCreated: number; issuesUpdated: number }> {
-  if (!octokit || dryRun) {
+  if (!octokit) {
+    return { issuesCreated: 0, issuesUpdated: 0 };
+  }
+  if (dryRun) {
     return { issuesCreated: backlog.issues.length, issuesUpdated: 0 };
   }
 
   const existingMap = new Map<string, { number: number; title: string; body: string }>();
 
   try {
-    const res = await octokit.issues.listForRepo({ owner, repo, state: 'all', per_page: 100 });
-    for (const ghIss of res.data) {
+    const allIssues = await octokit.paginate(octokit.issues.listForRepo, { owner, repo, state: 'all', per_page: 100 });
+    for (const ghIss of allIssues) {
       const match = ghIss.title.match(/\[([A-Z0-9-]+)\]/);
       if (match && match[1]) {
         existingMap.set(match[1], {
@@ -29,7 +34,7 @@ export async function syncIssues(
       }
     }
   } catch {
-    // API error
+    // API error listing existing issues
   }
 
   let createdCount = 0;
@@ -47,34 +52,54 @@ export async function syncIssues(
 
     const existing = existingMap.get(issue.id);
     if (!existing) {
-      try {
-        await octokit.issues.create({
-          owner,
-          repo,
-          title: formattedTitle,
-          body,
-          labels,
-          milestone: msNum,
-        });
-        createdCount++;
-      } catch {
-        // error creating issue
-      }
-    } else {
-      if (existing.title !== formattedTitle || existing.body !== body) {
+      let attempts = 0;
+      while (attempts < 3) {
         try {
-          await octokit.issues.update({
+          await octokit.issues.create({
             owner,
             repo,
-            issue_number: existing.number,
             title: formattedTitle,
             body,
             labels,
             milestone: msNum,
           });
-          updatedCount++;
-        } catch {
-          // error updating issue
+          createdCount++;
+          await sleep(250);
+          break;
+        } catch (err: any) {
+          attempts++;
+          if (err.status === 403) {
+            await sleep(2000);
+          } else {
+            await sleep(500);
+          }
+        }
+      }
+    } else {
+      if (existing.title !== formattedTitle || existing.body !== body) {
+        let attempts = 0;
+        while (attempts < 3) {
+          try {
+            await octokit.issues.update({
+              owner,
+              repo,
+              issue_number: existing.number,
+              title: formattedTitle,
+              body,
+              labels,
+              milestone: msNum,
+            });
+            updatedCount++;
+            await sleep(200);
+            break;
+          } catch (err: any) {
+            attempts++;
+            if (err.status === 403) {
+              await sleep(2000);
+            } else {
+              await sleep(500);
+            }
+          }
         }
       }
     }
