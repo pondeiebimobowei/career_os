@@ -1,4 +1,4 @@
-name: Backlog Validation & Platform Tests
+name: CareerOS Continuous Integration (CI)
 
 on:
   push:
@@ -6,9 +6,13 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  validate-and-test:
-    name: Backlog CI Check
+  validate-and-build:
+    name: Backlog, Lint, Typecheck, Test & Build
     runs-on: ubuntu-latest
 
     steps:
@@ -29,8 +33,17 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Validate YAML Backlog
+      - name: Validate YAML Backlog Schema & DAG
         run: pnpm backlog:validate
 
-      - name: Run Backlog Engine Unit Tests
-        run: pnpm --filter @repo/backlog-cli test
+      - name: Typecheck Monorepo Workspace
+        run: pnpm check-types
+
+      - name: Lint Monorepo Workspace
+        run: pnpm lint
+
+      - name: Run Test Suites
+        run: pnpm test
+
+      - name: Build Monorepo Apps & Packages
+        run: pnpm build
